@@ -44,7 +44,13 @@ task Bam2Fasta {
         bamFiles=""
         for bamFile in ~{sep=" " bam}
         do
+            ln $bamFile .
             bamFiles=$bamFiles" $(basename $bamFile)"
+        done
+
+        for index in ~{sep=" " bamIndex}
+        do
+            ln $index .
         done
 
         bam2fasta \
@@ -106,9 +112,14 @@ task Bam2Fastq {
         bamFiles=""
         for bamFile in ~{sep=" " bam}
         do
+            ln $bamFile .
             bamFiles=$bamFiles" $(basename $bamFile)"
         done
 
+        for index in ~{sep=" " bamIndex}
+        do
+            ln $index .
+        done
 
         bam2fastq \
         --output ~{outputPrefix} \
@@ -142,50 +153,5 @@ task Bam2Fastq {
 
         # outputs
         fastqFile: {description: "The fastq output file."}
-    }
-}
-
-workflow bam2fastx {
-    Array[File]+ bam
-    Array[File]+ bamIndex
-    String outputPrefix
-    Int compressionLevel = 1
-    Boolean splitByBarcode = false
-    String? seqIdPrefix
-    String memory = "2G"
-    Int timeMinutes = 15
-    String type = "fasta"
-    String dockerImage = "genedockdx/bam2fastx:1.3.1"
-    if (type == "fasta"){
-        call Bam2Fasta{
-            input: 
-            bam=bam,
-            bamIndex=bamIndex,
-            outputPrefix=outputPrefix,
-            compressionLevel=compressionLevel,
-            splitByBarcode=splitByBarcode,
-            seqIdPrefix=seqIdPrefix,
-            memory=memory,
-            timeMinutes=timeMinutes,
-            dockerImage=dockerImage
-        }
-        }
-    if (type == "fastq"){
-        call Bam2Fastq{
-            input:
-            bam=bam,
-            bamIndex=bamIndex,
-            outputPrefix=outputPrefix,
-            compressionLevel=compressionLevel,
-            splitByBarcode=splitByBarcode,
-            seqIdPrefix=seqIdPrefix,
-            memory=memory,
-            timeMinutes=timeMinutes,
-            dockerImage=dockerImage
-        }
-        }
-    output{
-        File? fastqFile=Bam2Fastq.fastqFile
-        File? fastaFile=Bam2Fasta.fastaFile
     }
 }
