@@ -32,7 +32,7 @@ task Bam2Fasta {
 
         String memory = "2G"
         Int timeMinutes = 15
-        String dockerImage = "quay.io/biocontainers/bam2fastx:1.3.1--hf05d43a_1"
+        String dockerImage = "genedockdx/bam2fastx:1.3.1"
     }
 
     command {
@@ -44,13 +44,7 @@ task Bam2Fasta {
         bamFiles=""
         for bamFile in ~{sep=" " bam}
         do
-            ln $bamFile .
             bamFiles=$bamFiles" $(basename $bamFile)"
-        done
-
-        for index in ~{sep=" " bamIndex}
-        do
-            ln $index .
         done
 
         bam2fasta \
@@ -100,7 +94,7 @@ task Bam2Fastq {
 
         String memory = "2G"
         Int timeMinutes = 15
-        String dockerImage = "quay.io/biocontainers/bam2fastx:1.3.1--hf05d43a_1"
+        String dockerImage = "genedockdx/bam2fastx:1.3.1"
     }
 
     command {
@@ -112,13 +106,7 @@ task Bam2Fastq {
         bamFiles=""
         for bamFile in ~{sep=" " bam}
         do
-            ln $bamFile .
             bamFiles=$bamFiles" $(basename $bamFile)"
-        done
-
-        for index in ~{sep=" " bamIndex}
-        do
-            ln $index .
         done
 
         bam2fastq \
