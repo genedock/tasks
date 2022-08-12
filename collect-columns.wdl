@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -37,24 +36,24 @@ task CollectColumns {
 
         Int memoryGb = 4 + ceil(0.5 * length(inputTables))
         Int timeMinutes = 10
-        String dockerImage = "quay.io/biocontainers/collect-columns:1.0.0--py_0"
+        String dockerImage = "genedockdx/collect-columns:1.0.0--py_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         collect-columns \
-        ~{outputPath} \
-        ~{sep=" " inputTables} \
-        ~{"-f "  + featureColumn} \
-        ~{"-c " + valueColumn} \
-        ~{"-s " + separator} \
-        ~{true="-n" false="" defined(sampleNames)} ~{sep=" " sampleNames} \
-        ~{true="-H" false="" header} \
-        ~{true="-S" false="" sumOnDuplicateId} \
-        ~{true="-a" false="" defined(additionalAttributes)} ~{sep=" " additionalAttributes} \
-        ~{"-g " + referenceGtf} \
-        ~{"-F " + featureAttribute}
+        ${outputPath} \
+        ${sep=" " inputTables} \
+        ${"-f "  + featureColumn} \
+        ${"-c " + valueColumn} \
+        ${"-s " + separator} \
+        ${true="-n" false="" defined(sampleNames)} ${sep=" " sampleNames} \
+        ${true="-H" false="" header} \
+        ${true="-S" false="" sumOnDuplicateId} \
+        ${true="-a" false="" defined(additionalAttributes)} ${sep=" " additionalAttributes} \
+        ${"-g " + referenceGtf} \
+        ${"-F " + featureAttribute}
     }
 
     output {
@@ -62,7 +61,7 @@ task CollectColumns {
     }
 
     runtime {
-        memory: "~{memoryGb}G"
+        memory: "${memoryGb}G"
         time_minutes: timeMinutes
         docker: dockerImage
     }

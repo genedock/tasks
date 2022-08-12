@@ -33,21 +33,21 @@ task Fastqsplitter {
         # Since a compression level of 1 is used, each output file
         # uses approx 0.5 cores.
         Int cores = 1 + ceil(0.5 * length(outputPaths))
-        String dockerImage = "quay.io/biocontainers/fastqsplitter:1.1.0--py37h516909a_1"
+        String dockerImage = "genedockdx/fastqsplitter:1.1.0--py37h516909a_1"
     }
 
     # Busybox mkdir does not accept multiple paths.
     command <<<
         set -e
-        for FILE in ~{sep=' ' outputPaths}
+        for FILE in ${sep=' ' outputPaths}
         do
             mkdir -p "$(dirname ${FILE})"
         done
         fastqsplitter \
-        ~{"-c " + compressionLevel} \
-        ~{"-t " + threadsPerFile} \
-        -i ~{inputFastq} \
-        -o ~{sep=' -o ' outputPaths}
+        ${"-c " + compressionLevel} \
+        ${"-t " + threadsPerFile} \
+        -i ${inputFastq} \
+        -o ${sep=' -o ' outputPaths}
     >>>
 
     output {
@@ -63,7 +63,7 @@ task Fastqsplitter {
 
     runtime {
         cpu: cores
-        memory: "~{memory}G"
+        memory: "${memory}G"
         docker: dockerImage
     }
 }

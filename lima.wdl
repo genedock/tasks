@@ -51,44 +51,44 @@ task Lima {
         Int threads = 2
         String memory = "2G"
         Int timeMinutes = 30
-        String dockerImage = "quay.io/biocontainers/lima:2.2.0--h9ee0642_0"
+        String dockerImage = "genedockdx/lima:2.2.0--h9ee0642_0"
     }
 
     Map[String, String] libraryDesignOptions = {"same": "--same", "different": "--different", "neighbors": "--neighbors"}
 
     command <<<
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         lima \
-        ~{libraryDesignOptions[libraryDesign]} \
-        ~{true="--score-full-pass" false="" scoreFullPass} \
-        --max-scored-barcode-pairs ~{maxScoredBarcodePairs} \
-        --max-scored-barcodes ~{maxScoredBarcodes} \
-        --max-scored-adapters ~{maxScoredAdapters} \
-        --min-passes ~{minPasses} \
-        --min-length ~{minLength} \
-        --max-input-length ~{maxInputLength} \
-        --min-ref-span ~{minRefSpan} \
-        --min-scoring-regions ~{minScoringRegion} \
-        --min-score ~{minScore} \
-        --min-end-score ~{minEndScore} \
-        --min-signal-increase ~{minSignalIncrease} \
-        --min-score-lead ~{minScoreLead} \
-        ~{true="--ccs" false="" ccsMode} \
-        ~{true="--split-bam-named" false="" splitBamNamed} \
-        --scored-adapter-ratio ~{scoredAdapterRatio} \
-        --peek ~{peek} \
-        --guess ~{guess} \
-        --guess-min-count ~{guessMinCount} \
-        ~{true="--peek-guess" false="" peekGuess} \
-        --log-level ~{logLevel} \
-        --num-threads ~{threads} \
-        ~{"--log-file " + outputPrefix + ".lima.stderr.log"} \
-        ~{inputBamFile} \
-        ~{barcodeFile} \
-        ~{outputPrefix + ".bam"}
+        ${libraryDesignOptions[libraryDesign]} \
+        ${true="--score-full-pass" false="" scoreFullPass} \
+        --max-scored-barcode-pairs ${maxScoredBarcodePairs} \
+        --max-scored-barcodes ${maxScoredBarcodes} \
+        --max-scored-adapters ${maxScoredAdapters} \
+        --min-passes ${minPasses} \
+        --min-length ${minLength} \
+        --max-input-length ${maxInputLength} \
+        --min-ref-span ${minRefSpan} \
+        --min-scoring-regions ${minScoringRegion} \
+        --min-score ${minScore} \
+        --min-end-score ${minEndScore} \
+        --min-signal-increase ${minSignalIncrease} \
+        --min-score-lead ${minScoreLead} \
+        ${true="--ccs" false="" ccsMode} \
+        ${true="--split-bam-named" false="" splitBamNamed} \
+        --scored-adapter-ratio ${scoredAdapterRatio} \
+        --peek ${peek} \
+        --guess ${guess} \
+        --guess-min-count ${guessMinCount} \
+        ${true="--peek-guess" false="" peekGuess} \
+        --log-level ${logLevel} \
+        --num-threads ${threads} \
+        ${"--log-file " + outputPrefix + ".lima.stderr.log"} \
+        ${inputBamFile} \
+        ${barcodeFile} \
+        ${outputPrefix + ".bam"}
 
-        dirName="$(dirname ~{outputPrefix})"
+        dirName="$(dirname ${outputPrefix})"
         find "$(cd ${dirName}; pwd)" -name "*.bam" > bamFiles.txt
         find "$(cd ${dirName}; pwd)" -name "*.bam.pbi" > bamIndexes.txt
         find "$(cd ${dirName}; pwd)" -name "*.consensusreadset.xml" > consensusreadset.txt

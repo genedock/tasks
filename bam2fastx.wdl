@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2020 Leiden University Medical Center
 #
@@ -32,32 +31,26 @@ task Bam2Fasta {
 
         String memory = "2G"
         Int timeMinutes = 15
-        String dockerImage = "quay.io/biocontainers/bam2fastx:1.3.1--hf05d43a_1"
+        String dockerImage = "genedockdx/bam2fastx:1.3.1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
 
         # Localise the bam and pbi files so they are next to each other in the
         # current folder.
         bamFiles=""
-        for bamFile in ~{sep=" " bam}
+        for bamFile in ${sep=" " bam}
         do
-            ln $bamFile .
             bamFiles=$bamFiles" $(basename $bamFile)"
         done
 
-        for index in ~{sep=" " bamIndex}
-        do
-            ln $index .
-        done
-
         bam2fasta \
-        --output ~{outputPrefix} \
-        -c ~{compressionLevel} \
-        ~{true="--split-barcodes" false="" splitByBarcode} \
-        ~{"--seqid-prefix " + seqIdPrefix} \
+        --output ${outputPrefix} \
+        -c ${compressionLevel} \
+        ${true="--split-barcodes" false="" splitByBarcode} \
+        ${"--seqid-prefix " + seqIdPrefix} \
         $bamFiles
     }
 
@@ -100,32 +93,26 @@ task Bam2Fastq {
 
         String memory = "2G"
         Int timeMinutes = 15
-        String dockerImage = "quay.io/biocontainers/bam2fastx:1.3.1--hf05d43a_1"
+        String dockerImage = "genedockdx/bam2fastx:1.3.1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
 
         # Localise the bam and pbi files so they are next to each other in the
         # current folder.
         bamFiles=""
-        for bamFile in ~{sep=" " bam}
+        for bamFile in ${sep=" " bam}
         do
-            ln $bamFile .
             bamFiles=$bamFiles" $(basename $bamFile)"
         done
 
-        for index in ~{sep=" " bamIndex}
-        do
-            ln $index .
-        done
-
         bam2fastq \
-        --output ~{outputPrefix} \
-        -c ~{compressionLevel} \
-        ~{true="--split-barcodes" false="" splitByBarcode} \
-        ~{"--seqid-prefix " + seqIdPrefix} \
+        --output ${outputPrefix} \
+        -c ${compressionLevel} \
+        ${true="--split-barcodes" false="" splitByBarcode} \
+        ${"--seqid-prefix " + seqIdPrefix} \
         $bamFiles
     }
 

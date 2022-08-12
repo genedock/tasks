@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -32,18 +31,18 @@ task ChunkedScatter {
 
         String memory = "256M"
         Int timeMinutes = 2
-        String dockerImage = "quay.io/biocontainers/chunked-scatter:1.0.0--py_0"
+        String dockerImage = "genedockdx/chunked-scatter:1.0.0--py_0"
     }
 
     command {
         chunked-scatter \
         --print-paths \
-        -p ~{prefix} \
-        ~{"-c " + chunkSize} \
-        ~{"-o " + overlap} \
-        ~{"-m " + minimumBasesPerFile} \
-        ~{true="--split-contigs " false="" splitContigs} \
-        ~{inputFile}
+        -p ${prefix} \
+        ${"-c " + chunkSize} \
+        ${"-o " + overlap} \
+        ${"-m " + minimumBasesPerFile} \
+        ${true="--split-contigs " false="" splitContigs} \
+        ${inputFile}
     }
 
     output {
@@ -86,18 +85,18 @@ task ScatterRegions {
 
         String memory = "256M"
         Int timeMinutes = 2
-        String dockerImage = "quay.io/biocontainers/chunked-scatter:1.0.0--py_0"
+        String dockerImage = "genedockdx/chunked-scatter:1.0.0--py_0"
     }
 
-    String finalSize = if defined(scatterSize) then "~{scatterSize}" else "~{scatterSizeMillions}000000"
+    String finalSize = if defined(scatterSize) then "${scatterSize}" else "${scatterSizeMillions}000000"
     
     command {
         scatter-regions \
         --print-paths \
-        --scatter-size ~{finalSize} \
-        ~{true="--split-contigs" false="" splitContigs} \
-        ~{"--prefix " + prefix} \
-        ~{inputFile} 
+        --scatter-size ${finalSize} \
+        ${true="--split-contigs" false="" splitContigs} \
+        ${"--prefix " + prefix} \
+        ${inputFile} 
     }
 
     output {

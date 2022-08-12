@@ -47,7 +47,7 @@ task Fastqc {
         Int threads = 1
         String memory = "2G"
         Int timeMinutes = 1 + ceil(size(seqFile, "G")) * 4
-        String dockerImage = "quay.io/biocontainers/fastqc:0.11.9--0"
+        String dockerImage = "genedockdx/fastqc:0.11.9--0"
 
         Array[File]? noneArray
         File? noneFile
@@ -66,27 +66,27 @@ task Fastqc {
     # gives us more control over the amount of memory used.
     command <<<
         set -e
-        mkdir -p "~{outdirPath}"
+        mkdir -p "${outdirPath}"
         FASTQC_DIR="/usr/local/opt/fastqc-0.11.9"
         export CLASSPATH="$FASTQC_DIR:$FASTQC_DIR/sam-1.103.jar:$FASTQC_DIR/jbzip2-0.9.jar:$FASTQC_DIR/cisd-jhdf5.jar"
         java -Djava.awt.headless=true -XX:ParallelGCThreads=1 \
-        -Xms200M -Xmx~{javaXmx} \
-        ~{"-Dfastqc.output_dir=" + outdirPath} \
-        ~{true="-Dfastqc.casava=true" false="" casava} \
-        ~{true="-Dfastqc.nano=true" false="" nano} \
-        ~{true="-Dfastqc.nofilter=true" false="" noFilter} \
-        ~{true="-Dfastqc.unzip=true" false="" extract} \
-        ~{true="-Dfastqc.nogroup=true" false="" nogroup} \
-        ~{"-Dfastqc.min_length=" + minLength} \
-        ~{"-Dfastqc.sequence_format=" + format} \
-        ~{"-Dfastqc.threads=" + threads} \
-        ~{"-Dfastqc.contaminant_file=" + contaminants} \
-        ~{"-Dfastqc.adapter_file=" + adapters} \
-        ~{"-Dfastqc.limits_file=" + limits} \
-        ~{"-Dfastqc.kmer_size=" + kmers} \
-        ~{"-Djava.io.tmpdir=" + dir} \
+        -Xms200M -Xmx${javaXmx} \
+        ${"-Dfastqc.output_dir=" + outdirPath} \
+        ${true="-Dfastqc.casava=true" false="" casava} \
+        ${true="-Dfastqc.nano=true" false="" nano} \
+        ${true="-Dfastqc.nofilter=true" false="" noFilter} \
+        ${true="-Dfastqc.unzip=true" false="" extract} \
+        ${true="-Dfastqc.nogroup=true" false="" nogroup} \
+        ${"-Dfastqc.min_length=" + minLength} \
+        ${"-Dfastqc.sequence_format=" + format} \
+        ${"-Dfastqc.threads=" + threads} \
+        ${"-Dfastqc.contaminant_file=" + contaminants} \
+        ${"-Dfastqc.adapter_file=" + adapters} \
+        ${"-Dfastqc.limits_file=" + limits} \
+        ${"-Dfastqc.kmer_size=" + kmers} \
+        ${"-Djava.io.tmpdir=" + dir} \
         uk.ac.babraham.FastQC.FastQCApplication \
-        ~{seqFile}
+        ${seqFile}
     >>>
 
     output {
@@ -145,7 +145,7 @@ task GetConfiguration {
     input {
         String memory = "2G" # Needs more than 1 to pull the docker image.
         Int timeMinutes = 1
-        String dockerImage = "quay.io/biocontainers/fastqc:0.11.7--4"
+        String dockerImage = "genedockdx/fastqc:0.11.7--4"
     }
 
     command <<<

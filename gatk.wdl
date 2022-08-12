@@ -36,21 +36,21 @@ task AnnotateIntervals {
         String javaXmx = "2G"
         String memory = "3G"
         Int timeMinutes = 5
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{annotatedIntervalsPath})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${annotatedIntervalsPath})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         AnnotateIntervals \
-        -R ~{referenceFasta} \
-        -L ~{intervals} \
-        ~{"--mappability-track  " + mappabilityTrack} \
-        ~{"--segmental-duplication-track " + segmentalDuplicationTrack} \
-        --feature-query-lookahead ~{featureQueryLookahead} \
-        --interval-merging-rule ~{intervalMergingRule} \
-        -O ~{annotatedIntervalsPath}
+        -R ${referenceFasta} \
+        -L ${intervals} \
+        ${"--mappability-track  " + mappabilityTrack} \
+        ${"--segmental-duplication-track " + segmentalDuplicationTrack} \
+        --feature-query-lookahead ${featureQueryLookahead} \
+        --interval-merging-rule ${intervalMergingRule} \
+        -O ${annotatedIntervalsPath}
     }
 
     output {
@@ -101,25 +101,25 @@ task ApplyBQSR {
         # This will likely be used with intervals, as such size based
         # estimation can't be used.
         Int timeMinutes = 120
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputBamPath})"
-        gatk --java-options '-Xmx~{javaXmxMb}M -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputBamPath})"
+        gatk --java-options '-Xmx${javaXmxMb}M -XX:ParallelGCThreads=1' \
         ApplyBQSR \
         --create-output-bam-md5 \
         --add-output-sam-program-record \
-        -R ~{referenceFasta} \
-        -I ~{inputBam} \
+        -R ${referenceFasta} \
+        -I ${inputBam} \
         --use-original-qualities \
-        -O ~{outputBamPath} \
-        -bqsr ~{recalibrationReport} \
+        -O ${outputBamPath} \
+        -bqsr ${recalibrationReport} \
         --static-quantized-quals 10 \
         --static-quantized-quals 20 \
         --static-quantized-quals 30 \
-        ~{true="-L" false="" length(sequenceGroupInterval) > 0} ~{sep=' -L ' sequenceGroupInterval}
+        ${true="-L" false="" length(sequenceGroupInterval) > 0} ${sep=' -L ' sequenceGroupInterval}
     }
 
     output {
@@ -129,7 +129,7 @@ task ApplyBQSR {
     }
 
     runtime {
-        memory: "~{memoryMb}M"
+        memory: "${memoryMb}M"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -175,21 +175,21 @@ task BaseRecalibrator {
         Int javaXmxMb = 1024
         Int memoryMb = javaXmxMb + 512
         Int timeMinutes = 120 # This will likely be used with intervals, as such size based estimation can't be used.
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{recalibrationReportPath})"
-        gatk --java-options '-Xmx~{javaXmxMb}M -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${recalibrationReportPath})"
+        gatk --java-options '-Xmx${javaXmxMb}M -XX:ParallelGCThreads=1' \
         BaseRecalibrator \
-        -R ~{referenceFasta} \
-        -I ~{inputBam} \
+        -R ${referenceFasta} \
+        -I ${inputBam} \
         --use-original-qualities \
-        -O ~{recalibrationReportPath} \
-        ~{true="--known-sites" false="" length(knownIndelsSitesVCFs) > 0} ~{sep=" --known-sites " knownIndelsSitesVCFs} \
-        ~{"--known-sites " + dbsnpVCF} \
-        ~{true="-L" false="" length(sequenceGroupInterval) > 0} ~{sep=' -L ' sequenceGroupInterval}
+        -O ${recalibrationReportPath} \
+        ${true="--known-sites" false="" length(knownIndelsSitesVCFs) > 0} ${sep=" --known-sites " knownIndelsSitesVCFs} \
+        ${"--known-sites " + dbsnpVCF} \
+        ${true="-L" false="" length(sequenceGroupInterval) > 0} ${sep=' -L ' sequenceGroupInterval}
     }
 
     output {
@@ -197,7 +197,7 @@ task BaseRecalibrator {
     }
 
     runtime {
-        memory: "~{memoryMb}M"
+        memory: "${memoryMb}M"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -234,15 +234,15 @@ task CalculateContamination {
         String javaXmx = "12G"
         String memory = "13G"
         Int timeMinutes = 180
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         CalculateContamination \
-        -I ~{tumorPileups} \
-        ~{"-matched " + normalPileups} \
+        -I ${tumorPileups} \
+        ${"-matched " + normalPileups} \
         -O "contamination.table" \
         --tumor-segmentation "segments.table"
     }
@@ -281,16 +281,16 @@ task CallCopyRatioSegments {
         String javaXmx = "2G"
         String memory = "3G"
         Int timeMinutes = 2
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputPrefix})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         CallCopyRatioSegments \
-        -I ~{copyRatioSegments} \
-        -O ~{outputPrefix}.called.seg
+        -I ${copyRatioSegments} \
+        -O ${outputPrefix}.called.seg
     }
 
     output {
@@ -334,18 +334,18 @@ task CollectAllelicCounts {
         String javaXmx = "10G"
         String memory = "11G"
         Int timeMinutes = 120
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{allelicCountsPath})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${allelicCountsPath})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         CollectAllelicCounts \
-        -L ~{commonVariantSites} \
-        -I ~{inputBam} \
-        -R ~{referenceFasta} \
-        -O ~{allelicCountsPath}
+        -L ${commonVariantSites} \
+        -I ${inputBam} \
+        -R ${referenceFasta} \
+        -O ${allelicCountsPath}
     }
 
     output {
@@ -392,20 +392,20 @@ task CollectReadCounts {
         String javaXmx = "7G"
         String memory = "8G"
         Int timeMinutes = 1 + ceil(size(inputBam, "G") * 5)
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{countsPath})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${countsPath})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         CollectReadCounts \
-        -L ~{intervals} \
-        -I ~{inputBam} \
-        -R ~{referenceFasta} \
+        -L ${intervals} \
+        -I ${inputBam} \
+        -R ${referenceFasta} \
         --format HDF5 \
-        --interval-merging-rule ~{intervalMergingRule} \
-        -O ~{countsPath}
+        --interval-merging-rule ${intervalMergingRule} \
+        -O ${countsPath}
     }
 
     output {
@@ -451,18 +451,18 @@ task CombineGVCFs {
         String javaXmx = "4G"
         String memory = "5G"
         Int timeMinutes = 1 + ceil(size(gvcfFiles, "G") * 8)
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputPath})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         CombineGVCFs \
-        -R ~{referenceFasta} \
-        -O ~{outputPath} \
-        -V ~{sep=' -V ' gvcfFiles} \
-        ~{true='-L' false='' length(intervals) > 0} ~{sep=' -L ' intervals}
+        -R ${referenceFasta} \
+        -O ${outputPath} \
+        -V ${sep=' -V ' gvcfFiles} \
+        ${true='-L' false='' length(intervals) > 0} ${sep=' -L ' intervals}
     }
 
     output {
@@ -516,25 +516,25 @@ task CombineVariants {
 
     command <<<
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         # Build "-V:<ID> <file.vcf>" arguments according to IDs
         # and VCFs to merge.
         # Make sure commands are run in bash.
         V_args=$(bash -c '
         set -eu
-        ids=(~{sep=" " identifiers})
-        vars=(~{sep=" " variantVcfs})
+        ids=(${sep=" " identifiers})
+        vars=(${sep=" " variantVcfs})
         for (( i = 0; i < ${#ids[@]}; ++i ))
         do
             printf -- "-V:%s %s " "${ids[i]}" "${vars[i]}"
         done
         ')
-        java -Xmx~{javaXmx} -XX:ParallelGCThreads=1 -jar /usr/GenomeAnalysisTK.jar \
+        java -Xmx${javaXmx} -XX:ParallelGCThreads=1 -jar /usr/GenomeAnalysisTK.jar \
         -T CombineVariants \
-        -R ~{referenceFasta} \
-        --genotypemergeoption ~{genotypeMergeOption} \
-        --filteredrecordsmergetype ~{filteredRecordsMergeType} \
-        --out ~{outputPath} \
+        -R ${referenceFasta} \
+        --genotypemergeoption ${genotypeMergeOption} \
+        --filteredrecordsmergetype ${filteredRecordsMergeType} \
+        --out ${outputPath} \
         $V_args
     >>>
 
@@ -587,12 +587,12 @@ task CreateReadCountPanelOfNormals {
 
     command {
         set -e
-        mkdir -p "$(dirname ~{PONpath})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${PONpath})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         CreateReadCountPanelOfNormals \
-        -I ~{sep=" -I " readCountsFiles} \
-        ~{"--annotated-intervals " + annotatedIntervals} \
-        -O ~{PONpath}
+        -I ${sep=" -I " readCountsFiles} \
+        ${"--annotated-intervals " + annotatedIntervals} \
+        -O ${PONpath}
     }
 
     output {
@@ -631,19 +631,19 @@ task DenoiseReadCounts {
         String javaXmx = "4G"
         String memory = "5G"
         Int timeMinutes = 5
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputPrefix})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         DenoiseReadCounts \
-        -I ~{readCounts} \
-        ~{"--count-panel-of-normals " + PON} \
-        ~{"--annotated-intervals " + annotatedIntervals} \
-        --standardized-copy-ratios ~{outputPrefix}.standardizedCR.tsv \
-        --denoised-copy-ratios ~{outputPrefix}.denoisedCR.tsv
+        -I ${readCounts} \
+        ${"--count-panel-of-normals " + PON} \
+        ${"--annotated-intervals " + annotatedIntervals} \
+        --standardized-copy-ratios ${outputPrefix}.standardizedCR.tsv \
+        --denoised-copy-ratios ${outputPrefix}.denoisedCR.tsv
     }
 
     output {
@@ -692,22 +692,22 @@ task FilterMutectCalls {
         String javaXmx = "12G"
         String memory = "13G"
         Int timeMinutes = 60
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputVcf})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputVcf})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         FilterMutectCalls \
-        -R ~{referenceFasta} \
-        -V ~{unfilteredVcf} \
-        -O ~{outputVcf} \
-        ~{"--contamination-table " + contaminationTable} \
-        ~{"--tumor-segmentation " + mafTumorSegments} \
-        ~{"--ob-priors " + artifactPriors} \
-        ~{"--unique-alt-read-count " + uniqueAltReadCount} \
-        ~{"-stats " + mutect2Stats} \
+        -R ${referenceFasta} \
+        -V ${unfilteredVcf} \
+        -O ${outputVcf} \
+        ${"--contamination-table " + contaminationTable} \
+        ${"--tumor-segmentation " + mafTumorSegments} \
+        ${"--ob-priors " + artifactPriors} \
+        ${"--unique-alt-read-count " + uniqueAltReadCount} \
+        ${"-stats " + mutect2Stats} \
         --filtering-stats "filtering.stats" \
         --showHidden
     }
@@ -758,16 +758,16 @@ task GatherBqsrReports {
         Int javaXmxMb = 256
         Int memoryMb = 256 + javaXmxMb
         Int timeMinutes = 1
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputReportPath})"
-        gatk --java-options '-Xmx~{javaXmxMb}M -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputReportPath})"
+        gatk --java-options '-Xmx${javaXmxMb}M -XX:ParallelGCThreads=1' \
         GatherBQSRReports \
-        -I ~{sep=' -I ' inputBQSRreports} \
-        -O ~{outputReportPath}
+        -I ${sep=' -I ' inputBQSRreports} \
+        -O ${outputReportPath}
     }
 
     output {
@@ -775,7 +775,7 @@ task GatherBqsrReports {
     }
 
     runtime {
-        memory: "~{memoryMb}M"
+        memory: "${memoryMb}M"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -807,19 +807,19 @@ task GenomicsDBImport {
         String javaXmx = "4G"
         String memory = "5G"
         Int timeMinutes = 180
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{genomicsDBWorkspacePath})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${genomicsDBWorkspacePath})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         GenomicsDBImport \
-        -V ~{sep=" -V " gvcfFiles} \
-        --genomicsdb-workspace-path ~{genomicsDBWorkspacePath} \
-        ~{"--tmp-dir " + tmpDir} \
-        -L ~{sep=" -L " intervals}
-        bash -c 'tar -cvzf ~{genomicsDBTarFile} ~{genomicsDBWorkspacePath}/*'
+        -V ${sep=" -V " gvcfFiles} \
+        --genomicsdb-workspace-path ${genomicsDBWorkspacePath} \
+        ${"--tmp-dir " + tmpDir} \
+        -L ${sep=" -L " intervals}
+        bash -c 'tar -cvzf ${genomicsDBTarFile} ${genomicsDBWorkspacePath}/*'
     }
 
     output {
@@ -868,22 +868,22 @@ task GenotypeGVCFs {
         String javaXmx = "6G"
         String memory = "7G"
         Int timeMinutes = 120 # This will likely be used with intervals, as such size based estimation can't be used.
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputPath})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         GenotypeGVCFs \
-        -R ~{referenceFasta} \
-        -O ~{outputPath} \
-        ~{"-D " + dbsnpVCF} \
-        ~{"--pedigree " + pedigree} \
-        ~{true="-G" false="" length(annotationGroups) > 0} ~{sep=" -G " annotationGroups} \
-        -V ~{gvcfFile} \
-        ~{true="--only-output-calls-starting-in-intervals" false="" defined(intervals)} \
-        ~{true="-L" false="" defined(intervals)} ~{sep=' -L ' intervals}
+        -R ${referenceFasta} \
+        -O ${outputPath} \
+        ${"-D " + dbsnpVCF} \
+        ${"--pedigree " + pedigree} \
+        ${true="-G" false="" length(annotationGroups) > 0} ${sep=" -G " annotationGroups} \
+        -V ${gvcfFile} \
+        ${true="--only-output-calls-starting-in-intervals" false="" defined(intervals)} \
+        ${true="-L" false="" defined(intervals)} ${sep=' -L ' intervals}
     }
 
     output {
@@ -934,17 +934,17 @@ task GetPileupSummaries {
         String javaXmx = "12G"
         String memory = "13G"
         Int timeMinutes = 120
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         GetPileupSummaries \
-        -I ~{sampleBam} \
-        -V ~{variantsForContamination} \
-        -L ~{sitesForContamination} \
-        -O ~{outputPrefix + "-pileups.table"}
+        -I ${sampleBam} \
+        -V ${variantsForContamination} \
+        -L ${sitesForContamination} \
+        -O ${outputPrefix + "-pileups.table"}
     }
 
     output {
@@ -1003,27 +1003,27 @@ task HaplotypeCaller {
         # Memory increases with time used. 4G should cover most use cases.
         Int memoryMb = javaXmxMb + 512
         Int timeMinutes = 400 # This will likely be used with intervals, as such size based estimation can't be used.
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        gatk --java-options '-Xmx~{javaXmxMb}M -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputPath})"
+        gatk --java-options '-Xmx${javaXmxMb}M -XX:ParallelGCThreads=1' \
         HaplotypeCaller \
-        -R ~{referenceFasta} \
-        -O ~{outputPath} \
-        -I ~{sep=" -I " inputBams} \
-        ~{"--sample-ploidy " + ploidy} \
-        ~{true="-L" false="" defined(intervalList)} ~{sep=' -L ' intervalList} \
-        ~{true="-XL" false="" defined(excludeIntervalList)} ~{sep=' -XL ' excludeIntervalList} \
-        ~{"-D " + dbsnpVCF} \
-        ~{"--pedigree " + pedigree} \
-        ~{"--contamination-fraction-per-sample-file " + contamination} \
-        ~{"--output-mode " + outputMode} \
-        --emit-ref-confidence ~{emitRefConfidence} \
-        ~{true="--dont-use-soft-clipped-bases" false="" dontUseSoftClippedBases} \
-        ~{"--standard-min-confidence-threshold-for-calling " + standardMinConfidenceThresholdForCalling}
+        -R ${referenceFasta} \
+        -O ${outputPath} \
+        -I ${sep=" -I " inputBams} \
+        ${"--sample-ploidy " + ploidy} \
+        ${true="-L" false="" defined(intervalList)} ${sep=' -L ' intervalList} \
+        ${true="-XL" false="" defined(excludeIntervalList)} ${sep=' -XL ' excludeIntervalList} \
+        ${"-D " + dbsnpVCF} \
+        ${"--pedigree " + pedigree} \
+        ${"--contamination-fraction-per-sample-file " + contamination} \
+        ${"--output-mode " + outputMode} \
+        --emit-ref-confidence ${emitRefConfidence} \
+        ${true="--dont-use-soft-clipped-bases" false="" dontUseSoftClippedBases} \
+        ${"--standard-min-confidence-threshold-for-calling " + standardMinConfidenceThresholdForCalling}
     }
 
     output {
@@ -1032,7 +1032,7 @@ task HaplotypeCaller {
     }
 
     runtime {
-        memory: "~{memoryMb}M"
+        memory: "${memoryMb}M"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -1075,14 +1075,14 @@ task LearnReadOrientationModel {
         String javaXmx = "12G"
         String memory = "13G"
         Int timeMinutes = 120
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         LearnReadOrientationModel \
-        -I ~{sep=" -I " f1r2TarGz} \
+        -I ${sep=" -I " f1r2TarGz} \
         -O "artifact-priors.tar.gz"
     }
 
@@ -1116,14 +1116,14 @@ task MergeStats {
         String javaXmx = "14G"
         String memory = "15G"
         Int timeMinutes = 30
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         MergeMutectStats \
-        -stats ~{sep=" -stats " stats} \
+        -stats ${sep=" -stats " stats} \
         -O "merged.stats"
     }
 
@@ -1164,21 +1164,21 @@ task ModelSegments {
         String javaXmx = "10G"
         String memory = "11G"
         Int timeMinutes = 60
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p ~{outputDir}
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p ${outputDir}
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         ModelSegments \
-        --denoised-copy-ratios ~{denoisedCopyRatios} \
-        --allelic-counts ~{allelicCounts} \
-        ~{"--normal-allelic-counts " + normalAllelicCounts} \
-        --minimum-total-allele-count-case ~{minimumTotalAlleleCountCase} \
-        --maximum-number-of-smoothing-iterations ~{maximumNumberOfSmoothingIterations} \
-        --output ~{outputDir} \
-        --output-prefix ~{outputPrefix}
+        --denoised-copy-ratios ${denoisedCopyRatios} \
+        --allelic-counts ${allelicCounts} \
+        ${"--normal-allelic-counts " + normalAllelicCounts} \
+        --minimum-total-allele-count-case ${minimumTotalAlleleCountCase} \
+        --maximum-number-of-smoothing-iterations ${maximumNumberOfSmoothingIterations} \
+        --output ${outputDir} \
+        --output-prefix ${outputPrefix}
     }
 
     output {
@@ -1252,23 +1252,23 @@ task MuTect2 {
         String javaXmx = "4G"
         String memory = "5G"
         Int timeMinutes = 240
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputVcf})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputVcf})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         Mutect2 \
-        -R ~{referenceFasta} \
-        -I ~{sep=" -I " inputBams} \
-        -tumor ~{tumorSample} \
-        ~{"-normal " + normalSample} \
-        ~{"--germline-resource " + germlineResource} \
-        ~{"--panel-of-normals " + panelOfNormals} \
-        ~{"--f1r2-tar-gz " + f1r2TarGz} \
-        -O ~{outputVcf} \
-        -L ~{sep=" -L " intervals}
+        -R ${referenceFasta} \
+        -I ${sep=" -I " inputBams} \
+        -tumor ${tumorSample} \
+        ${"-normal " + normalSample} \
+        ${"--germline-resource " + germlineResource} \
+        ${"--panel-of-normals " + panelOfNormals} \
+        ${"--f1r2-tar-gz " + f1r2TarGz} \
+        -O ${outputVcf} \
+        -L ${sep=" -L " intervals}
     }
 
     output {
@@ -1332,15 +1332,15 @@ task PlotDenoisedCopyRatios {
 
     command {
         set -e
-        mkdir -p ~{outputDir}
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p ${outputDir}
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         PlotDenoisedCopyRatios \
-        --standardized-copy-ratios ~{standardizedCopyRatios} \
-        --denoised-copy-ratios ~{denoisedCopyRatios} \
-        --sequence-dictionary ~{referenceFastaDict} \
-        ~{"--minimum-contig-length " + minimumContigLength} \
-        --output ~{outputDir} \
-        --output-prefix ~{outputPrefix}
+        --standardized-copy-ratios ${standardizedCopyRatios} \
+        --denoised-copy-ratios ${denoisedCopyRatios} \
+        --sequence-dictionary ${referenceFastaDict} \
+        ${"--minimum-contig-length " + minimumContigLength} \
+        --output ${outputDir} \
+        --output-prefix ${outputPrefix}
     }
 
     output {
@@ -1400,16 +1400,16 @@ task PlotModeledSegments {
 
     command {
         set -e
-        mkdir -p ~{outputDir}
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p ${outputDir}
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         PlotModeledSegments \
-        --denoised-copy-ratios ~{denoisedCopyRatios} \
-        --allelic-counts ~{allelicCounts} \
-        --segments ~{segments} \
-        --sequence-dictionary ~{referenceFastaDict} \
-        ~{"--minimum-contig-length " + minimumContigLength} \
-        --output ~{outputDir} \
-        --output-prefix ~{outputPrefix}
+        --denoised-copy-ratios ${denoisedCopyRatios} \
+        --allelic-counts ${allelicCounts} \
+        --segments ${segments} \
+        --sequence-dictionary ${referenceFastaDict} \
+        ${"--minimum-contig-length " + minimumContigLength} \
+        --output ${outputDir} \
+        --output-prefix ${outputPrefix}
     }
 
     output {
@@ -1456,21 +1456,21 @@ task PreprocessIntervals {
         String javaXmx = "3G"
         String memory = "4G"
         Int timeMinutes = 1 + ceil(size(referenceFasta, "G") * 6)
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputIntervalList})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputIntervalList})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         PreprocessIntervals \
-        -R ~{referenceFasta} \
-        --sequence-dictionary ~{referenceFastaDict} \
-        --bin-length ~{binLength} \
-        --padding ~{padding} \
-        ~{"-L " + intervals} \
-        --interval-merging-rule ~{intervalMergingRule} \
-        -O ~{outputIntervalList}
+        -R ${referenceFasta} \
+        --sequence-dictionary ${referenceFastaDict} \
+        --bin-length ${binLength} \
+        --padding ${padding} \
+        ${"-L " + intervals} \
+        --interval-merging-rule ${intervalMergingRule} \
+        -O ${outputIntervalList}
     }
 
     output {
@@ -1518,19 +1518,19 @@ task SelectVariants {
         String javaXmx = "4G"
         String memory = "5G"
         Int timeMinutes = 60
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputPath})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         SelectVariants \
-        -R ~{referenceFasta} \
-        -V ~{inputVcf} \
-        ~{"--select-type-to-include " + selectTypeToInclude} \
-        ~{true="-L" false="" length(intervals) > 0} ~{sep=' -L ' intervals} \
-        -O ~{outputPath}
+        -R ${referenceFasta} \
+        -V ${inputVcf} \
+        ${"--select-type-to-include " + selectTypeToInclude} \
+        ${true="-L" false="" length(intervals) > 0} ${sep=' -L ' intervals} \
+        -O ${outputPath}
     }
 
     output {
@@ -1578,18 +1578,18 @@ task SplitNCigarReads {
         String javaXmx = "4G"
         String memory = "5G"
         Int timeMinutes = 120 # This will likely be used with intervals, as such size based estimation can't be used.
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputBam})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputBam})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         SplitNCigarReads \
-        -I ~{inputBam} \
-        -R ~{referenceFasta} \
-        -O ~{outputBam} \
-        ~{true="-L" false="" length(intervals) > 0} ~{sep=' -L ' intervals}
+        -I ${inputBam} \
+        -R ${referenceFasta} \
+        -O ${outputBam} \
+        ${true="-L" false="" length(intervals) > 0} ${sep=' -L ' intervals}
     }
 
     output {
@@ -1648,26 +1648,26 @@ task VariantEval {
         String memory = "5G"
         # TODO: Refine estimate. For now 4 minutes per GB of input.
         Int timeMinutes = ceil(size(flatten([evalVcfs, comparisonVcfs, select_all([referenceFasta, dbsnpVCF])]), "G") * 20)
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputPath})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         VariantEval \
-        --output ~{outputPath} \
-        ~{true="--eval" false="" length(evalVcfs) > 0} ~{sep=" --eval " evalVcfs} \
-        ~{true="--comparison" false="" length(comparisonVcfs) > 0} ~{sep=" --comparison " comparisonVcfs} \
-        ~{"-R " + referenceFasta} \
-        ~{"--dbsnp " + dbsnpVCF } \
-        ~{true="-L" false="" length(intervals) > 0} ~{sep=' -L ' intervals} \
-        ~{true="--sample" false="" length(samples) > 0} ~{sep=' --sample ' samples} \
-        ~{true="--do-not-use-all-standard-modules" false="" doNotUseAllStandardModules} \
-        ~{true="--do-not-use-all-standard-stratifications" false="" doNotUseAllStandardStratifications} \
-        ~{true="-EV" false="" length(evalModules) > 0} ~{sep=" -EV " evalModules} \
-        ~{true="-ST" false="" length(stratificationModules) > 0} ~{sep=" -ST " stratificationModules} \
-        ~{true="--merge-evals" false="" mergeEvals}
+        --output ${outputPath} \
+        ${true="--eval" false="" length(evalVcfs) > 0} ${sep=" --eval " evalVcfs} \
+        ${true="--comparison" false="" length(comparisonVcfs) > 0} ${sep=" --comparison " comparisonVcfs} \
+        ${"-R " + referenceFasta} \
+        ${"--dbsnp " + dbsnpVCF } \
+        ${true="-L" false="" length(intervals) > 0} ${sep=' -L ' intervals} \
+        ${true="--sample" false="" length(samples) > 0} ${sep=' --sample ' samples} \
+        ${true="--do-not-use-all-standard-modules" false="" doNotUseAllStandardModules} \
+        ${true="--do-not-use-all-standard-stratifications" false="" doNotUseAllStandardStratifications} \
+        ${true="-EV" false="" length(evalModules) > 0} ${sep=" -EV " evalModules} \
+        ${true="-ST" false="" length(stratificationModules) > 0} ${sep=" -ST " stratificationModules} \
+        ${true="--merge-evals" false="" mergeEvals}
     }
 
     output {
@@ -1724,19 +1724,19 @@ task VariantFiltration {
         String javaXmx = "4G"
         String memory = "5G"
         Int timeMinutes = 120
-        String dockerImage = "quay.io/biocontainers/gatk4:4.1.8.0--py38h37ae868_0"
+        String dockerImage = "genedockdx/gatk4:4.1.8.0--py38h37ae868_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        gatk --java-options '-Xmx~{javaXmx} -XX:ParallelGCThreads=1' \
+        mkdir -p "$(dirname ${outputPath})"
+        gatk --java-options '-Xmx${javaXmx} -XX:ParallelGCThreads=1' \
         VariantFiltration \
-        -I ~{inputVcf} \
-        -R ~{referenceFasta} \
-        -O ~{outputPath} \
-        ~{sep=" " filterArguments} \
-        ~{true="-L" false="" length(intervals) > 0} ~{sep=' -L ' intervals}
+        -I ${inputVcf} \
+        -R ${referenceFasta} \
+        -O ${outputPath} \
+        ${sep=" " filterArguments} \
+        ${true="-L" false="" length(intervals) > 0} ${sep=' -L ' intervals}
     }
 
     output {

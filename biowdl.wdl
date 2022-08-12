@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2018 Leiden University Medical Center
 #
@@ -34,18 +33,18 @@ task InputConverter {
 
         String memory = "128M"
         Int timeMinutes = 1
-        String dockerImage = "quay.io/biocontainers/biowdl-input-converter:0.3.0--pyhdfd78af_0"
+        String dockerImage = "genedockdx/biowdl-input-converter:0.3.0--pyhdfd78af_0"
     }
 
     command <<<
         set -e
-        mkdir -p "$(dirname ~{outputFile})"
+        mkdir -p "$(dirname ${outputFile})"
         biowdl-input-converter \
-        -o ~{outputFile} \
-        ~{true="--skip-file-check" false="" skipFileCheck} \
-        ~{true="--check-file-md5sums" false="" checkFileMd5sums} \
-        ~{true="--old" false="" old} \
-        ~{samplesheet}
+        -o ${outputFile} \
+        ${true="--skip-file-check" false="" skipFileCheck} \
+        ${true="--check-file-md5sums" false="" checkFileMd5sums} \
+        ${true="--old" false="" old} \
+        ${samplesheet}
     >>>
 
     output {

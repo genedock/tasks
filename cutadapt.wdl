@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -85,7 +84,7 @@ task Cutadapt {
         Int cores = 4
         String memory = "5G"
         Int timeMinutes = 1 + ceil(size([read1, read2], "G")  * 12.0 / cores)
-        String dockerImage = "quay.io/biocontainers/cutadapt:2.10--py37hf01694f_1"
+        String dockerImage = "genedockdx/cutadapt:2.10--py37hf01694f_1"
     }
 
     String realRead2output = select_first([read2output, "cut_r2.fq.gz"])
@@ -96,62 +95,62 @@ task Cutadapt {
     # FIXME: Use prefix() function for adapter, adapterRead2, etc.
     command {
         set -e
-        ~{"mkdir -p $(dirname " + read1output + ")"}
-        ~{read2outputArg}
+        ${"mkdir -p $(dirname " + read1output + ")"}
+        ${read2outputArg}
         cutadapt \
-        ~{"--cores=" + cores} \
-        ~{true="-a" false="" length(adapter) > 0} ~{sep=" -a " adapter} \
-        ~{true="-A" false="" length(adapterRead2) > 0} ~{sep=" -A " adapterRead2} \
-        ~{true="-g" false="" length(front) > 0} ~{sep=" -g " front} \
-        ~{true="-G" false="" length(frontRead2) > 0} ~{sep=" -G " frontRead2} \
-        ~{true="-b" false="" length(anywhere) > 0} ~{sep=" -b " anywhere} \
-        ~{true="-B" false="" length(anywhereRead2) > 0} ~{sep=" -B " anywhereRead2} \
-        --output ~{read1output} ~{if defined(read2) then "-p " + realRead2output else ""} \
-        --compression-level ~{compressionLevel} \
-        ~{"--to-short-output " + tooShortOutputPath} \
-        ~{"--to-short-paired-output " + tooShortPairedOutputPath} \
-        ~{"--to-long-output " + tooLongOutputPath} \
-        ~{"--to-long-paired-output " + tooLongPairedOutputPath} \
-        ~{"--untrimmed-output " + untrimmedOutputPath} \
-        ~{"--untrimmed-paired-output " + untrimmedPairedOutputPath} \
-        ~{"--pair-filter " + pairFilter} \
-        ~{"--error-rate " + errorRate} \
-        ~{"--times " + times} \
-        ~{"--overlap " + overlap} \
-        ~{"--cut " + cut} \
-        ~{"--nextseq-trim " + nextseqTrim} \
-        ~{"--quality-cutoff " + qualityCutoff} \
-        ~{"--quality-base " + qualityBase} \
-        ~{"--length " + length} \
-        ~{"--length-tag " + lengthTag} \
-        ~{"--strip-suffix " + stripSuffix} \
-        ~{"--prefix " + prefix} \
-        ~{"--suffix " + suffix} \
-        ~{"--minimum-length " + minimumLength} \
-        ~{"--maximum-length " + maximumLength} \
-        ~{"--max-n " + maxN} \
-        ~{true="--discard-untrimmed" false="" discardUntrimmed} \
-        ~{"--info-file " + infoFilePath } \
-        ~{"--rest-file " + restFilePath } \
-        ~{"--wildcard-file " + wildcardFilePath} \
-        ~{true="--match-read-wildcards" false="" matchReadWildcards} \
-        ~{true="--no-match-adapter-wildcards" false="" noMatchAdapterWildcards} \
-        ~{true="--no-trim" false="" noTrim} \
-        ~{true="--mask-adapter" false="" maskAdapter} \
-        ~{true="--no-indels" false="" noIndels} \
-        ~{true="--trim-n" false="" trimN} \
-        ~{true="--interleaved" false="" interleaved} \
-        ~{true="--discard-trimmed" false="" discardTrimmed } \
-        ~{true="--colorspace" false="" colorspace} \
-        ~{true="--double-encode" false="" doubleEncode} \
-        ~{true="--strip-f3" false="" stripF3} \
-        ~{true="--maq" false="" maq} \
-        ~{true="--bwa" false="" bwa} \
-        ~{true="--zero-cap" false="" zeroCap} \
-        ~{true="--no-zero-cap" false="" noZeroCap} \
-        ~{read1} \
-        ~{read2} \
-        ~{"> " + reportPath}
+        ${"--cores=" + cores} \
+        ${true="-a" false="" length(adapter) > 0} ${sep=" -a " adapter} \
+        ${true="-A" false="" length(adapterRead2) > 0} ${sep=" -A " adapterRead2} \
+        ${true="-g" false="" length(front) > 0} ${sep=" -g " front} \
+        ${true="-G" false="" length(frontRead2) > 0} ${sep=" -G " frontRead2} \
+        ${true="-b" false="" length(anywhere) > 0} ${sep=" -b " anywhere} \
+        ${true="-B" false="" length(anywhereRead2) > 0} ${sep=" -B " anywhereRead2} \
+        --output ${read1output} ${if defined(read2) then "-p " + realRead2output else ""} \
+        --compression-level ${compressionLevel} \
+        ${"--to-short-output " + tooShortOutputPath} \
+        ${"--to-short-paired-output " + tooShortPairedOutputPath} \
+        ${"--to-long-output " + tooLongOutputPath} \
+        ${"--to-long-paired-output " + tooLongPairedOutputPath} \
+        ${"--untrimmed-output " + untrimmedOutputPath} \
+        ${"--untrimmed-paired-output " + untrimmedPairedOutputPath} \
+        ${"--pair-filter " + pairFilter} \
+        ${"--error-rate " + errorRate} \
+        ${"--times " + times} \
+        ${"--overlap " + overlap} \
+        ${"--cut " + cut} \
+        ${"--nextseq-trim " + nextseqTrim} \
+        ${"--quality-cutoff " + qualityCutoff} \
+        ${"--quality-base " + qualityBase} \
+        ${"--length " + length} \
+        ${"--length-tag " + lengthTag} \
+        ${"--strip-suffix " + stripSuffix} \
+        ${"--prefix " + prefix} \
+        ${"--suffix " + suffix} \
+        ${"--minimum-length " + minimumLength} \
+        ${"--maximum-length " + maximumLength} \
+        ${"--max-n " + maxN} \
+        ${true="--discard-untrimmed" false="" discardUntrimmed} \
+        ${"--info-file " + infoFilePath } \
+        ${"--rest-file " + restFilePath } \
+        ${"--wildcard-file " + wildcardFilePath} \
+        ${true="--match-read-wildcards" false="" matchReadWildcards} \
+        ${true="--no-match-adapter-wildcards" false="" noMatchAdapterWildcards} \
+        ${true="--no-trim" false="" noTrim} \
+        ${true="--mask-adapter" false="" maskAdapter} \
+        ${true="--no-indels" false="" noIndels} \
+        ${true="--trim-n" false="" trimN} \
+        ${true="--interleaved" false="" interleaved} \
+        ${true="--discard-trimmed" false="" discardTrimmed } \
+        ${true="--colorspace" false="" colorspace} \
+        ${true="--double-encode" false="" doubleEncode} \
+        ${true="--strip-f3" false="" stripF3} \
+        ${true="--maq" false="" maq} \
+        ${true="--bwa" false="" bwa} \
+        ${true="--zero-cap" false="" zeroCap} \
+        ${true="--no-zero-cap" false="" noZeroCap} \
+        ${read1} \
+        ${read2} \
+        ${"> " + reportPath}
     }
 
     output{

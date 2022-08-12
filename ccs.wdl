@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2020 Leiden University Medical Center
 #
@@ -44,34 +43,34 @@ task CCS {
         Int threads = 2
         String memory = "4G"
         Int timeMinutes = 1440
-        String dockerImage = "quay.io/biocontainers/pbccs:6.0.0--h9ee0642_2"
+        String dockerImage = "genedockdx/pbccs:6.0.0--h9ee0642_2"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         ccs \
-        --min-passes ~{minPasses} \
-        --min-snr ~{minSnr} \
-        --top-passes ~{topPasses} \
-        --min-length ~{minLength} \
-        --max-length ~{maxLength} \
-        ~{true="--by-strand" false="" byStrand} \
-        ~{true="--skip-polish" false="" skipPolish} \
-        ~{true="--all" false="" all} \
-        ~{true="--subread-fallback" false="" subreadFallback} \
-        ~{true="--all-kinetics" false="" allKinetics} \
-        ~{true="--hifi-kinetics" false="" hifiKinetics} \
-        --min-rq ~{minReadQuality} \
-        --log-level ~{logLevel} \
-        --num-threads ~{threads} \
-        ~{"--chunk " + chunkString} \
-        ~{"--report-file " + outputPrefix + ".ccs_report.txt"} \
-        ~{"--report-json " + outputPrefix + ".ccs.report.json"} \
-        ~{"--log-file " + outputPrefix + ".ccs.stderr.log"} \
-        ~{"--metrics-json " + outputPrefix + ".zmw_metrics.json.gz"} \
-        ~{subreadsFile} \
-        ~{outputPrefix + ".ccs.bam"}
+        --min-passes ${minPasses} \
+        --min-snr ${minSnr} \
+        --top-passes ${topPasses} \
+        --min-length ${minLength} \
+        --max-length ${maxLength} \
+        ${true="--by-strand" false="" byStrand} \
+        ${true="--skip-polish" false="" skipPolish} \
+        ${true="--all" false="" all} \
+        ${true="--subread-fallback" false="" subreadFallback} \
+        ${true="--all-kinetics" false="" allKinetics} \
+        ${true="--hifi-kinetics" false="" hifiKinetics} \
+        --min-rq ${minReadQuality} \
+        --log-level ${logLevel} \
+        --num-threads ${threads} \
+        ${"--chunk " + chunkString} \
+        ${"--report-file " + outputPrefix + ".ccs_report.txt"} \
+        ${"--report-json " + outputPrefix + ".ccs.report.json"} \
+        ${"--log-file " + outputPrefix + ".ccs.stderr.log"} \
+        ${"--metrics-json " + outputPrefix + ".zmw_metrics.json.gz"} \
+        ${subreadsFile} \
+        ${outputPrefix + ".ccs.bam"}
     }
 
     output {

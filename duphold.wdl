@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2020 Leiden University Medical Center
 #
@@ -32,18 +31,18 @@ task Duphold {
 
         String memory = "15G"
         Int timeMinutes = 1440
-        String dockerImage = "quay.io/biocontainers/duphold:0.2.1--h516909a_1"
+        String dockerImage = "genedockdx/duphold:0.2.1--h516909a_1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        export DUPHOLD_SAMPLE_NAME=~{sample}
+        mkdir -p "$(dirname ${outputPath})"
+        export DUPHOLD_SAMPLE_NAME=${sample}
         duphold \
-        -v ~{inputVcf} \
-        -b ~{bamFile} \
-        -f ~{referenceFasta} \
-        -o ~{outputPath}
+        -v ${inputVcf} \
+        -b ${bamFile} \
+        -f ${referenceFasta} \
+        -o ${outputPath}
     }
 
     output {

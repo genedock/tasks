@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -32,18 +31,18 @@ task PeakCalling {
         Boolean nomodel = false
         Int timeMinutes = 600  # Default to 10 hours
         String memory = "8G"
-        String dockerImage = "quay.io/biocontainers/macs2:2.1.2--py27r351_0"
+        String dockerImage = "genedockdx/macs2:2.1.2--py27r351_0"
     }
 
     command {
         set -e
         macs2 callpeak \
-        --treatment ~{sep = ' ' inputBams} \
-        ~{true="--control" false="" length(controlBams) > 0} ~{sep = ' ' controlBams} \
-        --outdir ~{outDir} \
-        --name ~{sampleName} \
-        -f ~{format} \
-        ~{true='--nomodel' false='' nomodel}
+        --treatment ${sep = ' ' inputBams} \
+        ${true="--control" false="" length(controlBams) > 0} ${sep = ' ' controlBams} \
+        --outdir ${outDir} \
+        --name ${sampleName} \
+        -f ${format} \
+        ${true='--nomodel' false='' nomodel}
     }
 
     output {

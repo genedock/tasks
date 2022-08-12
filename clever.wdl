@@ -36,23 +36,23 @@ task Mateclever {
         Int threads = 10
         String memory = "15G"
         Int timeMinutes = 600
-        String dockerImage = "quay.io/biocontainers/clever-toolkit:2.4--py36hcfe0e84_6"
+        String dockerImage = "genedockdx/clever-toolkit:2.4--py36hcfe0e84_6"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        echo ~{outputPath} ~{fiteredBam} ~{predictions} none > predictions.list
+        mkdir -p "$(dirname ${outputPath})"
+        echo ${outputPath} ${fiteredBam} ${predictions} none > predictions.list
         mateclever \
-        -T ~{threads} \
+        -T ${threads} \
         -k \
         -f \
-        -M ~{cleverMaxDelLength} \
-        -z ~{maxLengthDiff} \
-        -o ~{maxOffset} \
-        ~{bwaIndex.fastaFile} \
+        -M ${cleverMaxDelLength} \
+        -z ${maxLengthDiff} \
+        -o ${maxOffset} \
+        ${bwaIndex.fastaFile} \
         predictions.list \
-        ~{outputPath}
+        ${outputPath}
     }
 
     output {
@@ -96,20 +96,20 @@ task Prediction {
         Int threads = 10
         String memory = "55G"
         Int timeMinutes = 480
-        String dockerImage = "quay.io/biocontainers/clever-toolkit:2.4--py36hcfe0e84_6"
+        String dockerImage = "genedockdx/clever-toolkit:2.4--py36hcfe0e84_6"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         clever \
-        -T ~{threads} \
+        -T ${threads} \
         --use_mapq \
         --sorted \
         -f \
-        ~{bamFile} \
-        ~{bwaIndex.fastaFile} \
-        ~{outputPath}
+        ${bamFile} \
+        ${bwaIndex.fastaFile} \
+        ${outputPath}
     }
 
     output {

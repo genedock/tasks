@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -26,20 +25,20 @@ task Complement {
         File inputBed
         String outputBed = basename(inputBed, "\.bed") + ".complement.bed"
 
-        String memory = "~{512 + ceil(size([inputBed, faidx], "M"))}M"
+        String memory = "${512 + ceil(size([inputBed, faidx], "M"))}M"
         Int timeMinutes = 1 + ceil(size([inputBed, faidx], "G"))
-        String dockerImage = "quay.io/biocontainers/bedtools:2.23.0--hdbcaa40_3"
+        String dockerImage = "genedockdx/bedtools:2.23.0--hdbcaa40_3"
     }
 
     # Use a fasta index file to get the genome sizes. And convert that to the
     # bedtools specific "genome" format.
     command {
         set -e
-        cut -f1,2 ~{faidx} > sizes.genome
+        cut -f1,2 ${faidx} > sizes.genome
         bedtools complement \
         -g sizes.genome \
-        -i ~{inputBed} \
-        > ~{outputBed}
+        -i ${inputBed} \
+        > ${outputBed}
     }
 
     output {
@@ -77,17 +76,17 @@ task Coverage {
 
         String memory = "8G"
         Int timeMinutes = 320
-        String dockerImage = "quay.io/biocontainers/bedtools:2.30.0--h7d7f7ad_2"
+        String dockerImage = "genedockdx/bedtools:2.30.0--h7d7f7ad_2"
     }
 
     command {
         bedtools coverage \
         -sorted \
-        -g ~{genomeFile} \
-        -a ~{a} \
-        -b ~{b} \
+        -g ${genomeFile} \
+        -a ${a} \
+        -b ${b} \
         -d \
-        > ~{outputPath}
+        > ${outputPath}
     }
 
     output {
@@ -120,14 +119,14 @@ task Merge {
         File inputBed
         String outputBed = "merged.bed"
 
-        String memory = "~{512 + ceil(size(inputBed, "M"))}M"
+        String memory = "${512 + ceil(size(inputBed, "M"))}M"
         Int timeMinutes = 1 + ceil(size(inputBed, "G"))
-        String dockerImage = "quay.io/biocontainers/bedtools:2.23.0--hdbcaa40_3"
+        String dockerImage = "genedockdx/bedtools:2.23.0--hdbcaa40_3"
     }
 
     command {
         set -e
-        bedtools merge -i ~{inputBed} > ~{outputBed}
+        bedtools merge -i ${inputBed} > ${outputBed}
     }
 
     output {
@@ -159,15 +158,15 @@ task MergeBedFiles {
         Array[File]+ bedFiles
         String outputBed = "merged.bed"
 
-        String memory = "~{512 + ceil(size(bedFiles, "M"))}M"
+        String memory = "${512 + ceil(size(bedFiles, "M"))}M"
         Int timeMinutes = 1 + ceil(size(bedFiles, "G"))
-        String dockerImage = "quay.io/biocontainers/bedtools:2.23.0--hdbcaa40_3"
+        String dockerImage = "genedockdx/bedtools:2.23.0--hdbcaa40_3"
     }
 
     # A sorted bed is needed for bedtools merge
     command {
         set -e -o pipefail
-        cat ~{sep=" " bedFiles} | bedtools sort | bedtools merge > ~{outputBed}
+        cat ${sep=" " bedFiles} | bedtools sort | bedtools merge > ${outputBed}
     }
 
     output {
@@ -207,25 +206,25 @@ task Sort {
         File? genome
         File? faidx
 
-        String memory = "~{512 + ceil(size(inputBed, "M"))}M"
+        String memory = "${512 + ceil(size(inputBed, "M"))}M"
         Int timeMinutes = 1 + ceil(size(inputBed, "G"))
-        String dockerImage = "quay.io/biocontainers/bedtools:2.23.0--hdbcaa40_3"
+        String dockerImage = "genedockdx/bedtools:2.23.0--hdbcaa40_3"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputBed})"
+        mkdir -p "$(dirname ${outputBed})"
         bedtools sort \
-        -i ~{inputBed} \
-        ~{true="-sizeA" false="" sizeA} \
-        ~{true="-sizeD" false="" sizeD} \
-        ~{true="-chrThenSizeA" false="" chrThenSizeA} \
-        ~{true="-chrThenSizeD" false="" chrThenSizeD} \
-        ~{true="-chrThenScoreA" false="" chrThenScoreA} \
-        ~{true="-chrThenScoreD" false="" chrThenScoreD} \
-        ~{"-g " + genome} \
-        ~{"-faidx" + faidx} \
-        > ~{outputBed}
+        -i ${inputBed} \
+        ${true="-sizeA" false="" sizeA} \
+        ${true="-sizeD" false="" sizeD} \
+        ${true="-chrThenSizeA" false="" chrThenSizeA} \
+        ${true="-chrThenSizeD" false="" chrThenSizeD} \
+        ${true="-chrThenScoreA" false="" chrThenScoreA} \
+        ${true="-chrThenScoreD" false="" chrThenScoreD} \
+        ${"-g " + genome} \
+        ${"-faidx" + faidx} \
+        > ${outputBed}
     }
 
     output {
@@ -267,22 +266,22 @@ task Intersect {
 
         File? faidx # Giving a faidx file will set the sorted option.
 
-        String memory = "~{512 + ceil(size([regionsA, regionsB], "M"))}M"
+        String memory = "${512 + ceil(size([regionsA, regionsB], "M"))}M"
         Int timeMinutes = 1 + ceil(size([regionsA, regionsB], "G"))
-        String dockerImage = "quay.io/biocontainers/bedtools:2.23.0--hdbcaa40_3"
+        String dockerImage = "genedockdx/bedtools:2.23.0--hdbcaa40_3"
     }
 
     Boolean sorted = defined(faidx)
 
     command {
         set -e
-        ~{"cut -f1,2 " + faidx} ~{true="> sorted.genome" false ="" sorted}
+        ${"cut -f1,2 " + faidx} ${true="> sorted.genome" false ="" sorted}
         bedtools intersect \
-        -a ~{regionsA} \
-        -b ~{regionsB} \
-        ~{true="-sorted" false="" sorted} \
-        ~{true="-g sorted.genome" false="" sorted} \
-        > ~{outputBed}
+        -a ${regionsA} \
+        -b ${regionsB} \
+        ${true="-sorted" false="" sorted} \
+        ${true="-g sorted.genome" false="" sorted} \
+        > ${outputBed}
     }
 
     output {

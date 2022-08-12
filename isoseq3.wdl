@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2020 Leiden University Medical Center
 #
@@ -34,21 +33,21 @@ task Refine {
         Int threads = 2
         String memory = "2G"
         Int timeMinutes = 30
-        String dockerImage = "quay.io/biocontainers/isoseq3:3.4.0--0"
+        String dockerImage = "genedockdx/isoseq3:3.4.0--0"
     }
 
     command {
         set -e
-        mkdir -p "~{outputDir}"
+        mkdir -p "${outputDir}"
         isoseq3 refine \
-        --min-polya-length ~{minPolyALength} \
-        ~{true="--require-polya" false="" requirePolyA} \
-        --log-level ~{logLevel} \
-        --num-threads ~{threads} \
-        --log-file "~{outputDir}/~{outputNamePrefix}.stderr.log" \
-        ~{inputBamFile} \
-        ~{primerFile} \
-        "~{outputDir}/~{outputNamePrefix}.bam"
+        --min-polya-length ${minPolyALength} \
+        ${true="--require-polya" false="" requirePolyA} \
+        --log-level ${logLevel} \
+        --num-threads ${threads} \
+        --log-file "${outputDir}/${outputNamePrefix}.stderr.log" \
+        ${inputBamFile} \
+        ${primerFile} \
+        "${outputDir}/${outputNamePrefix}.bam"
     }
 
     output {

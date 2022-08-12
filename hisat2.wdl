@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -40,9 +39,9 @@ task Hisat2 {
         Int threads = 4
         Int? memoryGb
         Int timeMinutes = 1 + ceil(size([inputR1, inputR2], "G") * 180 / threads)
-        # quay.io/biocontainers/mulled-v2-a97e90b3b802d1da3d6958e0867610c718cb5eb1
+        # genedockdx/mulled-v2-a97e90b3b802d1da3d6958e0867610c718cb5eb1
         # is a combination of hisat2 and samtools hisat2=2.2.0 & samtools=1.10.
-        String dockerImage = "quay.io/biocontainers/mulled-v2-a97e90b3b802d1da3d6958e0867610c718cb5eb1:2880dd9d8ad0a7b221d4eacda9a818e92983128d-0"
+        String dockerImage = "genedockdx/mulled-v2-a97e90b3b802d1da3d6958e0867610c718cb5eb1:2880dd9d8ad0a7b221d4eacda9a818e92983128d-0"
     }
 
     # Samtools sort may block the pipe while it is writing data to disk.
@@ -54,25 +53,25 @@ task Hisat2 {
 
     command {
         set -e -o pipefail
-        mkdir -p "$(dirname ~{outputBam})"
+        mkdir -p "$(dirname ${outputBam})"
         hisat2 \
-        -p ~{threads} \
-        -x ~{sub(indexFiles[0], "\.[0-9]\.ht2", "")} \
-        ~{true="-1" false="-U" defined(inputR2)} ~{inputR1} \
-        ~{"-2" + inputR2} \
-        --rg-id ~{readgroup} \
-        --rg 'SM:~{sample}' \
-        --rg 'LB:~{library}' \
-        --rg 'PL:~{platform}' \
-        ~{true="--dta" false="" downstreamTranscriptomeAssembly} \
+        -p ${threads} \
+        -x ${sub(indexFiles[0], "\.[0-9]\.ht2", "")} \
+        ${true="-1" false="-U" defined(inputR2)} ${inputR1} \
+        ${"-2" + inputR2} \
+        --rg-id ${readgroup} \
+        --rg 'SM:${sample}' \
+        --rg 'LB:${library}' \
+        --rg 'PL:${platform}' \
+        ${true="--dta" false="" downstreamTranscriptomeAssembly} \
         --new-summary \
-        --summary-file ~{summaryFilePath} \
+        --summary-file ${summaryFilePath} \
         | samtools sort \
-        ~{"-@ " + totalSortThreads} \
-        -m ~{sortMemoryPerThreadGb}G \
-        -l ~{compressionLevel} \
+        ${"-@ " + totalSortThreads} \
+        -m ${sortMemoryPerThreadGb}G \
+        -l ${compressionLevel} \
         - \
-        -o ~{outputBam}
+        -o ${outputBam}
     }
 
     output {
@@ -82,7 +81,7 @@ task Hisat2 {
 
     runtime {
         cpu: threads
-        memory: "~{select_first([memoryGb, estimatedMemoryGb])}G"
+        memory: "${select_first([memoryGb, estimatedMemoryGb])}G"
         time_minutes: timeMinutes
         docker: dockerImage
     }

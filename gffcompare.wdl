@@ -48,7 +48,7 @@ task GffCompare {
 
         String memory = "4G"
         Int timeMinutes = 1 + ceil(size(inputGtfFiles, "G") * 30)
-        String dockerImage = "quay.io/biocontainers/gffcompare:0.10.6--h2d50403_0"
+        String dockerImage = "genedockdx/gffcompare:0.10.6--h2d50403_0"
 
         # This workaround only works in the input section.
         # Issue addressed at https://github.com/openwdl/wdl/pull/263.
@@ -63,27 +63,27 @@ task GffCompare {
 
     command {
         set -e
-        ~{"mkdir -p " + outputDir}
+        ${"mkdir -p " + outputDir}
         gffcompare \
-        ~{"-r " + referenceAnnotation} \
-        ~{"-o '" + totalPrefix + "'"} \
-        ~{"-s " + genomeSequences} \
-        ~{"-e " + maxDistanceFreeEndsTerminalExons} \
-        ~{"-d " + maxDistanceGroupingTranscriptStartSites} \
-        ~{"-p " + namePrefix} \
-        ~{true="-C" false="" C} \
-        ~{true="-A" false="" A} \
-        ~{true="-X" false="" X} \
-        ~{true="-K" false="" K} \
-        ~{true="-R" false="" snCorrection} \
-        ~{true="-Q" false="" precisionCorrection} \
-        ~{true="-M" false="" discardSingleExonTransfragsAndReferenceTranscripts} \
-        ~{true="-N" false="" discardSingleExonReferenceTranscripts} \
-        ~{true="-T" false="" noTmap} \
-        ~{true="-V" false="" verbose} \
-        ~{true="D" false="" debugMode} \
-        ~{"-i " + inputGtfList} \
-        ~{sep=" " inputGtfFiles}
+        ${"-r " + referenceAnnotation} \
+        ${"-o '" + totalPrefix + "'"} \
+        ${"-s " + genomeSequences} \
+        ${"-e " + maxDistanceFreeEndsTerminalExons} \
+        ${"-d " + maxDistanceGroupingTranscriptStartSites} \
+        ${"-p " + namePrefix} \
+        ${true="-C" false="" C} \
+        ${true="-A" false="" A} \
+        ${true="-X" false="" X} \
+        ${true="-K" false="" K} \
+        ${true="-R" false="" snCorrection} \
+        ${true="-Q" false="" precisionCorrection} \
+        ${true="-M" false="" discardSingleExonTransfragsAndReferenceTranscripts} \
+        ${true="-N" false="" discardSingleExonReferenceTranscripts} \
+        ${true="-T" false="" noTmap} \
+        ${true="-V" false="" verbose} \
+        ${true="D" false="" debugMode} \
+        ${"-i " + inputGtfList} \
+        ${sep=" " inputGtfFiles}
     }
 
     # Output of gffcompare is not stable. It depends on the number of files in the input.

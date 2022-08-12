@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -35,22 +34,22 @@ task HTSeqCount {
         Int nprocesses = 1
         String memory = "8G"
         Int timeMinutes = 1440 #10 + ceil(size(inputBams, "G") * 60) FIXME
-        String dockerImage = "quay.io/biocontainers/htseq:0.12.4--py37hb3f55d8_0"
+        String dockerImage = "genedockdx/htseq:0.12.4--py37hb3f55d8_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputTable})"
+        mkdir -p "$(dirname ${outputTable})"
         htseq-count \
-        --nprocesses ~{nprocesses} \
-        -r ~{order} \
-        -s ~{stranded} \
-        ~{"--type " + featureType} \
-        ~{"--idattr " + idattr} \
-        ~{true="--additional-attr " false="" length(additionalAttributes) > 0 }~{sep=" --additional-attr " additionalAttributes} \
-        ~{sep=" " inputBams} \
-        ~{gtfFile} \
-        -c ~{outputTable}
+        --nprocesses ${nprocesses} \
+        -r ${order} \
+        -s ${stranded} \
+        ${"--type " + featureType} \
+        ${"--idattr " + idattr} \
+        ${true="--additional-attr " false="" length(additionalAttributes) > 0 }${sep=" --additional-attr " additionalAttributes} \
+        ${sep=" " inputBams} \
+        ${gtfFile} \
+        -c ${outputTable}
     }
 
     output {

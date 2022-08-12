@@ -18,7 +18,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-version 1.0
 
 task DeconstructSigs {
     input {
@@ -28,18 +27,18 @@ task DeconstructSigs {
 
         Int timeMinutes = 15
         String memory = "4G"
-        String dockerImage = "quay.io/biocontainers/r-deconstructsigs:1.9.0--r41hdfd78af_1"
+        String dockerImage = "genedockdx/r-deconstructsigs:1.9.0--r41hdfd78af_1"
     }
 
     command {
         R --no-echo << EOF
             library(deconstructSigs)
-            tumor <- read.table("~{signaturesMatrix}", check.names=F)
-            ref <- data.frame(t(read.table("~{signaturesReference}", check.names=F, header=T, row.names="Type")), check.names=F)
+            tumor <- read.table("${signaturesMatrix}", check.names=F)
+            ref <- data.frame(t(read.table("${signaturesReference}", check.names=F, header=T, row.names="Type")), check.names=F)
             tumor <- tumor[,colnames(ref)]
 
             sigs <- whichSignatures(tumor.ref=tumor, row.names(tumor), signatures.ref=ref, contexts.needed=T)
-            saveRDS(sigs, "~{outputPath}")
+            saveRDS(sigs, "${outputPath}")
         EOF
     }
 
