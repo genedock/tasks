@@ -39,7 +39,7 @@ task Mem {
         Int? memoryGb
         Int timeMinutes = 10 + ceil(size([read1, read2], "G") * 300 / threads)
         # Contains bwa 0.7.17 bwakit 0.7.17.dev1 and samtools 1.10.
-        String dockerImage = "quay.io/biocontainers/mulled-v2-ad317f19f5881324e963f6a6d464d696a2825ab6:c59b7a73c87a9fe81737d5d628e10a3b5807f453-0"
+        String dockerImage = "genedockdx/mulled-v2-ad317f19f5881324e963f6a6d464d696a2825ab6:c59b7a73c87a9fe81737d5d628e10a3b5807f453-0"
     }
 
     # Samtools sort may block the pipe while it is writing data to disk.
@@ -54,22 +54,22 @@ task Mem {
     # This hack was tested with bash, dash and ash. It seems that comments in between pipes work for all of them.
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         bwa mem \
-          -t ~{threads} \
-          ~{if useSoftclippingForSupplementary then "-Y" else ""} \
-          ~{"-R '" + readgroup}~{true="'" false="" defined(readgroup)} \
-          ~{bwaIndex.fastaFile} \
-          ~{read1} \
-          ~{read2} \
-          2> ~{outputPrefix}.log.bwamem | \
-          ~{true="" false="#" usePostalt} bwa-postalt.js -p ~{outputPrefix}.hla ~{bwaIndex.fastaFile}~{true=".64.alt" false=".alt" sixtyFour} | \
+          -t ${threads} \
+          ${if useSoftclippingForSupplementary then "-Y" else ""} \
+          ${"-R '" + readgroup}${true="'" false="" defined(readgroup)} \
+          ${bwaIndex.fastaFile} \
+          ${read1} \
+          ${read2} \
+          2> ${outputPrefix}.log.bwamem | \
+          ${true="" false="#" usePostalt} bwa-postalt.js -p ${outputPrefix}.hla ${bwaIndex.fastaFile}${true=".64.alt" false=".alt" sixtyFour} | \
           samtools sort \
-          ~{"-@ " + totalSortThreads} \
-          -m ~{sortMemoryPerThreadGb}G \
-          -l ~{compressionLevel} \
+          ${"-@ " + totalSortThreads} \
+          -m ${sortMemoryPerThreadGb}G \
+          -l ${compressionLevel} \
           - \
-          -o ~{outputPrefix}.aln.bam
+          -o ${outputPrefix}.aln.bam
     }
 
     output {
@@ -81,7 +81,7 @@ task Mem {
         # One extra thread for bwa-postalt + samtools is not needed.
         # These only use 5-10% of compute power and not always simultaneously.
         cpu: threads
-        memory: "~{select_first([memoryGb, estimatedMemoryGb])}G"
+        memory: "${select_first([memoryGb, estimatedMemoryGb])}G"
         time_minutes: timeMinutes
         docker: dockerImage
     }

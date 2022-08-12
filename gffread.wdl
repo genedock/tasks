@@ -34,27 +34,27 @@ task GffRead {
 
         String memory = "4G"
         Int timeMinutes = 1 + ceil(size(inputGff, "G") * 10)
-        String dockerImage = "quay.io/biocontainers/gffread:0.9.12--0"
+        String dockerImage = "genedockdx/gffread:0.9.12--0"
     }
 
     # The mkdirs below are hackish. It should be
-    # ~{"mkir -p $(dirname " + somePath + ")"} but this goes wrong.
+    # ${"mkir -p $(dirname " + somePath + ")"} but this goes wrong.
     # Cromwell will always use ')' even if somepath is not defined.
     # Which leads to crashing.
     command {
         set -e
-        ~{"mkdir -p $(dirname " + CDSFastaPath}~{true=")" false="" defined(CDSFastaPath)}
-        ~{"mkdir -p $(dirname " + exonsFastaPath}~{true=")" false="" defined(exonsFastaPath)}
-        ~{"mkdir -p $(dirname " + proteinFastaPath}~{true=")" false="" defined(proteinFastaPath)}
-        ~{"mkdir -p $(dirname " + filteredGffPath}~{true=")" false="" defined(filteredGffPath)}
+        ${"mkdir -p $(dirname " + CDSFastaPath}${true=")" false="" defined(CDSFastaPath)}
+        ${"mkdir -p $(dirname " + exonsFastaPath}${true=")" false="" defined(exonsFastaPath)}
+        ${"mkdir -p $(dirname " + proteinFastaPath}${true=")" false="" defined(proteinFastaPath)}
+        ${"mkdir -p $(dirname " + filteredGffPath}${true=")" false="" defined(filteredGffPath)}
         gffread \
-        ~{inputGff} \
-        -g ~{genomicSequence} \
-        ~{"-w " + exonsFastaPath} \
-        ~{"-x " + CDSFastaPath} \
-        ~{"-y " + proteinFastaPath} \
-        ~{"-o " + filteredGffPath} \
-        ~{true="-T " false="" outputGtfFormat}
+        ${inputGff} \
+        -g ${genomicSequence} \
+        ${"-w " + exonsFastaPath} \
+        ${"-x " + CDSFastaPath} \
+        ${"-y " + proteinFastaPath} \
+        ${"-o " + filteredGffPath} \
+        ${true="-T " false="" outputGtfFormat}
     }
 
     output {

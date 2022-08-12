@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2018 Leiden University Medical Center
 #
@@ -37,10 +36,10 @@ task Bowtie {
 
         String picardXmx = "4G"
         Int threads = 1
-        String memory = "~{5 + ceil(size(indexFiles, "G"))}G"
+        String memory = "${5 + ceil(size(indexFiles, "G"))}G"
         Int timeMinutes = 1 + ceil(size(flatten([readsUpstream, readsDownstream]), "G") * 300 / threads)
         # Image contains bowtie=1.2.2 and picard=2.9.2
-        String dockerImage = "quay.io/biocontainers/mulled-v2-bfe71839265127576d3cd749c056e7b168308d56:1d8bec77b352cdcf3e9ff3d20af238b33ed96eae-0"
+        String dockerImage = "genedockdx/mulled-v2-bfe71839265127576d3cd749c056e7b168308d56:1d8bec77b352cdcf3e9ff3d20af238b33ed96eae-0"
     }
 
     # Assume fastq input with -q flag.
@@ -48,24 +47,24 @@ task Bowtie {
     # Hence, the --sam flag is used.
     command {
         set -e -o pipefail
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         bowtie \
         -q \
         --sam \
-        ~{"--seedmms " +  seedmms} \
-        ~{"--seedlen " + seedlen} \
-        ~{"-k " + k} \
-        ~{true="--best" false="" best} \
-        ~{true="--strata" false="" strata} \
-        ~{true="--allow-contain" false="" allowContain} \
-        ~{"--threads " + threads} \
-        ~{"--sam-RG '" + samRG}~{true="'" false="" defined(samRG)} \
-        ~{sub(indexFiles[0], "(\.rev)?\.[0-9]\.ebwt$", "")} \
-        ~{true="-1" false="" length(readsDownstream) > 0} ~{sep="," readsUpstream} \
-        ~{true="-2" false="" length(readsDownstream) > 0} ~{sep="," readsDownstream} \
-        | picard -Xmx~{picardXmx} SortSam \
+        ${"--seedmms " +  seedmms} \
+        ${"--seedlen " + seedlen} \
+        ${"-k " + k} \
+        ${true="--best" false="" best} \
+        ${true="--strata" false="" strata} \
+        ${true="--allow-contain" false="" allowContain} \
+        ${"--threads " + threads} \
+        ${"--sam-RG '" + samRG}${true="'" false="" defined(samRG)} \
+        ${sub(indexFiles[0], "(\.rev)?\.[0-9]\.ebwt$", "")} \
+        ${true="-1" false="" length(readsDownstream) > 0} ${sep="," readsUpstream} \
+        ${true="-2" false="" length(readsDownstream) > 0} ${sep="," readsDownstream} \
+        | picard -Xmx${picardXmx} SortSam \
         INPUT=/dev/stdin \
-        OUTPUT=~{outputPath} \
+        OUTPUT=${outputPath} \
         SORT_ORDER=coordinate \
         CREATE_INDEX=true
     }

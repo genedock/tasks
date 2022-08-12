@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2019 Leiden University Medical Center
 #
@@ -33,20 +32,20 @@ task Indexing {
         Int cores = 1
         String memory = "4G"
         Int timeMinutes = 10
-        String dockerImage = "quay.io/biocontainers/minimap2:2.20--h5bf99c6_0"
+        String dockerImage = "genedockdx/minimap2:2.20--h5bf99c6_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         minimap2 \
-        ~{true="-H" false="" useHomopolymerCompressedKmer} \
-        -k ~{kmerSize} \
-        -w ~{minimizerWindowSize} \
-        ~{"-d " + outputPrefix + ".mmi"} \
-        -t ~{cores} \
-        ~{"-I " + splitIndex} \
-        ~{referenceFile}
+        ${true="-H" false="" useHomopolymerCompressedKmer} \
+        -k ${kmerSize} \
+        -w ${minimizerWindowSize} \
+        ${"-d " + outputPrefix + ".mmi"} \
+        -t ${cores} \
+        ${"-I " + splitIndex} \
+        ${referenceFile}
     }
 
     output {
@@ -100,29 +99,29 @@ task Mapping {
         Int cores = 4
         String memory = "30G"
         Int timeMinutes = 1 + ceil(size(queryFile, "G") * 200 / cores)
-        String dockerImage = "quay.io/biocontainers/minimap2:2.20--h5bf99c6_0"
+        String dockerImage = "genedockdx/minimap2:2.20--h5bf99c6_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         minimap2 \
-        -x ~{presetOption} \
-        -k ~{kmerSize} \
-        ~{true="-X" false="" skipSelfAndDualMappings} \
-        ~{true="-a" false="" outputSam} \
-        -o ~{outputPrefix} \
-        ~{true="--MD" false="" addMDTagToSam} \
-        --secondary=~{true="yes" false="no" secondaryAlignment} \
-        -t ~{cores} \
-        ~{"-G " + maxIntronLength} \
-        ~{"-F " + maxFragmentLength} \
-        ~{"-N " + retainMaxSecondaryAlignments} \
-        ~{"-A " + matchingScore} \
-        ~{"-B " + mismatchPenalty} \
-        ~{"-u " + howToFindGTAG} \
-        ~{referenceFile} \
-        ~{queryFile}
+        -x ${presetOption} \
+        -k ${kmerSize} \
+        ${true="-X" false="" skipSelfAndDualMappings} \
+        ${true="-a" false="" outputSam} \
+        -o ${outputPrefix} \
+        ${true="--MD" false="" addMDTagToSam} \
+        --secondary=${true="yes" false="no" secondaryAlignment} \
+        -t ${cores} \
+        ${"-G " + maxIntronLength} \
+        ${"-F " + maxFragmentLength} \
+        ${"-N " + retainMaxSecondaryAlignments} \
+        ${"-A " + matchingScore} \
+        ${"-B " + mismatchPenalty} \
+        ${"-u " + howToFindGTAG} \
+        ${referenceFile} \
+        ${queryFile}
     }
 
     output {

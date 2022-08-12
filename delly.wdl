@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2018 Leiden University Medical Center
 #
@@ -30,16 +29,16 @@ task CallSV {
 
         String memory = "15G"
         Int timeMinutes = 300
-        String dockerImage = "quay.io/biocontainers/delly:0.8.1--h4037b6b_1"
+        String dockerImage = "genedockdx/delly:0.8.1--h4037b6b_1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         delly call \
-        -o ~{outputPath} \
-        -g ~{referenceFasta} \
-        ~{bamFile}
+        -o ${outputPath} \
+        -g ${referenceFasta} \
+        ${bamFile}
     }
 
     output {

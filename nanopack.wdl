@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2020 Leiden University Medical Center
 #
@@ -42,28 +41,28 @@ task NanoPlot {
         Int threads = 2
         String memory = "2G"
         Int timeMinutes = 15
-        String dockerImage = "quay.io/biocontainers/nanoplot:1.38.0--pyhdfd78af_0"
+        String dockerImage = "genedockdx/nanoplot:1.38.0--pyhdfd78af_0"
     }
 
     Map[String, String] fileTypeOptions = {"fastq": "--fastq ", "fasta": "--fasta ", "fastq_rich": "--fastq_rich ", "fastq_minimal": "--fastq_minimal ", "summary": "--summary ", "bam": "--bam ", "ubam": "--ubam ", "cram": "--cram ", "pickle": "--pickle ", "feather": "--feather "}
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         NanoPlot \
-        --threads ~{threads} \
-        --outdir ~{outputDir} \
-        --prefix ~{outputPrefix} \
-        ~{true="--tsv_stats" false="" outputTsvStats} \
-        ~{true="--drop_outliers" false="" dropOutliers} \
-        ~{true="--loglength" false="" logLengths} \
-        --format ~{format} \
-        ~{true="--N50" false="--no-N50" showN50} \
-        ~{"--maxlength " + maxLength} \
-        ~{"--minlength " + minLength} \
-        ~{"--minqual " + minQual} \
-        ~{"--readtype " + readType} \
-        ~{fileTypeOptions[inputFileType] + inputFile}
+        --threads ${threads} \
+        --outdir ${outputDir} \
+        --prefix ${outputPrefix} \
+        ${true="--tsv_stats" false="" outputTsvStats} \
+        ${true="--drop_outliers" false="" dropOutliers} \
+        ${true="--loglength" false="" logLengths} \
+        --format ${format} \
+        ${true="--N50" false="--no-N50" showN50} \
+        ${"--maxlength " + maxLength} \
+        ${"--minlength " + minLength} \
+        ${"--minqual " + minQual} \
+        ${"--readtype " + readType} \
+        ${fileTypeOptions[inputFileType] + inputFile}
     }
 
     output {
@@ -132,17 +131,17 @@ task NanoQc {
 
         String memory = "2G"
         Int timeMinutes = 15
-        String dockerImage = "quay.io/biocontainers/nanoqc:0.9.4--py_0"
+        String dockerImage = "genedockdx/nanoqc:0.9.4--py_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputDir})"
+        mkdir -p "$(dirname ${outputDir})"
         nanoQC \
-        --outdir ~{outputDir} \
-        ~{true="--rna" false="" directRna} \
-        ~{"--minlen " + minLength} \
-        ~{inputFile}
+        --outdir ${outputDir} \
+        ${true="--rna" false="" directRna} \
+        ${"--minlen " + minLength} \
+        ${inputFile}
     }
 
     output {

@@ -40,14 +40,14 @@ task AnnotateInsertedSequence {
 
     command {
         set -e
-        _JAVA_OPTIONS="$_JAVA_OPTIONS -Xmx~{javaXmx}"
+        _JAVA_OPTIONS="$_JAVA_OPTIONS -Xmx${javaXmx}"
         AnnotateInsertedSequence \
-        REFERENCE_SEQUENCE=~{viralReference} \
-        INPUT=~{inputVcf} \
-        OUTPUT=~{outputPath} \
+        REFERENCE_SEQUENCE=${viralReference} \
+        INPUT=${inputVcf} \
+        OUTPUT=${outputPath} \
         ALIGNMENT=APPEND \
         WORKING_DIR='.' \
-        WORKER_THREADS=~{threads}
+        WORKER_THREADS=${threads}
     }
 
     output {
@@ -86,7 +86,7 @@ task AnnotateSvTypes {
         String outputPath = "./gridss.svtyped.vcf.bgz"
 
         String memory = "32G"
-        String dockerImage = "quay.io/biocontainers/bioconductor-structuralvariantannotation:1.10.0--r41hdfd78af_0"
+        String dockerImage = "genedockdx/bioconductor-structuralvariantannotation:1.10.0--r41hdfd78af_0"
         Int timeMinutes = 240
     }
 
@@ -97,13 +97,13 @@ task AnnotateSvTypes {
     # Based on https://github.com/PapenfussLab/gridss/issues/74
     command <<<
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         R --vanilla << "EOF"
         library(VariantAnnotation)
         library(StructuralVariantAnnotation)
 
-        vcf_path <- "~{gridssVcf}"
-        out_path <- "~{effectiveOutputPath}"
+        vcf_path <- "${gridssVcf}"
+        out_path <- "${effectiveOutputPath}"
 
         # Simple SV type classifier
         simpleEventType <- function(gr) {
@@ -121,7 +121,7 @@ task AnnotateSvTypes {
         info(vcf[gr$sourceId])$SVTYPE <- svtype
         # GRIDSS doesn't supply a GT, so we estimate GT based on AF (assuming CN of 2, might be inaccurate)
         geno(vcf)$GT <- ifelse(geno(vcf)$AF > 0.75, "1/1", ifelse(geno(vcf)$AF < 0.25, "0/0", "0/1"))
-        writeVcf(vcf, out_path, index=~{index})
+        writeVcf(vcf, out_path, index=${index})
         EOF
     >>>
 
@@ -170,25 +170,25 @@ task GRIDSS {
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         gridss \
         -w . \
-        --reference ~{reference.fastaFile} \
-        --output ~{outputPrefix}.vcf.gz \
-        --assembly ~{outputPrefix}_assembly.bam \
-        ~{"-c " + gridssProperties} \
-        ~{"-t " + threads} \
-        ~{"--jvmheap " + jvmHeapSizeGb + "G"} \
-        --labels ~{normalLabel}~{true="," false="" defined(normalLabel)}~{tumorLabel} \
-        ~{"--blacklist " + blacklistBed} \
-        ~{normalBam} \
-        ~{tumorBam}
-        samtools index ~{outputPrefix}_assembly.bam ~{outputPrefix}_assembly.bai
+        --reference ${reference.fastaFile} \
+        --output ${outputPrefix}.vcf.gz \
+        --assembly ${outputPrefix}_assembly.bam \
+        ${"-c " + gridssProperties} \
+        ${"-t " + threads} \
+        ${"--jvmheap " + jvmHeapSizeGb + "G"} \
+        --labels ${normalLabel}${true="," false="" defined(normalLabel)}${tumorLabel} \
+        ${"--blacklist " + blacklistBed} \
+        ${normalBam} \
+        ${tumorBam}
+        samtools index ${outputPrefix}_assembly.bam ${outputPrefix}_assembly.bai
 
         # For some reason the VCF index is sometimes missing
-        if [ ! -e ~{outputPrefix}.vcf.gz.tbi ]
+        if [ ! -e ${outputPrefix}.vcf.gz.tbi ]
           then
-            tabix ~{outputPrefix}.vcf.gz
+            tabix ${outputPrefix}.vcf.gz
         fi
     }
 
@@ -201,7 +201,7 @@ task GRIDSS {
 
     runtime {
         cpu: threads
-        memory: "~{jvmHeapSizeGb + nonJvmMemoryGb}G"
+        memory: "${jvmHeapSizeGb + nonJvmMemoryGb}G"
         time_minutes: timeMinutes # !UnknownRuntimeKey
         docker: dockerImage
     }
@@ -247,16 +247,16 @@ task GridssAnnotateVcfRepeatmasker {
 
     command {
         gridss_annotate_vcf_repeatmasker \
-        --output ~{outputPath} \
+        --output ${outputPath} \
         --jar /usr/local/share/gridss-2.12.2-0/gridss.jar \
         -w . \
-        -t ~{threads} \
-        ~{gridssVcf}
+        -t ${threads} \
+        ${gridssVcf}
     }
 
     output {
         File annotatedVcf = outputPath
-        File annotatedVcfIndex = "~{outputPath}.tbi"
+        File annotatedVcfIndex = "${outputPath}.tbi"
     }
 
     runtime {
@@ -298,20 +298,20 @@ task Virusbreakend {
     command {
         set -e
         mkdir virusbreakenddb
-        tar -xzvf ~{virusbreakendDB} -C virusbreakenddb --strip-components 1
+        tar -xzvf ${virusbreakendDB} -C virusbreakenddb --strip-components 1
         virusbreakend \
-        --output ~{outputPath} \
+        --output ${outputPath} \
         --workingdir . \
-        --reference ~{referenceFasta} \
+        --reference ${referenceFasta} \
         --db virusbreakenddb \
         --jar /usr/local/share/gridss-2.12.2-0/gridss.jar \
-        -t ~{threads} \
-        ~{bam}
+        -t ${threads} \
+        ${bam}
     }
 
     output {
         File vcf = outputPath
-        File summary = "~{outputPath}.summary.tsv"
+        File summary = "${outputPath}.summary.tsv"
     }
 
     runtime {

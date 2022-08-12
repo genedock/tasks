@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2020 Leiden University Medical Center
 #
@@ -37,21 +36,21 @@ task Bam2Fasta {
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
 
         # Localise the bam and pbi files so they are next to each other in the
         # current folder.
         bamFiles=""
-        for bamFile in ~{sep=" " bam}
+        for bamFile in ${sep=" " bam}
         do
             bamFiles=$bamFiles" $(basename $bamFile)"
         done
 
         bam2fasta \
-        --output ~{outputPrefix} \
-        -c ~{compressionLevel} \
-        ~{true="--split-barcodes" false="" splitByBarcode} \
-        ~{"--seqid-prefix " + seqIdPrefix} \
+        --output ${outputPrefix} \
+        -c ${compressionLevel} \
+        ${true="--split-barcodes" false="" splitByBarcode} \
+        ${"--seqid-prefix " + seqIdPrefix} \
         $bamFiles
     }
 
@@ -99,21 +98,21 @@ task Bam2Fastq {
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
 
         # Localise the bam and pbi files so they are next to each other in the
         # current folder.
         bamFiles=""
-        for bamFile in ~{sep=" " bam}
+        for bamFile in ${sep=" " bam}
         do
             bamFiles=$bamFiles" $(basename $bamFile)"
         done
 
         bam2fastq \
-        --output ~{outputPrefix} \
-        -c ~{compressionLevel} \
-        ~{true="--split-barcodes" false="" splitByBarcode} \
-        ~{"--seqid-prefix " + seqIdPrefix} \
+        --output ${outputPrefix} \
+        -c ${compressionLevel} \
+        ${true="--split-barcodes" false="" splitByBarcode} \
+        ${"--seqid-prefix " + seqIdPrefix} \
         $bamFiles
     }
 

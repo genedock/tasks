@@ -38,24 +38,24 @@ task Build {
         Int threads = 5
         String memory = "20G"
         Int timeMinutes = 2880
-        String dockerImage = "quay.io/biocontainers/centrifuge:1.0.4_beta--he513fc3_5"
+        String dockerImage = "genedockdx/centrifuge:1.0.4_beta--he513fc3_5"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         centrifuge-build \
-        --threads ~{threads} \
-        ~{true="--nodc" false="" disableDifferenceCover} \
-        ~{"--offrate " + offrate} \
-        ~{"--ftabchars " + ftabChars} \
-        ~{"--kmer-count " + kmerCount} \
-        ~{"--size-table " + sizeTable} \
-        --conversion-table ~{conversionTable} \
-        --taxonomy-tree ~{taxonomyTree} \
-        --name-table ~{nameTable} \
-        ~{referenceFile} \
-        ~{outputPrefix + "/" + indexBasename}
+        --threads ${threads} \
+        ${true="--nodc" false="" disableDifferenceCover} \
+        ${"--offrate " + offrate} \
+        ${"--ftabchars " + ftabChars} \
+        ${"--kmer-count " + kmerCount} \
+        ${"--size-table " + sizeTable} \
+        --conversion-table ${conversionTable} \
+        --taxonomy-tree ${taxonomyTree} \
+        --name-table ${nameTable} \
+        ${referenceFile} \
+        ${outputPrefix + "/" + indexBasename}
     }
 
     output {
@@ -111,34 +111,34 @@ task Classify {
         Int threads = 4
         String memory = "16G"
         Int timeMinutes = 2880
-        String dockerImage = "quay.io/biocontainers/centrifuge:1.0.4_beta--he513fc3_5"
+        String dockerImage = "genedockdx/centrifuge:1.0.4_beta--he513fc3_5"
     }
 
     Map[String, String] inputFormatOptions = {"fastq": "-q", "fasta": "-f", "qseq": "--qseq", "raw": "-r", "sequences": "-c"}
 
     command <<<
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
-        indexBasename="$(basename ~{sub(indexFiles[0], "\.[0-9]\.cf", "")})"
-        for file in ~{sep=" " indexFiles}
+        mkdir -p "$(dirname ${outputPrefix})"
+        indexBasename="$(basename ${sub(indexFiles[0], "\.[0-9]\.cf", "")})"
+        for file in ${sep=" " indexFiles}
         do
             ln ${file} $PWD/"$(basename ${file})"
         done
         centrifuge \
-        ~{inputFormatOptions[inputFormat]} \
-        ~{true="--phred64" false="--phred33" phred64} \
-        --min-hitlen ~{minHitLength} \
-        --threads ~{threads} \
-        ~{"--trim5 " + trim5} \
-        ~{"--trim3 " + trim3} \
-        ~{"-k " + reportMaxDistinct} \
-        ~{"--host-taxids " + hostTaxIDs} \
-        ~{"--exclude-taxids " + excludeTaxIDs} \
+        ${inputFormatOptions[inputFormat]} \
+        ${true="--phred64" false="--phred33" phred64} \
+        --min-hitlen ${minHitLength} \
+        --threads ${threads} \
+        ${"--trim5 " + trim5} \
+        ${"--trim3 " + trim3} \
+        ${"-k " + reportMaxDistinct} \
+        ${"--host-taxids " + hostTaxIDs} \
+        ${"--exclude-taxids " + excludeTaxIDs} \
         -x $PWD/${indexBasename} \
-        ~{true="-1" false="-U" length(read2) > 0} ~{sep="," read1} \
-        ~{true="-2" false="" length(read2) > 0} ~{sep="," read2} \
-        ~{"-S " + outputPrefix + "_classification.tsv"} \
-        ~{"--report-file " + outputPrefix + "_output_report.tsv"}
+        ${true="-1" false="-U" length(read2) > 0} ${sep="," read1} \
+        ${true="-2" false="" length(read2) > 0} ${sep="," read2} \
+        ${"-S " + outputPrefix + "_classification.tsv"} \
+        ${"--report-file " + outputPrefix + "_output_report.tsv"}
     >>>
 
     output {
@@ -188,24 +188,24 @@ task Inspect {
 
         String memory = "4G"
         Int timeMinutes = 1
-        String dockerImage = "quay.io/biocontainers/centrifuge:1.0.4_beta--he513fc3_5"
+        String dockerImage = "genedockdx/centrifuge:1.0.4_beta--he513fc3_5"
     }
 
     Map[String, String] outputOptions = {"fasta": "", "names": "--names", "summary": "--summary", "conversionTable": "--conversion-table", "taxonomyTree": "--taxonomy-tree", "nameTable": "--name-table", "sizeTable": "--size-table"}
 
     command <<<
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
-        indexBasename="$(basename ~{sub(indexFiles[0], "\.[0-9]\.cf", "")})"
-        for file in ~{sep=" " indexFiles}
+        mkdir -p "$(dirname ${outputPrefix})"
+        indexBasename="$(basename ${sub(indexFiles[0], "\.[0-9]\.cf", "")})"
+        for file in ${sep=" " indexFiles}
         do
             ln ${file} $PWD/"$(basename ${file})"
         done
         centrifuge-inspect \
-        ~{outputOptions[printOption]} \
-        ~{"--across " + across} \
+        ${outputOptions[printOption]} \
+        ${"--across " + across} \
         $PWD/${indexBasename} \
-        > ~{outputPrefix + "/" + printOption}
+        > ${outputPrefix + "/" + printOption}
     >>>
 
     output {
@@ -247,26 +247,26 @@ task KReport {
 
         String memory = "4G"
         Int timeMinutes = 10
-        String dockerImage = "quay.io/biocontainers/centrifuge:1.0.4_beta--he513fc3_5"
+        String dockerImage = "genedockdx/centrifuge:1.0.4_beta--he513fc3_5"
     }
 
     command <<< 
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
-        indexBasename="$(basename ~{sub(indexFiles[0], "\.[0-9]\.cf", "")})"
-        for file in ~{sep=" " indexFiles}
+        mkdir -p "$(dirname ${outputPrefix})"
+        indexBasename="$(basename ${sub(indexFiles[0], "\.[0-9]\.cf", "")})"
+        for file in ${sep=" " indexFiles}
         do
             ln ${file} $PWD/"$(basename ${file})"
         done
         centrifuge-kreport \
         -x $PWD/${indexBasename} \
-        ~{true="--no-lca" false="" noLCA} \
-        ~{true="--show-zeros" false="" showZeros} \
-        ~{true="--is-count-table" false="" isCountTable} \
-        ~{"--min-score " + minimumScore} \
-        ~{"--min-length " + minimumLength} \
-        ~{classification} \
-        > ~{outputPrefix + "_kreport.tsv"}
+        ${true="--no-lca" false="" noLCA} \
+        ${true="--show-zeros" false="" showZeros} \
+        ${true="--is-count-table" false="" isCountTable} \
+        ${"--min-score " + minimumScore} \
+        ${"--min-length " + minimumLength} \
+        ${classification} \
+        > ${outputPrefix + "_kreport.tsv"}
     >>>
 
     output {
@@ -310,10 +310,10 @@ task KTimportTaxonomy {
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
-        cat ~{inputFile} | cut -f 1,3 > kronaInput.krona
+        mkdir -p "$(dirname ${outputPrefix})"
+        cat ${inputFile} | cut -f 1,3 > kronaInput.krona
         ktImportTaxonomy kronaInput.krona
-        cp taxonomy.krona.html ~{outputPrefix + "_krona.html"}
+        cp taxonomy.krona.html ${outputPrefix + "_krona.html"}
     }
 
     output {

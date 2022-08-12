@@ -29,8 +29,8 @@ task AppendToStringArray {
     }
 
     command {
-        echo "~{sep='\n' array}
-        ~{string}"
+        echo "${sep='\n' array}
+        ${string}"
     }
 
     output {
@@ -58,7 +58,7 @@ task CheckFileMD5 {
     command {
         bash -c '
         set -e -o pipefail
-        echo "~{md5}  ~{file}" | md5sum -c
+        echo "${md5}  ${file}" | md5sum -c
         '
     }
 
@@ -84,8 +84,8 @@ task ConcatenateTextFiles {
 
     command {
         set -e -o pipefail
-        mkdir -p "$(dirname ~{combinedFilePath})"
-        ~{cmdPrefix} ~{sep=" " fileList} ~{cmdSuffix} > ~{combinedFilePath}
+        mkdir -p "$(dirname ${combinedFilePath})"
+        ${cmdPrefix} ${sep=" " fileList} ${cmdSuffix} > ${combinedFilePath}
     }
 
     output {
@@ -110,8 +110,8 @@ task Copy {
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        cp ~{true="-r" false="" recursive} ~{inputFile} ~{outputPath}
+        mkdir -p "$(dirname ${outputPath})"
+        cp ${true="-r" false="" recursive} ${inputFile} ${outputPath}
     }
 
     output {
@@ -136,7 +136,7 @@ task CreateLink {
     }
 
     command {
-        ln -sf ~{inputFile} ~{outputPath}
+        ln -sf ${inputFile} ${outputPath}
     }
 
     output {
@@ -159,8 +159,8 @@ task GetSamplePositionInArray {
 
     command <<<
         python <<CODE
-        samples = ['~{sep="','" sampleIds}']
-        print(samples.index('~{sample}'))
+        samples = ['${sep="','" sampleIds}']
+        print(samples.index('${sample}'))
         CODE
     >>>
 
@@ -196,7 +196,7 @@ task MapMd5 {
 
     command {
         set -e -o pipefail
-        md5sum "~{write_map(map)}" | cut -f 1 -d ' '
+        md5sum "${write_map(map)}" | cut -f 1 -d ' '
     }
 
     output {
@@ -220,7 +220,7 @@ task StringArrayMd5 {
 
     command {
         set -eu -o pipefail
-        echo ~{sep=',' stringArray} | md5sum - | sed -e 's/  -//'
+        echo ${sep=',' stringArray} | md5sum - | sed -e 's/  -//'
     }
 
     output {
@@ -244,7 +244,7 @@ task TextToFile {
     }
 
     command <<<
-        echo ~{text} > ~{outputFile}
+        echo ${text} > ${outputFile}
     >>>
 
     output {
@@ -277,18 +277,18 @@ task YamlToJson {
         String  memory = "128M"
         Int timeMinutes = 1
         # biowdl-input-converter has python and pyyaml.
-        String dockerImage = "quay.io/biocontainers/biowdl-input-converter:0.3.0--pyhdfd78af_0"
+        String dockerImage = "genedockdx/biowdl-input-converter:0.3.0--pyhdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputJson})"
+        mkdir -p "$(dirname ${outputJson})"
         python <<CODE
         import json
         import yaml
-        with open("~{yaml}", "r") as input_yaml:
+        with open("${yaml}", "r") as input_yaml:
             content = yaml.load(input_yaml)
-        with open("~{outputJson}", "w") as output_json:
+        with open("${outputJson}", "w") as output_json:
             json.dump(content, output_json)
         CODE
     }

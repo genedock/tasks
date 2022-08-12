@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2021 Leiden University Medical Center
 #
@@ -37,16 +36,16 @@ task ExtractSigPredictHRD {
 
     command {
         extractSigPredictHRD.R \
-        ~{outputDir} \
-        ~{sampleName} \
-        ~{snvIndelVcf} \
-        ~{svVcf} \
-        ~{if hg38 then "RG_38" else "RG_37"}
+        ${outputDir} \
+        ${sampleName} \
+        ${snvIndelVcf} \
+        ${svVcf} \
+        ${if hg38 then "RG_38" else "RG_37"}
     }
 
     output {
-        File chordPrediction = "~{outputDir}/~{sampleName}_chord_prediction.txt"
-        File chordSignatures = "~{outputDir}/~{sampleName}_chord_signatures.txt"
+        File chordPrediction = "${outputDir}/${sampleName}_chord_prediction.txt"
+        File chordSignatures = "${outputDir}/${sampleName}_chord_signatures.txt"
     }
 
     runtime {

@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -36,7 +35,7 @@ task CPAT {
 
         String memory = "4G"
         Int timeMinutes = 10 + ceil(size(gene, "G") * 30)
-        String dockerImage = "quay.io/biocontainers/cpat:3.0.4--py39hcbe4a3b_0"
+        String dockerImage = "genedockdx/cpat:3.0.4--py39hcbe4a3b_0"
     }
 
     # Some WDL magic in the command section to properly output the start and
@@ -45,23 +44,23 @@ task CPAT {
     # to non-optionals.
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         cpat.py \
-        --gene ~{gene} \
-        --outfile ~{outputPrefix} \
-        --hex ~{hex} \
-        --logitModel ~{logitModel} \
-        ~{"--ref " + referenceGenome} \
-        ~{true="--start" false="" defined(startCodons)} ~{sep="," select_first([startCodons, [""]])} \
-        ~{true="--stop" false="" defined(stopCodons)} ~{sep="," select_first([stopCodons, [""]])}
+        --gene ${gene} \
+        --outfile ${outputPrefix} \
+        --hex ${hex} \
+        --logitModel ${logitModel} \
+        ${"--ref " + referenceGenome} \
+        ${true="--start" false="" defined(startCodons)} ${sep="," select_first([startCodons, [""]])} \
+        ${true="--stop" false="" defined(stopCodons)} ${sep="," select_first([stopCodons, [""]])}
     }
 
     output {
-        File orfSeqs = "~{outputPrefix}.ORF_seqs.fa"
-        File orfProb = "~{outputPrefix}.ORF_prob.tsv"
-        File orfProbBest = "~{outputPrefix}.ORF_prob.best.tsv"
-        File noOrf = "~{outputPrefix}.no_ORF.txt"
-        File rScript = "~{outputPrefix}.r"
+        File orfSeqs = "${outputPrefix}.ORF_seqs.fa"
+        File orfProb = "${outputPrefix}.ORF_prob.tsv"
+        File orfProbBest = "${outputPrefix}.ORF_prob.best.tsv"
+        File noOrf = "${outputPrefix}.no_ORF.txt"
+        File rScript = "${outputPrefix}.r"
     }
 
     runtime {

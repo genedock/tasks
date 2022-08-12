@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2018 Leiden University Medical Center
 #
@@ -39,23 +38,23 @@ task RunDeepVariant {
 
         String memory = "3G"
         Int timeMinutes = 5000
-        String dockerImage = "google/deepvariant:1.0.0"
+        String dockerImage = "genedockdx/deepvariant:1.0.0"
     }
 
     command {
         set -e
         /opt/deepvariant/bin/run_deepvariant \
-        --ref ~{referenceFasta} \
-        --reads ~{inputBam} \
-        --model_type ~{modelType} \
-        --output_vcf ~{outputVcf} \
-        ~{"--output_gvcf " + outputGVcf} \
-        ~{"--customized_model " + customizedModel} \
-        ~{"--num_shards " + numShards} \
-        ~{"--regions "  + regions} \
-        ~{"--sample_name " + sampleName} \
-        ~{"--postprocess_variants_extra_args " + postprocessVariantsExtraArgs} \
-        ~{true="--vcf_stats_report" false="--novcf_stats_report" VCFStatsReport}
+        --ref ${referenceFasta} \
+        --reads ${inputBam} \
+        --model_type ${modelType} \
+        --output_vcf ${outputVcf} \
+        ${"--output_gvcf " + outputGVcf} \
+        ${"--customized_model " + customizedModel} \
+        ${"--num_shards " + numShards} \
+        ${"--regions "  + regions} \
+        ${"--sample_name " + sampleName} \
+        ${"--postprocess_variants_extra_args " + postprocessVariantsExtraArgs} \
+        ${true="--vcf_stats_report" false="--novcf_stats_report" VCFStatsReport}
     }
 
     runtime {

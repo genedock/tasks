@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2018 Leiden University Medical Center
 #
@@ -49,38 +48,38 @@ task Annotate {
         Int threads = 0
         String memory = "4G"
         Int timeMinutes = 60 + ceil(size(inputFile, "G"))
-        String dockerImage = "quay.io/biocontainers/bcftools:1.10.2--h4f4756c_2"
+        String dockerImage = "genedockdx/bcftools:1.10.2--h4f4756c_2"
     }
 
     Boolean compressed = basename(outputPath) != basename(outputPath, ".gz")
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         bcftools annotate \
-        -o ~{outputPath} \
-        -O ~{true="z" false="v" compressed} \
-        ~{"--annotations " + annsFile} \
-        ~{"--collapse " + collapse} \
-        ~{true="--columns" false="" length(columns) > 0} ~{sep="," columns} \
-        ~{"--exclude " + exclude} \
-        ~{true="--force" false="" force} \
-        ~{"--header-lines " + headerLines} \
-        ~{"--set-id " + newId} \
-        ~{"--include " + include} \
-        ~{true="--keep-sites" false="" keepSites} \
-        ~{"--mark-sites " + markSites} \
-        ~{true="--no-version" false="" noVersion} \
-        ~{"--regions " + regions} \
-        ~{"--regions-file " + regionsFile} \
-        ~{"--rename-chrs " + renameChrs} \
-        ~{true="--samples" false="" length(samples) > 0} ~{sep="," samples} \
-        ~{"--samples-file " + samplesFile} \
-        ~{true="--single-overlaps" false="" singleOverlaps} \
-        ~{true="--remove" false="" length(removeAnns) > 0} ~{sep="," removeAnns} \
-        ~{inputFile}
+        -o ${outputPath} \
+        -O ${true="z" false="v" compressed} \
+        ${"--annotations " + annsFile} \
+        ${"--collapse " + collapse} \
+        ${true="--columns" false="" length(columns) > 0} ${sep="," columns} \
+        ${"--exclude " + exclude} \
+        ${true="--force" false="" force} \
+        ${"--header-lines " + headerLines} \
+        ${"--set-id " + newId} \
+        ${"--include " + include} \
+        ${true="--keep-sites" false="" keepSites} \
+        ${"--mark-sites " + markSites} \
+        ${true="--no-version" false="" noVersion} \
+        ${"--regions " + regions} \
+        ${"--regions-file " + regionsFile} \
+        ${"--rename-chrs " + renameChrs} \
+        ${true="--samples" false="" length(samples) > 0} ${sep="," samples} \
+        ${"--samples-file " + samplesFile} \
+        ${true="--single-overlaps" false="" singleOverlaps} \
+        ${true="--remove" false="" length(removeAnns) > 0} ${sep="," removeAnns} \
+        ${inputFile}
 
-        ~{if compressed then 'bcftools index --tbi ~{outputPath}' else ''}
+        ${if compressed then 'bcftools index --tbi ${outputPath}' else ''}
     }
 
     output {
@@ -140,21 +139,21 @@ task Filter {
 
         String memory = "256M"
         Int timeMinutes = 1 + ceil(size(vcf, "G"))
-        String dockerImage = "quay.io/biocontainers/bcftools:1.10.2--h4f4756c_2"
+        String dockerImage = "genedockdx/bcftools:1.10.2--h4f4756c_2"
     }
 
     command {
         set -e 
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         bcftools \
         filter \
-        ~{"-i " + include} \
-        ~{"-e " + exclude} \
-        ~{"-s " + softFilter} \
-        ~{vcf} \
+        ${"-i " + include} \
+        ${"-e " + exclude} \
+        ${"-s " + softFilter} \
+        ${vcf} \
         -O z \
-        -o ~{outputPath}
-        bcftools index --tbi ~{outputPath}
+        -o ${outputPath}
+        bcftools index --tbi ${outputPath}
     }
 
     output {
@@ -188,21 +187,21 @@ task Sort {
 
         String memory = "5G"
         Int timeMinutes = 1 + ceil(size(inputFile, "G")) * 5
-        String dockerImage = "quay.io/biocontainers/bcftools:1.10.2--h4f4756c_2"
+        String dockerImage = "genedockdx/bcftools:1.10.2--h4f4756c_2"
     }
 
     Boolean compressed = basename(outputPath) != basename(outputPath, ".gz")
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})" ~{tmpDir}
+        mkdir -p "$(dirname ${outputPath})" ${tmpDir}
         bcftools sort \
-        -o ~{outputPath} \
-        -O ~{true="z" false="v" compressed} \
-        -T ~{tmpDir} \
-        ~{inputFile}
+        -o ${outputPath} \
+        -O ${true="z" false="v" compressed} \
+        -T ${tmpDir} \
+        ${inputFile}
 
-        ~{if compressed then 'bcftools index --tbi ~{outputPath}' else ''}
+        ${if compressed then 'bcftools index --tbi ${outputPath}' else ''}
     }
 
     output {
@@ -263,34 +262,34 @@ task Stats {
         Int threads = 0
         String memory = "256M"
         Int timeMinutes = 1 + 2* ceil(size(select_all([inputVcf, compareVcf]), "G")) # TODO: Estimate, 2 minutes per GB, refine later.
-        String dockerImage = "quay.io/biocontainers/bcftools:1.10.2--h4f4756c_2"
+        String dockerImage = "genedockdx/bcftools:1.10.2--h4f4756c_2"
     }
 
     command {
         set -e
-        mkdir -p $(dirname ~{outputPath})
+        mkdir -p $(dirname ${outputPath})
         bcftools stats \
-        ~{"--af-bins " + afBins} \
-        ~{"--af-tag " + afTag} \
-        ~{true="--1st-allele-only" false="" firstAlleleOnly} \
-        ~{"--collapse " + collapse} \
-        ~{"--depth " + depth} \
-        ~{"--exclude " + exclude} \
-        ~{"--exons " + exons} \
-        ~{"--apply-filters " + applyFilters} \
-        ~{"--fasta-ref " + fastaRef} \
-        ~{"--include " + include} \
-        ~{true="--split-by-ID" false="" splitByID} \
-        ~{"--regions " + regions} \
-        ~{"--regions-file " + regionsFile} \
-        ~{true="--samples" false="" length(samples) > 0} ~{sep="," samples} \
-        ~{"--samples-file " + samplesFile} \
-        ~{"--targets " + targets} \
-        ~{"--targets-file " + targetsFile} \
-        ~{"--user-tstv " + userTsTv} \
-        --threads ~{threads} \
-        ~{true="--verbose" false="" verbose} \
-        ~{inputVcf} ~{compareVcf} > ~{outputPath}
+        ${"--af-bins " + afBins} \
+        ${"--af-tag " + afTag} \
+        ${true="--1st-allele-only" false="" firstAlleleOnly} \
+        ${"--collapse " + collapse} \
+        ${"--depth " + depth} \
+        ${"--exclude " + exclude} \
+        ${"--exons " + exons} \
+        ${"--apply-filters " + applyFilters} \
+        ${"--fasta-ref " + fastaRef} \
+        ${"--include " + include} \
+        ${true="--split-by-ID" false="" splitByID} \
+        ${"--regions " + regions} \
+        ${"--regions-file " + regionsFile} \
+        ${true="--samples" false="" length(samples) > 0} ${sep="," samples} \
+        ${"--samples-file " + samplesFile} \
+        ${"--targets " + targets} \
+        ${"--targets-file " + targetsFile} \
+        ${"--user-tstv " + userTsTv} \
+        --threads ${threads} \
+        ${true="--verbose" false="" verbose} \
+        ${inputVcf} ${compareVcf} > ${outputPath}
     }
 
     output {
@@ -352,23 +351,23 @@ task View {
 
         String memory = "256M"
         Int timeMinutes = 1 + ceil(size(inputFile, "G"))
-        String dockerImage = "quay.io/biocontainers/bcftools:1.10.2--h4f4756c_2"
+        String dockerImage = "genedockdx/bcftools:1.10.2--h4f4756c_2"
     }
 
     Boolean compressed = basename(outputPath) != basename(outputPath, ".gz")
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         bcftools view \
-        ~{"--exclude " + exclude} \
-        ~{"--include " + include} \
-        ~{true="--exclude-uncalled" false="" excludeUncalled} \
-        -o ~{outputPath} \
-        -O ~{true="z" false="v" compressed} \
-        ~{inputFile}
+        ${"--exclude " + exclude} \
+        ${"--include " + include} \
+        ${true="--exclude-uncalled" false="" excludeUncalled} \
+        -o ${outputPath} \
+        -O ${true="z" false="v" compressed} \
+        ${inputFile}
 
-        ~{if compressed then 'bcftools index --tbi ~{outputPath}' else ''}
+        ${if compressed then 'bcftools index --tbi ${outputPath}' else ''}
     }
 
     output {
@@ -397,4 +396,17 @@ task View {
         outputVcf: {description: "VCF file."}
         outputVcfIndex: {description: "Index of VCF file."}
     }
+}
+
+workflow bcf_wf{
+        File inputFile
+        String? newId
+        call Annotate{
+            input:
+            inputFile=inputFile,
+            newId=newId
+        }
+        output {
+            File result = Annotate.outputVcf
+        }
 }

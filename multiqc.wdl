@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -58,7 +57,7 @@ task MultiQC {
 
         String? memory
         Int timeMinutes = 10 + ceil(size(reports, "G") * 8)
-        String dockerImage = "quay.io/biocontainers/multiqc:1.9--py_1"
+        String dockerImage = "genedockdx/multiqc:1.9--py_1"
     }
 
     Int memoryGb = 2 + ceil(size(reports, "G"))
@@ -84,8 +83,8 @@ task MultiQC {
         from pathlib import Path 
         from typing import List
 
-        reports: List[str] = ["~{sep='","' reports}"]
-        report_dir: Path = Path("~{reportDir}")
+        reports: List[str] = ["${sep='","' reports}"]
+        report_dir: Path = Path("${reportDir}")
         
         for report in reports:
             report_path = Path(report)
@@ -97,36 +96,36 @@ task MultiQC {
         CODE
 
         set -e
-        mkdir -p ~{outDir}
+        mkdir -p ${outDir}
         multiqc \
-        ~{true="--force" false="" force} \
-        ~{true="--dirs" false="" dirs} \
-        ~{"--dirs-depth " + dirsDepth} \
-        ~{true="--fullnames" false="" fullNames} \
-        ~{"--title " + title} \
-        ~{"--comment " + comment} \
-        ~{"--filename " + fileName} \
-        ~{"--outdir " + outDir} \
-        ~{"--template " + template} \
-        ~{"--tag " + tag} \
-        ~{"--ignore " + ignore} \
-        ~{"--ignore-samples" + ignoreSamples} \
-        ~{"--sample-names " + sampleNames} \
-        ~{"--file-list " + fileList} \
-        ~{true="--exclude " false="" defined(exclude)}~{sep=" --exclude " exclude} \
-        ~{true="--module " false="" defined(module)}~{sep=" --module " module} \
-        ~{true="--data-dir" false="--no-data-dir" dataDir} \
-        ~{"--data-format " + dataFormat} \
-        ~{true="--zip-data-dir" false="" zipDataDir && dataDir} \
-        ~{true="--export" false="" export} \
-        ~{true="--flat" false="" flat} \
-        ~{true="--interactive" false="" interactive} \
-        ~{true="--lint" false="" lint} \
-        ~{true="--pdf" false="" pdf} \
-        ~{false="--no-megaqc-upload" true="" megaQCUpload} \
-        ~{"--config " + config} \
-        ~{"--cl-config " + clConfig } \
-        ~{reportDir}
+        ${true="--force" false="" force} \
+        ${true="--dirs" false="" dirs} \
+        ${"--dirs-depth " + dirsDepth} \
+        ${true="--fullnames" false="" fullNames} \
+        ${"--title " + title} \
+        ${"--comment " + comment} \
+        ${"--filename " + fileName} \
+        ${"--outdir " + outDir} \
+        ${"--template " + template} \
+        ${"--tag " + tag} \
+        ${"--ignore " + ignore} \
+        ${"--ignore-samples" + ignoreSamples} \
+        ${"--sample-names " + sampleNames} \
+        ${"--file-list " + fileList} \
+        ${true="--exclude " false="" defined(exclude)}${sep=" --exclude " exclude} \
+        ${true="--module " false="" defined(module)}${sep=" --module " module} \
+        ${true="--data-dir" false="--no-data-dir" dataDir} \
+        ${"--data-format " + dataFormat} \
+        ${true="--zip-data-dir" false="" zipDataDir && dataDir} \
+        ${true="--export" false="" export} \
+        ${true="--flat" false="" flat} \
+        ${true="--interactive" false="" interactive} \
+        ${true="--lint" false="" lint} \
+        ${true="--pdf" false="" pdf} \
+        ${false="--no-megaqc-upload" true="" megaQCUpload} \
+        ${"--config " + config} \
+        ${"--cl-config " + clConfig } \
+        ${reportDir}
     }
 
     String reportFilename = if (defined(fileName))
@@ -139,7 +138,7 @@ task MultiQC {
     }
 
     runtime {
-        memory: select_first([memory, "~{memoryGb}G"])
+        memory: select_first([memory, "${memoryGb}G"])
         time_minutes: timeMinutes
         docker: dockerImage
     }

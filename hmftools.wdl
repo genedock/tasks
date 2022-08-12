@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2020 Leiden University Medical Center
 #
@@ -38,33 +37,33 @@ task Amber {
         String memory = "70G"
         String javaXmx = "64G"
         Int timeMinutes = 240
-        String dockerImage = "quay.io/biocontainers/hmftools-amber:3.5--0"
+        String dockerImage = "genedockdx/hmftools-amber:3.5--0"
     }
 
     command {
-        AMBER -Xmx~{javaXmx} \
-        -reference ~{referenceName} \
-        -reference_bam ~{referenceBam} \
-        -tumor ~{tumorName} \
-        -tumor_bam ~{tumorBam} \
-        -output_dir ~{outputDir} \
-        -threads ~{threads} \
-        -ref_genome ~{referenceFasta} \
-        -loci ~{loci}
+        AMBER -Xmx${javaXmx} \
+        -reference ${referenceName} \
+        -reference_bam ${referenceBam} \
+        -tumor ${tumorName} \
+        -tumor_bam ${tumorBam} \
+        -output_dir ${outputDir} \
+        -threads ${threads} \
+        -ref_genome ${referenceFasta} \
+        -loci ${loci}
     }
 
     output {
-        File version = "~{outputDir}/amber.version"
-        File tumorBafPcf = "~{outputDir}/~{tumorName}.amber.baf.pcf"
-        File tumorBafTsv = "~{outputDir}/~{tumorName}.amber.baf.tsv"
-        File tumorBafVcf = "~{outputDir}/~{tumorName}.amber.baf.vcf.gz"
-        File tumorBafVcfIndex = "~{outputDir}/~{tumorName}.amber.baf.vcf.gz.tbi"
-        File tumorContaminationVcf = "~{outputDir}/~{tumorName}.amber.contamination.vcf.gz"
-        File tumorContaminationVcfIndex = "~{outputDir}/~{tumorName}.amber.contamination.vcf.gz.tbi"
-        File tumorContaminationTsv = "~{outputDir}/~{tumorName}.amber.contamination.tsv"
-        File tumorQc = "~{outputDir}/~{tumorName}.amber.qc"
-        File normalSnpVcf = "~{outputDir}/~{referenceName}.amber.snp.vcf.gz"
-        File normalSnpVcfIndex = "~{outputDir}/~{referenceName}.amber.snp.vcf.gz.tbi"
+        File version = "${outputDir}/amber.version"
+        File tumorBafPcf = "${outputDir}/${tumorName}.amber.baf.pcf"
+        File tumorBafTsv = "${outputDir}/${tumorName}.amber.baf.tsv"
+        File tumorBafVcf = "${outputDir}/${tumorName}.amber.baf.vcf.gz"
+        File tumorBafVcfIndex = "${outputDir}/${tumorName}.amber.baf.vcf.gz.tbi"
+        File tumorContaminationVcf = "${outputDir}/${tumorName}.amber.contamination.vcf.gz"
+        File tumorContaminationVcfIndex = "${outputDir}/${tumorName}.amber.contamination.vcf.gz.tbi"
+        File tumorContaminationTsv = "${outputDir}/${tumorName}.amber.contamination.tsv"
+        File tumorQc = "${outputDir}/${tumorName}.amber.qc"
+        File normalSnpVcf = "${outputDir}/${referenceName}.amber.snp.vcf.gz"
+        File normalSnpVcfIndex = "${outputDir}/${referenceName}.amber.snp.vcf.gz.tbi"
         Array[File] outputs = [version, tumorBafPcf, tumorBafTsv, tumorBafVcf, tumorBafVcfIndex,
             tumorContaminationVcf, tumorContaminationVcfIndex, tumorContaminationTsv, tumorQc,
             normalSnpVcf, normalSnpVcfIndex]
@@ -115,29 +114,29 @@ task Cobalt {
         String memory = "5G"
         String javaXmx = "4G"
         Int timeMinutes = 240
-        String dockerImage = "quay.io/biocontainers/hmftools-cobalt:1.11--0"
+        String dockerImage = "genedockdx/hmftools-cobalt:1.11--0"
     }
 
     command {
-        COBALT -Xmx~{javaXmx} \
-        -reference ~{referenceName} \
-        -reference_bam ~{referenceBam} \
-        -tumor ~{tumorName} \
-        -tumor_bam ~{tumorBam} \
-        -output_dir ~{outputDir} \
-        -threads ~{threads} \
-        -gc_profile ~{gcProfile}
+        COBALT -Xmx${javaXmx} \
+        -reference ${referenceName} \
+        -reference_bam ${referenceBam} \
+        -tumor ${tumorName} \
+        -tumor_bam ${tumorBam} \
+        -output_dir ${outputDir} \
+        -threads ${threads} \
+        -gc_profile ${gcProfile}
     }
 
     output {
-        File version = "~{outputDir}/cobalt.version"
-        File normalGcMedianTsv = "~{outputDir}/~{referenceName}.cobalt.gc.median.tsv"
-        File normalRationMedianTsv = "~{outputDir}/~{referenceName}.cobalt.ratio.median.tsv"
-        File normalRationPcf = "~{outputDir}/~{referenceName}.cobalt.ratio.pcf"
-        File tumorGcMedianTsv = "~{outputDir}/~{tumorName}.cobalt.gc.median.tsv"
-        File tumorRatioPcf = "~{outputDir}/~{tumorName}.cobalt.ratio.pcf"
-        File tumorRatioTsv = "~{outputDir}/~{tumorName}.cobalt.ratio.tsv"
-        File tumorChrLen = "~{outputDir}/~{tumorName}.chr.len"
+        File version = "${outputDir}/cobalt.version"
+        File normalGcMedianTsv = "${outputDir}/${referenceName}.cobalt.gc.median.tsv"
+        File normalRationMedianTsv = "${outputDir}/${referenceName}.cobalt.ratio.median.tsv"
+        File normalRationPcf = "${outputDir}/${referenceName}.cobalt.ratio.pcf"
+        File tumorGcMedianTsv = "${outputDir}/${tumorName}.cobalt.gc.median.tsv"
+        File tumorRatioPcf = "${outputDir}/${tumorName}.cobalt.ratio.pcf"
+        File tumorRatioTsv = "${outputDir}/${tumorName}.cobalt.ratio.tsv"
+        File tumorChrLen = "${outputDir}/${tumorName}.chr.len"
         Array[File] outputs = [version, normalGcMedianTsv, normalRationMedianTsv,
             normalRationPcf, tumorGcMedianTsv, tumorRatioPcf, tumorRatioTsv, tumorChrLen]
     }
@@ -189,25 +188,25 @@ task CupGenerateReport {
     # collisions. Outputs are copied to the given output dir afterwards.
     command {
         set -e
-        mkdir -p ./workdir ~{outputDir}
-        ln -s -t workdir ~{cupData}
+        mkdir -p ./workdir ${outputDir}
+        ln -s -t workdir ${cupData}
         CupGenerateReport \
-        ~{sampleName} \
+        ${sampleName} \
         workdir/
-        mv -t ~{outputDir} \
-        ./workdir/~{sampleName}.cup.report.summary.png \
-        ./workdir/~{sampleName}_cup_report.pdf
-        if [ -f ./workdir/~{sampleName}.cup.report.features.png ]
+        mv -t ${outputDir} \
+        ./workdir/${sampleName}.cup.report.summary.png \
+        ./workdir/${sampleName}_cup_report.pdf
+        if [ -f ./workdir/${sampleName}.cup.report.features.png ]
           then
-            mv -t ~{outputDir} \
-            ./workdir/~{sampleName}.cup.report.features.png
+            mv -t ${outputDir} \
+            ./workdir/${sampleName}.cup.report.features.png
         fi
     }
 
     output {
-        File summaryPng = "~{outputDir}/~{sampleName}.cup.report.summary.png"
-        File? featuresPng = "~{outputDir}/~{sampleName}.cup.report.features.png"
-        File reportPdf = "~{outputDir}/~{sampleName}_cup_report.pdf"
+        File summaryPng = "${outputDir}/${sampleName}.cup.report.summary.png"
+        File? featuresPng = "${outputDir}/${sampleName}.cup.report.features.png"
+        File reportPdf = "${outputDir}/${sampleName}_cup_report.pdf"
     }
 
     runtime {
@@ -249,21 +248,21 @@ task Cuppa {
 
     command {
         set -e
-        mkdir -p sampleData ~{outputDir}
-        ln -s -t sampleData ~{sep=" " linxOutput} ~{sep=" " purpleOutput}
-        cuppa -Xmx~{javaXmx} \
-        -output_dir ~{outputDir} \
-        -output_id ~{sampleName} \
-        -categories '~{sep="," categories}' \
-        -ref_data_dir ~{sub(referenceData[0], basename(referenceData[0]), "")} \
+        mkdir -p sampleData ${outputDir}
+        ln -s -t sampleData ${sep=" " linxOutput} ${sep=" " purpleOutput}
+        cuppa -Xmx${javaXmx} \
+        -output_dir ${outputDir} \
+        -output_id ${sampleName} \
+        -categories '${sep="," categories}' \
+        -ref_data_dir ${sub(referenceData[0], basename(referenceData[0]), "")} \
         -sample_data_dir sampleData \
-        -sample_data ~{sampleName} \
-        -sample_sv_file ~{purpleSvVcf} \
-        -sample_somatic_vcf ~{purpleSomaticVcf}
+        -sample_data ${sampleName} \
+        -sample_sv_file ${purpleSvVcf} \
+        -sample_somatic_vcf ${purpleSomaticVcf}
     }
 
     output {
-        File cupData = "~{outputDir}/~{sampleName}.cup.data.csv"
+        File cupData = "${outputDir}/${sampleName}.cup.data.csv"
     }
 
     runtime {
@@ -305,16 +304,16 @@ task CuppaChart {
 
     command {
         set -e
-        mkdir -p ~{outputDir}
+        mkdir -p ${outputDir}
         cuppa-chart \
-        -sample ~{sampleName} \
-        -sample_data ~{cupData} \
-        -output_dir ~{outputDir}
+        -sample ${sampleName} \
+        -sample_data ${cupData} \
+        -output_dir ${outputDir}
     }
 
     output {
-        File cuppaChart = "~{outputDir}/~{sampleName}.cuppa.chart.png"
-        File cuppaConclusion = "~{outputDir}/~{sampleName}.cuppa.conclusion.txt"
+        File cuppaChart = "${outputDir}/${sampleName}.cuppa.chart.png"
+        File cuppaConclusion = "${outputDir}/${sampleName}.cuppa.conclusion.txt"
     }
 
     runtime {
@@ -351,29 +350,29 @@ task Gripss {
         String memory = "17G"
         String javaXmx = "16G"
         Int timeMinutes = 50
-        String dockerImage = "quay.io/biocontainers/hmftools-gripss:2.0--hdfd78af_0"
+        String dockerImage = "genedockdx/hmftools-gripss:2.0--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p ~{outputDir}
-        gripss -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
-        -ref_genome ~{referenceFasta} \
-        -known_hotspot_file ~{knownFusionPairBedpe} \
-        -pon_sgl_file ~{breakendPon} \
-        -pon_sv_file ~{breakpointPon} \
-        -reference ~{referenceName} \
-        -sample ~{tumorName} \
-        -vcf ~{vcf} \
-        -output_dir ~{outputDir} \
+        mkdir -p ${outputDir}
+        gripss -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
+        -ref_genome ${referenceFasta} \
+        -known_hotspot_file ${knownFusionPairBedpe} \
+        -pon_sgl_file ${breakendPon} \
+        -pon_sv_file ${breakpointPon} \
+        -reference ${referenceName} \
+        -sample ${tumorName} \
+        -vcf ${vcf} \
+        -output_dir ${outputDir} \
         -output_id somatic
     }
 
     output {
-        File fullVcf = "~{outputDir}/~{tumorName}.gripss.somatic.vcf.gz"
-        File fullVcfIndex = "~{outputDir}/~{tumorName}.gripss.somatic.vcf.gz.tbi"
-        File filteredVcf = "~{outputDir}/~{tumorName}.gripss.filtered.somatic.vcf.gz"
-        File filteredVcfIndex = "~{outputDir}/~{tumorName}.gripss.filtered.somatic.vcf.gz.tbi"
+        File fullVcf = "${outputDir}/${tumorName}.gripss.somatic.vcf.gz"
+        File fullVcfIndex = "${outputDir}/${tumorName}.gripss.somatic.vcf.gz.tbi"
+        File filteredVcf = "${outputDir}/${tumorName}.gripss.filtered.somatic.vcf.gz"
+        File filteredVcfIndex = "${outputDir}/${tumorName}.gripss.filtered.somatic.vcf.gz.tbi"
     }
 
     runtime {
@@ -422,21 +421,21 @@ task GripssApplicationKt {
         String memory = "32G"
         String javaXmx = "31G"
         Int timeMinutes = 45
-        String dockerImage = "quay.io/biocontainers/hmftools-gripss:1.11--hdfd78af_0"
+        String dockerImage = "genedockdx/hmftools-gripss:1.11--hdfd78af_0"
     }
 
     command {
-        java -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        java -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         -cp /usr/local/share/hmftools-gripss-1.11-0/gripss.jar \
         com.hartwig.hmftools.gripss.GripssApplicationKt \
-        -tumor ~{tumorName} \
-        -reference ~{referenceName} \
-        -ref_genome ~{referenceFasta} \
-        -breakpoint_hotspot ~{breakpointHotspot} \
-        -breakend_pon ~{breakendPon} \
-        -breakpoint_pon ~{breakpointPon} \
-        -input_vcf ~{inputVcf} \
-        -output_vcf ~{outputPath} \
+        -tumor ${tumorName} \
+        -reference ${referenceName} \
+        -ref_genome ${referenceFasta} \
+        -breakpoint_hotspot ${breakpointHotspot} \
+        -breakend_pon ${breakendPon} \
+        -breakpoint_pon ${breakpointPon} \
+        -input_vcf ${inputVcf} \
+        -output_vcf ${outputPath} \
         -paired_normal_tumor_ordinals
     }
 
@@ -481,15 +480,15 @@ task GripssHardFilterApplicationKt {
         String memory = "3G"
         String javaXmx = "2G"
         Int timeMinutes = 15
-        String dockerImage = "quay.io/biocontainers/hmftools-gripss:1.11--hdfd78af_0"
+        String dockerImage = "genedockdx/hmftools-gripss:1.11--hdfd78af_0"
     }
 
     command {
-        java -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        java -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         -cp /usr/local/share/hmftools-gripss-1.11-0/gripss.jar \
         com.hartwig.hmftools.gripss.GripssHardFilterApplicationKt \
-        -input_vcf ~{inputVcf} \
-        -output_vcf ~{outputPath}
+        -input_vcf ${inputVcf} \
+        -output_vcf ${outputPath}
     }
 
     output {
@@ -534,31 +533,31 @@ task HealthChecker {
 
     command {
         set -e
-        mkdir -p ~{outputDir}
-        health-checker -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
-        -reference ~{referenceName} \
-        -ref_flagstat_file ~{referenceFlagstats} \
-        -ref_wgs_metrics_file ~{referenceMetrics} \
-        -tumor ~{tumorName} \
-        -tum_flagstat_file ~{tumorFlagstats} \
-        -tum_wgs_metrics_file ~{tumorMetrics} \
-        -purple_dir ~{sub(purpleOutput[0], basename(purpleOutput[0]), "")} \
-        -output_dir ~{outputDir}
-        if [ -e '~{outputDir}/~{tumorName}.HealthCheckSucceeded' ]
+        mkdir -p ${outputDir}
+        health-checker -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
+        -reference ${referenceName} \
+        -ref_flagstat_file ${referenceFlagstats} \
+        -ref_wgs_metrics_file ${referenceMetrics} \
+        -tumor ${tumorName} \
+        -tum_flagstat_file ${tumorFlagstats} \
+        -tum_wgs_metrics_file ${tumorMetrics} \
+        -purple_dir ${sub(purpleOutput[0], basename(purpleOutput[0]), "")} \
+        -output_dir ${outputDir}
+        if [ -e '${outputDir}/${tumorName}.HealthCheckSucceeded' ]
           then
-            echo 'true' > '~{outputDir}/succeeded'
+            echo 'true' > '${outputDir}/succeeded'
         fi
-        if [ -e '~{outputDir}/~{tumorName}.HealthCheckFailed' ]
+        if [ -e '${outputDir}/${tumorName}.HealthCheckFailed' ]
           then
-            echo 'false' > '~{outputDir}/succeeded'
+            echo 'false' > '${outputDir}/succeeded'
         fi
     }
 
     output {
         Boolean succeeded = read_boolean("succeeded")
         File outputFile = if succeeded
-                          then "~{outputDir}/~{tumorName}.HealthCheckSucceeded"
-                          else "~{outputDir}/~{tumorName}.HealthCheckFailed"
+                          then "${outputDir}/${tumorName}.HealthCheckSucceeded"
+                          else "${outputDir}/${tumorName}.HealthCheckFailed"
     }
 
     runtime {
@@ -607,43 +606,43 @@ task Linx {
         String memory = "9G"
         String javaXmx = "8G"
         Int timeMinutes = 10
-        String dockerImage = "quay.io/biocontainers/hmftools-linx:1.18--hdfd78af_0"
+        String dockerImage = "genedockdx/hmftools-linx:1.18--hdfd78af_0"
     }
 
     command {
-        linx -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
-        -sample ~{sampleName} \
-        -sv_vcf ~{svVcf} \
-        -purple_dir ~{sub(purpleOutput[0], basename(purpleOutput[0]), "")} \
-        -ref_genome_version ~{refGenomeVersion} \
-        -output_dir ~{outputDir} \
-        -fragile_site_file ~{fragileSiteCsv} \
-        -line_element_file ~{lineElementCsv} \
-        -ensembl_data_dir ~{sub(geneDataCsv, basename(geneDataCsv), "")} \
+        linx -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
+        -sample ${sampleName} \
+        -sv_vcf ${svVcf} \
+        -purple_dir ${sub(purpleOutput[0], basename(purpleOutput[0]), "")} \
+        -ref_genome_version ${refGenomeVersion} \
+        -output_dir ${outputDir} \
+        -fragile_site_file ${fragileSiteCsv} \
+        -line_element_file ${lineElementCsv} \
+        -ensembl_data_dir ${sub(geneDataCsv, basename(geneDataCsv), "")} \
         -check_fusions \
-        -known_fusion_file ~{knownFusionCsv} \
+        -known_fusion_file ${knownFusionCsv} \
         -check_drivers \
-        -driver_gene_panel ~{driverGenePanel} \
+        -driver_gene_panel ${driverGenePanel} \
         -chaining_sv_limit 0 \
         -write_vis_data \
-        ~{if writeAllVisFusions then "-write_all_vis_fusions" else ""}
+        ${if writeAllVisFusions then "-write_all_vis_fusions" else ""}
     }
 
     output {
-        File driverCatalog = "~{outputDir}/~{sampleName}.linx.driver.catalog.tsv"
-        File linxBreakend = "~{outputDir}/~{sampleName}.linx.breakend.tsv"
-        File linxClusters = "~{outputDir}/~{sampleName}.linx.clusters.tsv"
-        File linxDrivers = "~{outputDir}/~{sampleName}.linx.drivers.tsv"
-        File linxFusion = "~{outputDir}/~{sampleName}.linx.fusion.tsv"
-        File linxLinks = "~{outputDir}/~{sampleName}.linx.links.tsv"
-        File linxSvs = "~{outputDir}/~{sampleName}.linx.svs.tsv"
-        File linxVisCopyNumber = "~{outputDir}/~{sampleName}.linx.vis_copy_number.tsv"
-        File linxVisFusion = "~{outputDir}/~{sampleName}.linx.vis_fusion.tsv"
-        File linxVisGeneExon = "~{outputDir}/~{sampleName}.linx.vis_gene_exon.tsv"
-        File linxVisProteinDomain = "~{outputDir}/~{sampleName}.linx.vis_protein_domain.tsv"
-        File linxVisSegments = "~{outputDir}/~{sampleName}.linx.vis_segments.tsv"
-        File linxVisSvData = "~{outputDir}/~{sampleName}.linx.vis_sv_data.tsv"
-        File linxVersion = "~{outputDir}/linx.version"
+        File driverCatalog = "${outputDir}/${sampleName}.linx.driver.catalog.tsv"
+        File linxBreakend = "${outputDir}/${sampleName}.linx.breakend.tsv"
+        File linxClusters = "${outputDir}/${sampleName}.linx.clusters.tsv"
+        File linxDrivers = "${outputDir}/${sampleName}.linx.drivers.tsv"
+        File linxFusion = "${outputDir}/${sampleName}.linx.fusion.tsv"
+        File linxLinks = "${outputDir}/${sampleName}.linx.links.tsv"
+        File linxSvs = "${outputDir}/${sampleName}.linx.svs.tsv"
+        File linxVisCopyNumber = "${outputDir}/${sampleName}.linx.vis_copy_number.tsv"
+        File linxVisFusion = "${outputDir}/${sampleName}.linx.vis_fusion.tsv"
+        File linxVisGeneExon = "${outputDir}/${sampleName}.linx.vis_gene_exon.tsv"
+        File linxVisProteinDomain = "${outputDir}/${sampleName}.linx.vis_protein_domain.tsv"
+        File linxVisSegments = "${outputDir}/${sampleName}.linx.vis_segments.tsv"
+        File linxVisSvData = "${outputDir}/${sampleName}.linx.vis_sv_data.tsv"
+        File linxVersion = "${outputDir}/linx.version"
         Array[File] outputs = [driverCatalog, linxBreakend, linxClusters, linxDrivers, linxFusion,
                                linxLinks, linxSvs, linxVisCopyNumber, linxVisFusion,
                                linxVisGeneExon, linxVisProteinDomain, linxVisSegments, linxVisSvData,
@@ -693,27 +692,27 @@ task LinxVisualisations {
         String memory = "9G"
         String javaXmx = "8G"
         Int timeMinutes = 1440
-        String dockerImage = "quay.io/biocontainers/hmftools-linx:1.18--hdfd78af_0"
+        String dockerImage = "genedockdx/hmftools-linx:1.18--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p ~{outputDir}
-        java -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        mkdir -p ${outputDir}
+        java -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         -cp /usr/local/share/hmftools-linx-1.18-0/sv-linx.jar \
         com.hartwig.hmftools.linx.visualiser.SvVisualiser \
-        -sample ~{sample} \
-        -ref_genome_version ~{refGenomeVersion} \
+        -sample ${sample} \
+        -ref_genome_version ${refGenomeVersion} \
         -circos /usr/local/bin/circos \
-        -vis_file_dir ~{sub(linxOutput[0], basename(linxOutput[0]), "")} \
-        -data_out ~{outputDir}/circos \
-        -plot_out ~{outputDir}/plots \
-        ~{if plotReportable then "-plot_reportable" else ""}
+        -vis_file_dir ${sub(linxOutput[0], basename(linxOutput[0]), "")} \
+        -data_out ${outputDir}/circos \
+        -plot_out ${outputDir}/plots \
+        ${if plotReportable then "-plot_reportable" else ""}
     }
 
     output {
-        Array[File] circos = glob("~{outputDir}/circos/*")
-        Array[File] plots = glob("~{outputDir}/plots/*")
+        Array[File] circos = glob("${outputDir}/circos/*")
+        Array[File] plots = glob("${outputDir}/plots/*")
     }
 
     runtime {
@@ -786,49 +785,49 @@ task Orange {
 
     command {
         set -e
-        mkdir -p ~{outputDir}
-        orange -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
-        -output_dir ~{outputDir} \
-        -doid_json ~{doidJson} \
-        -primary_tumor_doids '~{sep=";" sampleDoids}' \
+        mkdir -p ${outputDir}
+        orange -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
+        -output_dir ${outputDir} \
+        -doid_json ${doidJson} \
+        -primary_tumor_doids '${sep=";" sampleDoids}' \
         -max_evidence_level C \
-        -tumor_sample_id ~{tumorName} \
-        -reference_sample_id ~{referenceName} \
-        -ref_sample_wgs_metrics_file ~{referenceMetrics} \
-        -tumor_sample_wgs_metrics_file ~{tumorMetrics} \
-        -ref_sample_flagstat_file ~{referenceFlagstats} \
-        -tumor_sample_flagstat_file ~{tumorFlagstats} \
-        -sage_germline_gene_coverage_tsv ~{sageGermlineGeneCoverageTsv} \
-        -sage_somatic_ref_sample_bqr_plot ~{sageSomaticRefSampleBqrPlot} \
-        -sage_somatic_tumor_sample_bqr_plot ~{sageSomaticTumorSampleBqrPlot} \
-        -purple_gene_copy_number_tsv ~{purpleGeneCopyNumberTsv} \
-        -purple_germline_driver_catalog_tsv ~{purpleGermlineDriverCatalogTsv} \
-        -purple_germline_variant_vcf ~{purpleGermlineVariantVcf} \
-        -purple_plot_directory ~{sub(purplePlots[0], basename(purplePlots[0]), "")} \
-        -purple_purity_tsv ~{purplePurityTsv} \
-        -purple_qc_file ~{purpleQcFile} \
-        -purple_somatic_driver_catalog_tsv ~{purpleSomaticDriverCatalogTsv} \
-        -purple_somatic_variant_vcf ~{purpleSomaticVariantVcf} \
-        -linx_fusion_tsv ~{linxFusionTsv} \
-        -linx_breakend_tsv ~{linxBreakendTsv} \
-        -linx_driver_catalog_tsv ~{linxDriverCatalogTsv} \
-        -linx_driver_tsv ~{linxDriverTsv} \
-        -linx_plot_directory ~{sub(linxPlots[0], basename(linxPlots[0]), "")} \
-        -cuppa_result_csv ~{cuppaResultCsv} \
-        -cuppa_summary_plot ~{cuppaSummaryPlot} \
-        ~{"-cuppa_feature_plot " + cuppaFeaturePlot} \
-        -chord_prediction_txt ~{chordPredictionTxt} \
-        -peach_genotype_tsv ~{peachGenotypeTsv} \
-        -protect_evidence_tsv ~{protectEvidenceTsv} \
-        -annotated_virus_tsv ~{annotatedVirusTsv} \
-        -cohort_mapping_tsv ~{cohortMappingTsv} \
-        -cohort_percentiles_tsv ~{cohortPercentilesTsv}
+        -tumor_sample_id ${tumorName} \
+        -reference_sample_id ${referenceName} \
+        -ref_sample_wgs_metrics_file ${referenceMetrics} \
+        -tumor_sample_wgs_metrics_file ${tumorMetrics} \
+        -ref_sample_flagstat_file ${referenceFlagstats} \
+        -tumor_sample_flagstat_file ${tumorFlagstats} \
+        -sage_germline_gene_coverage_tsv ${sageGermlineGeneCoverageTsv} \
+        -sage_somatic_ref_sample_bqr_plot ${sageSomaticRefSampleBqrPlot} \
+        -sage_somatic_tumor_sample_bqr_plot ${sageSomaticTumorSampleBqrPlot} \
+        -purple_gene_copy_number_tsv ${purpleGeneCopyNumberTsv} \
+        -purple_germline_driver_catalog_tsv ${purpleGermlineDriverCatalogTsv} \
+        -purple_germline_variant_vcf ${purpleGermlineVariantVcf} \
+        -purple_plot_directory ${sub(purplePlots[0], basename(purplePlots[0]), "")} \
+        -purple_purity_tsv ${purplePurityTsv} \
+        -purple_qc_file ${purpleQcFile} \
+        -purple_somatic_driver_catalog_tsv ${purpleSomaticDriverCatalogTsv} \
+        -purple_somatic_variant_vcf ${purpleSomaticVariantVcf} \
+        -linx_fusion_tsv ${linxFusionTsv} \
+        -linx_breakend_tsv ${linxBreakendTsv} \
+        -linx_driver_catalog_tsv ${linxDriverCatalogTsv} \
+        -linx_driver_tsv ${linxDriverTsv} \
+        -linx_plot_directory ${sub(linxPlots[0], basename(linxPlots[0]), "")} \
+        -cuppa_result_csv ${cuppaResultCsv} \
+        -cuppa_summary_plot ${cuppaSummaryPlot} \
+        ${"-cuppa_feature_plot " + cuppaFeaturePlot} \
+        -chord_prediction_txt ${chordPredictionTxt} \
+        -peach_genotype_tsv ${peachGenotypeTsv} \
+        -protect_evidence_tsv ${protectEvidenceTsv} \
+        -annotated_virus_tsv ${annotatedVirusTsv} \
+        -cohort_mapping_tsv ${cohortMappingTsv} \
+        -cohort_percentiles_tsv ${cohortPercentilesTsv}
     }
-    #TODO may need to be added: -pipeline_version_file ~{pipelineVersionFile}
+    #TODO may need to be added: -pipeline_version_file ${pipelineVersionFile}
 
     output {
-        File orangeJson = "~{outputDir}/~{tumorName}.orange.json"
-        File orangePdf = "~{outputDir}/~{tumorName}.orange.pdf"
+        File orangeJson = "${outputDir}/${tumorName}.orange.json"
+        File orangePdf = "${outputDir}/${tumorName}.orange.pdf"
     }
 
     runtime {
@@ -908,20 +907,20 @@ task Pave {
 
     command {
         set -e
-        mkdir -p ~{outputDir}
-        pave -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
-        -sample ~{sampleName} \
-        -vcf_file ~{vcfFile} \
-        -output_dir ~{outputDir} \
-        -ensembl_data_dir ~{sub(geneDataCsv, basename(geneDataCsv), "")} \
-        -ref_genome ~{referenceFasta} \
-        -ref_genome_version ~{refGenomeVersion} \
-        -driver_gene_panel ~{driverGenePanel}
+        mkdir -p ${outputDir}
+        pave -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
+        -sample ${sampleName} \
+        -vcf_file ${vcfFile} \
+        -output_dir ${outputDir} \
+        -ensembl_data_dir ${sub(geneDataCsv, basename(geneDataCsv), "")} \
+        -ref_genome ${referenceFasta} \
+        -ref_genome_version ${refGenomeVersion} \
+        -driver_gene_panel ${driverGenePanel}
     }
 
     output {
-        File outputVcf = "~{outputDir}/~{sub(basename(vcfFile), 'vcf.gz$', 'pave.vcf.gz')}"
-        File outputVcfIndex = "~{outputDir}/~{sub(basename(vcfFile), 'vcf.gz$', 'pave.vcf.gz.tbi')}"
+        File outputVcf = "${outputDir}/${sub(basename(vcfFile), 'vcf.gz$', 'pave.vcf.gz')}"
+        File outputVcfIndex = "${outputDir}/${sub(basename(vcfFile), 'vcf.gz$', 'pave.vcf.gz.tbi')}"
     }
 
     runtime {
@@ -986,30 +985,30 @@ task Protect {
     }
 
     command {
-        protect -Xmx~{javaXmx} \
-        -ref_genome_version ~{refGenomeVersion} \
-        -tumor_sample_id ~{tumorName} \
-        -reference_sample_id ~{referenceName} \
-        -primary_tumor_doids '~{sep=";" sampleDoids}' \
-        -output_dir ~{outputDir} \
-        -serve_actionability_dir ~{sub(serveActionability[0], basename(serveActionability[0]), "")} \
-        -doid_json ~{doidJson} \
-        -purple_purity_tsv ~{purplePurity} \
-        -purple_qc_file ~{purpleQc} \
-        -purple_somatic_driver_catalog_tsv ~{purpleDriverCatalogSomatic} \
-        -purple_germline_driver_catalog_tsv ~{purpleDriverCatalogGermline} \
-        -purple_somatic_variant_vcf ~{purpleSomaticVariants} \
-        -purple_germline_variant_vcf ~{purpleGermlineVariants} \
-        -purple_gene_copy_number_tsv ~{purpleGeneCopyNumber} \
-        -linx_fusion_tsv ~{linxFusion} \
-        -linx_breakend_tsv ~{linxBreakend} \
-        -linx_driver_catalog_tsv ~{linxDriversCatalog} \
-        -chord_prediction_txt ~{chordPrediction} \
-        -annotated_virus_tsv ~{annotatedVirus}
+        protect -Xmx${javaXmx} \
+        -ref_genome_version ${refGenomeVersion} \
+        -tumor_sample_id ${tumorName} \
+        -reference_sample_id ${referenceName} \
+        -primary_tumor_doids '${sep=";" sampleDoids}' \
+        -output_dir ${outputDir} \
+        -serve_actionability_dir ${sub(serveActionability[0], basename(serveActionability[0]), "")} \
+        -doid_json ${doidJson} \
+        -purple_purity_tsv ${purplePurity} \
+        -purple_qc_file ${purpleQc} \
+        -purple_somatic_driver_catalog_tsv ${purpleDriverCatalogSomatic} \
+        -purple_germline_driver_catalog_tsv ${purpleDriverCatalogGermline} \
+        -purple_somatic_variant_vcf ${purpleSomaticVariants} \
+        -purple_germline_variant_vcf ${purpleGermlineVariants} \
+        -purple_gene_copy_number_tsv ${purpleGeneCopyNumber} \
+        -linx_fusion_tsv ${linxFusion} \
+        -linx_breakend_tsv ${linxBreakend} \
+        -linx_driver_catalog_tsv ${linxDriversCatalog} \
+        -chord_prediction_txt ${chordPrediction} \
+        -annotated_virus_tsv ${annotatedVirus}
     }
 
     output {
-        File protectTsv = "~{outputDir}/~{tumorName}.protect.tsv"
+        File protectTsv = "${outputDir}/${tumorName}.protect.tsv"
     }
 
     runtime {
@@ -1080,71 +1079,71 @@ task Purple {
         Int timeMinutes = 30
         String memory = "9G"
         String javaXmx = "8G"
-        # clone of quay.io/biocontainers/hmftools-purple:3.2--hdfd78af_0 with 'ln -s /usr/local/lib/libwebp.so.7 /usr/local/lib/libwebp.so.6'
+        # clone of genedockdx/hmftools-purple:3.2--hdfd78af_0 with 'ln -s /usr/local/lib/libwebp.so.7 /usr/local/lib/libwebp.so.6'
         String dockerImage = "quay.io/biowdl/hmftools-purple:3.2"
     }
 
     command {
-        PURPLE -Xmx~{javaXmx} \
-        -reference ~{referenceName} \
-        -germline_vcf ~{germlineVcf} \
-        -germline_hotspots ~{germlineHotspots} \
-        -tumor ~{tumorName} \
-        -output_dir ~{outputDir} \
-        -amber ~{sub(amberOutput[0], basename(amberOutput[0]), "")} \
-        -cobalt ~{sub(cobaltOutput[0], basename(cobaltOutput[0]), "")} \
-        -gc_profile ~{gcProfile} \
-        -somatic_vcf ~{somaticVcf} \
-        -structural_vcf ~{filteredSvVcf} \
-        -sv_recovery_vcf ~{fullSvVcf} \
+        PURPLE -Xmx${javaXmx} \
+        -reference ${referenceName} \
+        -germline_vcf ${germlineVcf} \
+        -germline_hotspots ${germlineHotspots} \
+        -tumor ${tumorName} \
+        -output_dir ${outputDir} \
+        -amber ${sub(amberOutput[0], basename(amberOutput[0]), "")} \
+        -cobalt ${sub(cobaltOutput[0], basename(cobaltOutput[0]), "")} \
+        -gc_profile ${gcProfile} \
+        -somatic_vcf ${somaticVcf} \
+        -structural_vcf ${filteredSvVcf} \
+        -sv_recovery_vcf ${fullSvVcf} \
         -circos /usr/local/bin/circos \
-        -ref_genome ~{referenceFasta} \
-        -ensembl_data_dir ~{sub(geneDataCsv, basename(geneDataCsv), "")} \
+        -ref_genome ${referenceFasta} \
+        -ensembl_data_dir ${sub(geneDataCsv, basename(geneDataCsv), "")} \
         -run_drivers \
-        -somatic_hotspots ~{somaticHotspots} \
-        -driver_gene_panel ~{driverGenePanel} \
-        -threads ~{threads}
+        -somatic_hotspots ${somaticHotspots} \
+        -driver_gene_panel ${driverGenePanel} \
+        -threads ${threads}
     }
 
     output {
-        File driverCatalogGermlineTsv = "~{outputDir}/~{tumorName}.driver.catalog.germline.tsv"
-        File driverCatalogSomaticTsv = "~{outputDir}/~{tumorName}.driver.catalog.somatic.tsv"
-        File purpleCnvGeneTsv = "~{outputDir}/~{tumorName}.purple.cnv.gene.tsv"
-        File purpleCnvSomaticTsv = "~{outputDir}/~{tumorName}.purple.cnv.somatic.tsv"
-        File purpleGermlineDeletionTsv = "~{outputDir}/~{tumorName}.purple.germline.deletion.tsv"
-        File purpleGermlineVcf = "~{outputDir}/~{tumorName}.purple.germline.vcf.gz"
-        File purpleGermlineVcfIndex = "~{outputDir}/~{tumorName}.purple.germline.vcf.gz.tbi"
-        File purplePurityRangeTsv = "~{outputDir}/~{tumorName}.purple.purity.range.tsv"
-        File purplePurityTsv = "~{outputDir}/~{tumorName}.purple.purity.tsv"
-        File purpleQc = "~{outputDir}/~{tumorName}.purple.qc"
-        File purpleSegmentTsv = "~{outputDir}/~{tumorName}.purple.segment.tsv"
-        File purpleSomaticClonalityTsv = "~{outputDir}/~{tumorName}.purple.somatic.clonality.tsv"
-        File purpleSomaticHistTsv = "~{outputDir}/~{tumorName}.purple.somatic.hist.tsv"
-        File purpleSomaticVcf = "~{outputDir}/~{tumorName}.purple.somatic.vcf.gz"
-        File purpleSomaticVcfIndex = "~{outputDir}/~{tumorName}.purple.somatic.vcf.gz.tbi"
-        File purpleSvVcf = "~{outputDir}/~{tumorName}.purple.sv.vcf.gz"
-        File purpleSvVcfIndex = "~{outputDir}/~{tumorName}.purple.sv.vcf.gz.tbi"
-        File purpleVersion = "~{outputDir}/purple.version"
-        File circosPlot = "~{outputDir}/plot/~{tumorName}.circos.png"
-        File copynumberPlot = "~{outputDir}/plot/~{tumorName}.copynumber.png"
-        File inputPlot = "~{outputDir}/plot/~{tumorName}.input.png"
-        File mapPlot = "~{outputDir}/plot/~{tumorName}.map.png"
-        File purityRangePlot = "~{outputDir}/plot/~{tumorName}.purity.range.png"
-        File segmentPlot = "~{outputDir}/plot/~{tumorName}.segment.png"
-        File somaticClonalityPlot = "~{outputDir}/plot/~{tumorName}.somatic.clonality.png"
-        File somaticPlot = "~{outputDir}/plot/~{tumorName}.somatic.png"
-        File somaticRainfallPlot = "~{outputDir}/plot/~{tumorName}.somatic.rainfall.png"
-        File circosNormalRatio = "~{outputDir}/circos/~{referenceName}.ratio.circos"
-        File circosBaf = "~{outputDir}/circos/~{tumorName}.baf.circos"
-        File circosConf = "~{outputDir}/circos/~{tumorName}.circos.conf"
-        File circosCnv = "~{outputDir}/circos/~{tumorName}.cnv.circos"
-        File circosIndel = "~{outputDir}/circos/~{tumorName}.indel.circos"
-        File circosInputConf = "~{outputDir}/circos/~{tumorName}.input.conf"
-        File circosLink = "~{outputDir}/circos/~{tumorName}.link.circos"
-        File circosMap = "~{outputDir}/circos/~{tumorName}.map.circos"
-        File circosTumorRatio = "~{outputDir}/circos/~{tumorName}.ratio.circos"
-        File circosSnp = "~{outputDir}/circos/~{tumorName}.snp.circos"
-        File circosGaps = "~{outputDir}/circos/gaps.txt"
+        File driverCatalogGermlineTsv = "${outputDir}/${tumorName}.driver.catalog.germline.tsv"
+        File driverCatalogSomaticTsv = "${outputDir}/${tumorName}.driver.catalog.somatic.tsv"
+        File purpleCnvGeneTsv = "${outputDir}/${tumorName}.purple.cnv.gene.tsv"
+        File purpleCnvSomaticTsv = "${outputDir}/${tumorName}.purple.cnv.somatic.tsv"
+        File purpleGermlineDeletionTsv = "${outputDir}/${tumorName}.purple.germline.deletion.tsv"
+        File purpleGermlineVcf = "${outputDir}/${tumorName}.purple.germline.vcf.gz"
+        File purpleGermlineVcfIndex = "${outputDir}/${tumorName}.purple.germline.vcf.gz.tbi"
+        File purplePurityRangeTsv = "${outputDir}/${tumorName}.purple.purity.range.tsv"
+        File purplePurityTsv = "${outputDir}/${tumorName}.purple.purity.tsv"
+        File purpleQc = "${outputDir}/${tumorName}.purple.qc"
+        File purpleSegmentTsv = "${outputDir}/${tumorName}.purple.segment.tsv"
+        File purpleSomaticClonalityTsv = "${outputDir}/${tumorName}.purple.somatic.clonality.tsv"
+        File purpleSomaticHistTsv = "${outputDir}/${tumorName}.purple.somatic.hist.tsv"
+        File purpleSomaticVcf = "${outputDir}/${tumorName}.purple.somatic.vcf.gz"
+        File purpleSomaticVcfIndex = "${outputDir}/${tumorName}.purple.somatic.vcf.gz.tbi"
+        File purpleSvVcf = "${outputDir}/${tumorName}.purple.sv.vcf.gz"
+        File purpleSvVcfIndex = "${outputDir}/${tumorName}.purple.sv.vcf.gz.tbi"
+        File purpleVersion = "${outputDir}/purple.version"
+        File circosPlot = "${outputDir}/plot/${tumorName}.circos.png"
+        File copynumberPlot = "${outputDir}/plot/${tumorName}.copynumber.png"
+        File inputPlot = "${outputDir}/plot/${tumorName}.input.png"
+        File mapPlot = "${outputDir}/plot/${tumorName}.map.png"
+        File purityRangePlot = "${outputDir}/plot/${tumorName}.purity.range.png"
+        File segmentPlot = "${outputDir}/plot/${tumorName}.segment.png"
+        File somaticClonalityPlot = "${outputDir}/plot/${tumorName}.somatic.clonality.png"
+        File somaticPlot = "${outputDir}/plot/${tumorName}.somatic.png"
+        File somaticRainfallPlot = "${outputDir}/plot/${tumorName}.somatic.rainfall.png"
+        File circosNormalRatio = "${outputDir}/circos/${referenceName}.ratio.circos"
+        File circosBaf = "${outputDir}/circos/${tumorName}.baf.circos"
+        File circosConf = "${outputDir}/circos/${tumorName}.circos.conf"
+        File circosCnv = "${outputDir}/circos/${tumorName}.cnv.circos"
+        File circosIndel = "${outputDir}/circos/${tumorName}.indel.circos"
+        File circosInputConf = "${outputDir}/circos/${tumorName}.input.conf"
+        File circosLink = "${outputDir}/circos/${tumorName}.link.circos"
+        File circosMap = "${outputDir}/circos/${tumorName}.map.circos"
+        File circosTumorRatio = "${outputDir}/circos/${tumorName}.ratio.circos"
+        File circosSnp = "${outputDir}/circos/${tumorName}.snp.circos"
+        File circosGaps = "${outputDir}/circos/gaps.txt"
         Array[File] outputs = [driverCatalogSomaticTsv, purpleCnvGeneTsv,
             purpleCnvSomaticTsv, purplePurityRangeTsv, purplePurityTsv, purpleQc,
             purpleSegmentTsv, purpleSomaticClonalityTsv, purpleSomaticHistTsv,
@@ -1229,41 +1228,41 @@ task Sage {
         String javaXmx = "50G"
         String memory = "51G"
         Int timeMinutes = 1 + ceil(size(select_all([tumorBam, referenceBam]), "G") * 9 / threads)
-        String dockerImage = "quay.io/biocontainers/hmftools-sage:2.8--hdfd78af_1"
+        String dockerImage = "genedockdx/hmftools-sage:2.8--hdfd78af_1"
     }
 
     command {
-        SAGE -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
-        -tumor ~{tumorName} \
-        -tumor_bam ~{tumorBam} \
-        ~{"-reference " + referenceName} \
-        ~{"-reference_bam " + referenceBam} \
-        -ref_genome ~{referenceFasta} \
-        -hotspots ~{hotspots} \
-        -panel_bed ~{panelBed} \
-        -high_confidence_bed ~{highConfidenceBed} \
-        -assembly ~{true="hg38" false="hg19" hg38} \
-        ~{"-hotspot_min_tumor_qual " + hotspotMinTumorQual} \
-        ~{"-panel_min_tumor_qual " + panelMinTumorQual} \
-        ~{"-hotspot_max_germline_vaf " + hotspotMaxGermlineVaf} \
-        ~{"-hotspot_max_germline_rel_raw_base_qual " + hotspotMaxGermlineRelRawBaseQual} \
-        ~{"-panel_max_germline_vaf " + panelMaxGermlineVaf} \
-        ~{"-panel_max_germline_rel_raw_base_qual " + panelMaxGermlineRelRawBaseQual} \
-        ~{"-mnv_filter_enabled " + mnvFilterEnabled} \
-        ~{"-coverage_bed " + coverageBed} \
-        ~{true="-panel_only" false="" panelOnly} \
-        -threads ~{threads} \
-        -out ~{outputPath}
+        SAGE -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
+        -tumor ${tumorName} \
+        -tumor_bam ${tumorBam} \
+        ${"-reference " + referenceName} \
+        ${"-reference_bam " + referenceBam} \
+        -ref_genome ${referenceFasta} \
+        -hotspots ${hotspots} \
+        -panel_bed ${panelBed} \
+        -high_confidence_bed ${highConfidenceBed} \
+        -assembly ${true="hg38" false="hg19" hg38} \
+        ${"-hotspot_min_tumor_qual " + hotspotMinTumorQual} \
+        ${"-panel_min_tumor_qual " + panelMinTumorQual} \
+        ${"-hotspot_max_germline_vaf " + hotspotMaxGermlineVaf} \
+        ${"-hotspot_max_germline_rel_raw_base_qual " + hotspotMaxGermlineRelRawBaseQual} \
+        ${"-panel_max_germline_vaf " + panelMaxGermlineVaf} \
+        ${"-panel_max_germline_rel_raw_base_qual " + panelMaxGermlineRelRawBaseQual} \
+        ${"-mnv_filter_enabled " + mnvFilterEnabled} \
+        ${"-coverage_bed " + coverageBed} \
+        ${true="-panel_only" false="" panelOnly} \
+        -threads ${threads} \
+        -out ${outputPath}
     }
 
     output {
         File outputVcf = outputPath
         File outputVcfIndex = outputPath + ".tbi"
-        File? referenceSageBqrPng = "~{referenceName}.sage.bqr.png"
-        File? referenceSageBqrTsv = "~{referenceName}.sage.bqr.tsv"
-        File tumorSageBqrPng = "~{tumorName}.sage.bqr.png"
-        File tumorSageBqrTsv = "~{tumorName}.sage.bqr.tsv"
-        File sageGeneCoverageTsv = "~{tumorName}.sage.gene.coverage.tsv"
+        File? referenceSageBqrPng = "${referenceName}.sage.bqr.png"
+        File? referenceSageBqrTsv = "${referenceName}.sage.bqr.tsv"
+        File tumorSageBqrPng = "${tumorName}.sage.bqr.png"
+        File tumorSageBqrTsv = "${tumorName}.sage.bqr.tsv"
+        File sageGeneCoverageTsv = "${tumorName}.sage.gene.coverage.tsv"
     }
 
     runtime {
@@ -1322,19 +1321,19 @@ task VirusInterpreter {
     }
 
     command {
-        virus-interpreter -Xmx~{javaXmx} -XX:ParallelGCThreads=1  \
-        -sample_id ~{sampleId} \
-        -purple_purity_tsv ~{purplePurityTsv} \
-        -purple_qc_file ~{prupleQcFile} \
-        -tumor_sample_wgs_metrics_file ~{tumorSampleWgsMetricsFile} \
-        -virus_breakend_tsv ~{virusBreakendTsv} \
-        -taxonomy_db_tsv ~{taxonomyDbTsv} \
-        -virus_reporting_db_tsv ~{virusReportingDbTsv} \
-        -output_dir ~{outputDir}
+        virus-interpreter -Xmx${javaXmx} -XX:ParallelGCThreads=1  \
+        -sample_id ${sampleId} \
+        -purple_purity_tsv ${purplePurityTsv} \
+        -purple_qc_file ${prupleQcFile} \
+        -tumor_sample_wgs_metrics_file ${tumorSampleWgsMetricsFile} \
+        -virus_breakend_tsv ${virusBreakendTsv} \
+        -taxonomy_db_tsv ${taxonomyDbTsv} \
+        -virus_reporting_db_tsv ${virusReportingDbTsv} \
+        -output_dir ${outputDir}
     }
 
     output {
-        File virusAnnotatedTsv = "~{outputDir}/~{sampleId}.virus.annotated.tsv"
+        File virusAnnotatedTsv = "${outputDir}/${sampleId}.virus.annotated.tsv"
     }
 
     runtime {

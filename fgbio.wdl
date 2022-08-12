@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -29,17 +28,17 @@ task AnnotateBamWithUmis {
         String memory = "120G"
         Int timeMinutes = 360
         String javaXmx="100G"
-        String dockerImage = "quay.io/biocontainers/fgbio:1.4.0--hdfd78af_0"
+        String dockerImage = "genedockdx/fgbio:1.4.0--hdfd78af_0"
     }
 
     command {
         set -e 
-        mkdir -p "$(dirname ~{outputPath})"
-        fgbio -Xmx~{javaXmx} \
+        mkdir -p "$(dirname ${outputPath})"
+        fgbio -Xmx${javaXmx} \
         AnnotateBamWithUmis \
-        -i ~{inputBam} \
-        -f ~{inputUmi} \
-        -o ~{outputPath} 
+        -i ${inputBam} \
+        -f ${inputUmi} \
+        -o ${outputPath} 
     }
 
     output {

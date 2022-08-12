@@ -1,4 +1,3 @@
-version 1.0
 
 # Copyright (c) 2017 Leiden University Medical Center
 #
@@ -35,22 +34,22 @@ task Germline {
         Int cores = 1
         Int memoryGb = 4
         Int timeMinutes = 60
-        String dockerImage = "quay.io/biocontainers/manta:1.4.0--py27_1"
+        String dockerImage = "genedockdx/manta:1.4.0--py27_1"
     }
 
     command {
         set -e
         configManta.py \
-        ~{"--normalBam " + bamFile} \
-        --referenceFasta ~{referenceFasta} \
-        ~{"--callRegions " + callRegions} \
-        --runDir ~{runDir} \
-        ~{true="--exome" false="" exome}
+        ${"--normalBam " + bamFile} \
+        --referenceFasta ${referenceFasta} \
+        ${"--callRegions " + callRegions} \
+        --runDir ${runDir} \
+        ${true="--exome" false="" exome}
 
-        ~{runDir}/runWorkflow.py \
+        ${runDir}/runWorkflow.py \
         -m local \
-        -j ~{cores} \
-        -g ~{memoryGb}
+        -j ${cores} \
+        -g ${memoryGb}
     }
 
     output {
@@ -60,7 +59,7 @@ task Germline {
 
     runtime {
         cpu: cores
-        memory: "~{memoryGb}G"
+        memory: "${memoryGb}G"
         docker: dockerImage
         time_minutes: timeMinutes
     }
@@ -103,22 +102,22 @@ task Somatic {
         Int cores = 1
         Int memoryGb = 4
         Int timeMinutes = 60
-        String dockerImage = "quay.io/biocontainers/manta:1.4.0--py27_1"
+        String dockerImage = "genedockdx/manta:1.4.0--py27_1"
     }
 
     command {
         configManta.py \
-        ~{"--normalBam " + normalBam} \
-        ~{"--tumorBam " + tumorBam} \
-        --referenceFasta ~{referenceFasta} \
-        ~{"--callRegions " + callRegions} \
-        --runDir ~{runDir} \
-        ~{true="--exome" false="" exome}
+        ${"--normalBam " + normalBam} \
+        ${"--tumorBam " + tumorBam} \
+        --referenceFasta ${referenceFasta} \
+        ${"--callRegions " + callRegions} \
+        --runDir ${runDir} \
+        ${true="--exome" false="" exome}
 
-        ~{runDir}/runWorkflow.py \
+        ${runDir}/runWorkflow.py \
         -m local \
-        -j ~{cores} \
-        -g ~{memoryGb}
+        -j ${cores} \
+        -g ${memoryGb}
     }
 
     output {
@@ -138,7 +137,7 @@ task Somatic {
 
     runtime {
         cpu: cores
-        memory: "~{memoryGb}G"
+        memory: "${memoryGb}G"
         docker: dockerImage
         time_minutes: timeMinutes
     }

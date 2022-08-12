@@ -39,16 +39,16 @@ task Flash {
 
     command {
         set -e -o pipefail
-        mkdir -p ~{outdirPath}
-        ~{preCommand}
+        mkdir -p ${outdirPath}
+        ${preCommand}
         flash \
-        ~{"--threads=" + threads} \
-        ~{"--output-directory=" + outdirPath} \
-        ~{"--output-prefix=" + outPrefix} \
-        ~{true="--compress " false="" compress} \
-        ~{"--min-overlap=" + minOverlap} \
-        ~{"--max-overlap=" + maxOverlap} \
-        ~{inputFastq.R1} ~{inputFastq.R2}
+        ${"--threads=" + threads} \
+        ${"--output-directory=" + outdirPath} \
+        ${"--output-prefix=" + outPrefix} \
+        ${true="--compress " false="" compress} \
+        ${"--min-overlap=" + minOverlap} \
+        ${"--max-overlap=" + maxOverlap} \
+        ${inputFastq.R1} ${inputFastq.R2}
     }
 
     output {
