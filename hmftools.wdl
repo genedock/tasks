@@ -114,7 +114,7 @@ task Cobalt {
         Int threads = 1
         String memory = "5G"
         String javaXmx = "4G"
-        Int timeMinutes = 240
+        Int timeMinutes = 480
         String dockerImage = "quay.io/biocontainers/hmftools-cobalt:1.11--0"
     }
 
@@ -780,7 +780,7 @@ task Orange {
 
         String memory = "17G"
         String javaXmx = "16G"
-        Int timeMinutes = 1440 #FIXME
+        Int timeMinutes = 10
         String dockerImage = "quay.io/biowdl/orange:v1.6"
     }
 
@@ -1133,7 +1133,7 @@ task Purple {
         File segmentPlot = "~{outputDir}/plot/~{tumorName}.segment.png"
         File somaticClonalityPlot = "~{outputDir}/plot/~{tumorName}.somatic.clonality.png"
         File somaticPlot = "~{outputDir}/plot/~{tumorName}.somatic.png"
-        File somaticRainfallPlot = "~{outputDir}/plot/~{tumorName}.somatic.rainfall.png"
+        File? somaticRainfallPlot = "~{outputDir}/plot/~{tumorName}.somatic.rainfall.png"
         File circosNormalRatio = "~{outputDir}/circos/~{referenceName}.ratio.circos"
         File circosBaf = "~{outputDir}/circos/~{tumorName}.baf.circos"
         File circosConf = "~{outputDir}/circos/~{tumorName}.circos.conf"
@@ -1150,8 +1150,8 @@ task Purple {
             purpleSegmentTsv, purpleSomaticClonalityTsv, purpleSomaticHistTsv,
             purpleSomaticVcf, purpleSomaticVcfIndex, purpleSvVcf, purpleSvVcfIndex,
             purpleVersion, purpleGermlineVcf, purpleGermlineVcfIndex, driverCatalogGermlineTsv]
-        Array[File] plots = [circosPlot, copynumberPlot, inputPlot, mapPlot, purityRangePlot,
-            segmentPlot, somaticClonalityPlot, somaticPlot]
+        Array[File] plots = select_all([circosPlot, copynumberPlot, inputPlot, mapPlot, purityRangePlot,
+            segmentPlot, somaticClonalityPlot, somaticPlot, somaticRainfallPlot])
         Array[File] circos = [circosNormalRatio, circosConf, circosIndel, circosLink,
             circosTumorRatio, circosGaps, circosBaf, circosCnv, circosInputConf, circosMap,
             circosSnp]
@@ -1225,10 +1225,10 @@ task Sage {
         String? mnvFilterEnabled
         File? coverageBed
 
-        Int threads = 4
-        String javaXmx = "50G"
-        String memory = "51G"
-        Int timeMinutes = 1 + ceil(size(select_all([tumorBam, referenceBam]), "G") * 9 / threads)
+        Int threads = 32
+        String javaXmx = "16G"
+        String memory = "20G"
+        Int timeMinutes = 720
         String dockerImage = "quay.io/biocontainers/hmftools-sage:2.8--hdfd78af_1"
     }
 
