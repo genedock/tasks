@@ -31,16 +31,16 @@ task Normalize {
 
         String memory = "4G"
         Int timeMinutes = 30
-        String dockerImage = "quay.io/biocontainers/vt:0.57721--hdf88d34_2"
+        String dockerImage = "genedockdx/vt:0.57721--hdf88d34_2"
     }
 
     command {
         set -eo pipefail
-        mkdir -p "$(dirname ~{outputPath})"
-        vt normalize ~{inputVCF} \
-        -r ~{referenceFasta} \
-        ~{true="-m " false="" ignoreMaskedRef} \
-        | vt decompose -s - -o ~{outputPath}
+        mkdir -p "$(dirname ${outputPath})"
+        vt normalize ${inputVCF} \
+        -r ${referenceFasta} \
+        ${true="-m " false="" ignoreMaskedRef} \
+        | vt decompose -s - -o ${outputPath}
     }
 
     output {

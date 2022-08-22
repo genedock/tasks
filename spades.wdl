@@ -56,34 +56,34 @@ task Spades {
 
     command {
         set -e -o pipefail
-        ~{preCommand}
+        ${preCommand}
         spades.py \
-        ~{"-o " + outputDir} \
-        ~{true="--sc" false="" singleCell} \
-        ~{true="--meta" false="" metagenomic} \
-        ~{true="--rna" false="" rna} \
-        ~{true="--plasmid" false="" plasmid} \
-        ~{true="--iontorrent" false="" ionTorrent} \
-        ~{"--12 " + interlacedReads} \
-        ~{true="-1" false="-s" defined(read2)} ~{read1}  \
-        ~{"-2 " + read2} \
-        ~{"--sanger " + sangerReads} \
-        ~{"--pacbio " + pacbioReads} \
-        ~{"--nanopore " + nanoporeReads} \
-        ~{"--tslr " + tslrContigs} \
-        ~{"--trusted-contigs " + trustedContigs} \
-        ~{"--untrusted-contigs " + untrustedContigs} \
-        ~{true="--only-error-correction" false="" onlyErrorCorrection} \
-        ~{true="--only-assembler" false="" onlyAssembler} \
-        ~{true="--careful" false="" careful} \
-        ~{true="--disable-gzip-output" false="" disableGzipOutput} \
-        ~{true="--disable-rr" false="" disableRepeatResolution} \
-        ~{"--dataset " + dataset} \
-        ~{"--threads " + threads} \
-        ~{"--memory " + memoryGb} \
-        ~{"-k " + k} \
-        ~{"--cov-cutoff " + covCutoff} \
-        ~{"--phred-offset " + phredOffset}
+        ${"-o " + outputDir} \
+        ${true="--sc" false="" singleCell} \
+        ${true="--meta" false="" metagenomic} \
+        ${true="--rna" false="" rna} \
+        ${true="--plasmid" false="" plasmid} \
+        ${true="--iontorrent" false="" ionTorrent} \
+        ${"--12 " + interlacedReads} \
+        ${true="-1" false="-s" defined(read2)} ${read1}  \
+        ${"-2 " + read2} \
+        ${"--sanger " + sangerReads} \
+        ${"--pacbio " + pacbioReads} \
+        ${"--nanopore " + nanoporeReads} \
+        ${"--tslr " + tslrContigs} \
+        ${"--trusted-contigs " + trustedContigs} \
+        ${"--untrusted-contigs " + untrustedContigs} \
+        ${true="--only-error-correction" false="" onlyErrorCorrection} \
+        ${true="--only-assembler" false="" onlyAssembler} \
+        ${true="--careful" false="" careful} \
+        ${true="--disable-gzip-output" false="" disableGzipOutput} \
+        ${true="--disable-rr" false="" disableRepeatResolution} \
+        ${"--dataset " + dataset} \
+        ${"--threads " + threads} \
+        ${"--memory " + memoryGb} \
+        ${"-k " + k} \
+        ${"--cov-cutoff " + covCutoff} \
+        ${"--phred-offset " + phredOffset}
     }
 
     output {
@@ -100,6 +100,6 @@ task Spades {
 
     runtime {
         cpu: threads
-        memory: "~{memoryGb}G"
+        memory: "${memoryGb}G"
     }
 }

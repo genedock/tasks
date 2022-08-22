@@ -71,49 +71,49 @@ task Unicycler {
 
     command {
         set -e -o pipefail
-        mkdir -p ~{out}
-        ~{preCommand}
+        mkdir -p ${out}
+        ${preCommand}
         unicycler \
-        ~{"--short1 " + short1} \
-        ~{"--short2 " + short2} \
-        ~{"--unpaired " + unpaired} \
-        ~{"--long " + long} \
-        --out ~{out} \
-        ~{"--min_fasta_length " + minFastaLength} \
-        ~{"--keep " + keep } \
-        ~{true="--vcf" false="" vcf } \
-        ~{"--threads " + threads } \
-        ~{"--mode " + mode } \
-        ~{"--min_bridge_qual " + minBridgeQual } \
-        ~{"--linear_seqs " + linearSeqs } \
-        ~{"--spades_path " + spadesPath } \
-        ~{true="--no_correct" false="" noCorrect } \
-        ~{"--min_kmer_frac " + minKmerFrac } \
-        ~{"--max_kmer_frac " + maxKmerFrac } \
-        ~{"--kmer_count " + kmerCount } \
-        ~{"--depth_filter " + depthFilter } \
-        ~{true="--no_miniasm" false="" noMiniasm } \
-        ~{"--racon_path " + raconPath } \
-        ~{"--existing_long_read_assembly " + existingLongReadAssembly } \
-        ~{true="--no_rotate" false="" noRotate } \
-        ~{"--start_genes " + startGenes } \
-        ~{"--start_gene_id " + startGeneId } \
-        ~{"--start_gene_cov " + startGeneCov } \
-        ~{"--makeblastdb_path " + makeblastdbPath } \
-        ~{"--tblastn_path " + tblastnPath } \
-        ~{true="--no_pilon" false="" noPilon } \
-        ~{"--bowtie2_path " + bowtie2Path } \
-        ~{"--bowtie2_build_path " + bowtie2buildPath } \
-        ~{"--samtools_path " + samtoolsPath } \
-        ~{"--pilon_path " + pilonPath } \
-        ~{"--java_path " + javaPath } \
-        ~{"--min_polish_size " + minPolishSize } \
-        ~{"--bcftools_path " + bcftoolsPath } \
-        ~{"--min_component_size " + minComponentSize } \
-        ~{"--min_dead_end_size " + minDeadEndSize } \
-        ~{"--contamination " + contamination } \
-        ~{"--scores " + scores } \
-        ~{"--low_score " + lowScore }
+        ${"--short1 " + short1} \
+        ${"--short2 " + short2} \
+        ${"--unpaired " + unpaired} \
+        ${"--long " + long} \
+        --out ${out} \
+        ${"--min_fasta_length " + minFastaLength} \
+        ${"--keep " + keep } \
+        ${true="--vcf" false="" vcf } \
+        ${"--threads " + threads } \
+        ${"--mode " + mode } \
+        ${"--min_bridge_qual " + minBridgeQual } \
+        ${"--linear_seqs " + linearSeqs } \
+        ${"--spades_path " + spadesPath } \
+        ${true="--no_correct" false="" noCorrect } \
+        ${"--min_kmer_frac " + minKmerFrac } \
+        ${"--max_kmer_frac " + maxKmerFrac } \
+        ${"--kmer_count " + kmerCount } \
+        ${"--depth_filter " + depthFilter } \
+        ${true="--no_miniasm" false="" noMiniasm } \
+        ${"--racon_path " + raconPath } \
+        ${"--existing_long_read_assembly " + existingLongReadAssembly } \
+        ${true="--no_rotate" false="" noRotate } \
+        ${"--start_genes " + startGenes } \
+        ${"--start_gene_id " + startGeneId } \
+        ${"--start_gene_cov " + startGeneCov } \
+        ${"--makeblastdb_path " + makeblastdbPath } \
+        ${"--tblastn_path " + tblastnPath } \
+        ${true="--no_pilon" false="" noPilon } \
+        ${"--bowtie2_path " + bowtie2Path } \
+        ${"--bowtie2_build_path " + bowtie2buildPath } \
+        ${"--samtools_path " + samtoolsPath } \
+        ${"--pilon_path " + pilonPath } \
+        ${"--java_path " + javaPath } \
+        ${"--min_polish_size " + minPolishSize } \
+        ${"--bcftools_path " + bcftoolsPath } \
+        ${"--min_component_size " + minComponentSize } \
+        ${"--min_dead_end_size " + minDeadEndSize } \
+        ${"--contamination " + contamination } \
+        ${"--scores " + scores } \
+        ${"--low_score " + lowScore }
     }
 
     output {

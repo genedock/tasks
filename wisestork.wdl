@@ -32,18 +32,18 @@ task Count {
         File? binFile
 
         String memory = "2G"
-        String dockerImage = "quay.io/biocontainers/wisestork:0.1.2--pyh24bf2e0_0"
+        String dockerImage = "genedockdx/wisestork:0.1.2--pyh24bf2e0_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputBed})"
+        mkdir -p "$(dirname ${outputBed})"
         wisestork count \
-        ~{"--binsize " + binSize} \
-       --reference ~{reference} \
-       ~{"--bin-file " + binFile} \
-       --output ~{outputBed} \
-       --input ~{inputBam}
+        ${"--binsize " + binSize} \
+       --reference ${reference} \
+       ${"--bin-file " + binFile} \
+       --output ${outputBed} \
+       --input ${inputBam}
     }
 
     output {
@@ -70,21 +70,21 @@ task GcCorrect {
         Float? fracLowess
 
         String memory = "2G"
-        String dockerImage = "quay.io/biocontainers/wisestork:0.1.2--pyh24bf2e0_0"
+        String dockerImage = "genedockdx/wisestork:0.1.2--pyh24bf2e0_0"
     }
 
     command {
         set -e
-        mkdir -p $(dirname ~{outputBed})
+        mkdir -p $(dirname ${outputBed})
         wisestork gc-correct \
-        ~{"--binsize " + binSize} \
-        --reference ~{reference} \
-        ~{"--bin-file " + binFile} \
-        --output ~{outputBed} \
-        --input ~{inputBed} \
-        ~{"--frac-n " + fracN} \
-        ~{"--iter " + iter} \
-        ~{"--frac-lowess " + fracLowess}
+        ${"--binsize " + binSize} \
+        --reference ${reference} \
+        ${"--bin-file " + binFile} \
+        --output ${outputBed} \
+        --input ${inputBed} \
+        ${"--frac-n " + fracN} \
+        ${"--iter " + iter} \
+        ${"--frac-lowess " + fracLowess}
     }
 
     output {
@@ -109,19 +109,19 @@ task Newref {
         Int? nBins
 
         Int memory = 2 + ceil(length(inputBeds) * 0.15)
-        String dockerImage = "quay.io/biocontainers/wisestork:0.1.2--pyh24bf2e0_0"
+        String dockerImage = "genedockdx/wisestork:0.1.2--pyh24bf2e0_0"
     }
 
     command {
         set -e
-        mkdir -p $(dirname ~{outputBed})
+        mkdir -p $(dirname ${outputBed})
         wisestork newref \
-        ~{"--binsize " + binSize} \
-        --reference ~{reference} \
-        ~{"--bin-file " + binFile} \
-        --output ~{outputBed} \
-        -I ~{sep=" -I " inputBeds} \
-        ~{"--n-bins " + nBins}
+        ${"--binsize " + binSize} \
+        --reference ${reference} \
+        ${"--bin-file " + binFile} \
+        --output ${outputBed} \
+        -I ${sep=" -I " inputBeds} \
+        ${"--n-bins " + nBins}
     }
 
     output {
@@ -129,7 +129,7 @@ task Newref {
     }
 
     runtime {
-        memory: "~{memory}G"
+        memory: "${memory}G"
         docker: dockerImage
     }
 }
@@ -148,19 +148,19 @@ task Zscore {
         File? binFile
 
         String memory = "2G"
-        String dockerImage = "quay.io/biocontainers/wisestork:0.1.2--pyh24bf2e0_0"
+        String dockerImage = "genedockdx/wisestork:0.1.2--pyh24bf2e0_0"
     }
 
     command {
         set -e
-        mkdir -p $(dirname ~{outputBed})
+        mkdir -p $(dirname ${outputBed})
         wisestork zscore \
-        ~{"--binsize " + binSize} \
-        --reference ~{reference} \
-        ~{"--bin-file " + binFile} \
-        --output ~{outputBed} \
-        --input ~{inputBed} \
-        ~{"--dictionary-file " + dictionaryFile}
+        ${"--binsize " + binSize} \
+        --reference ${reference} \
+        ${"--bin-file " + binFile} \
+        --output ${outputBed} \
+        --input ${inputBed} \
+        ${"--dictionary-file " + dictionaryFile}
     }
 
     output {

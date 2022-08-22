@@ -33,22 +33,22 @@ task Merge {
 
         String memory = "24G"
         Int timeMinutes = 60
-        String dockerImage = "quay.io/biocontainers/survivor:1.0.6--h6bb024c_0"
+        String dockerImage = "genedockdx/survivor:1.0.6--h6bb024c_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        echo '~{sep="\n" filePaths}' > fileList
+        mkdir -p "$(dirname ${outputPath})"
+        echo '${sep="\n" filePaths}' > fileList
         SURVIVOR merge \
         fileList \
-        ~{breakpointDistance} \
-        ~{suppVecs} \
-        ~{true='1' false='0' svType} \
-        ~{true='1' false='0' strandType} \
-        ~{true='1' false='0' distanceBySvSize} \
-        ~{minSize} \
-        ~{outputPath}
+        ${breakpointDistance} \
+        ${suppVecs} \
+        ${true='1' false='0' svType} \
+        ${true='1' false='0' strandType} \
+        ${true='1' false='0' distanceBySvSize} \
+        ${minSize} \
+        ${outputPath}
     }
 
     output {

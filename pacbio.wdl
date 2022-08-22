@@ -26,15 +26,15 @@ task mergePacBio {
         String outputPathMergedReport
 
         String memory = "4G"
-        String dockerImage = "quay.io/redmar_van_den_berg/pacbio-merge:0.2"
+        String dockerImage = "genedockdx/pacbio-merge:0.2"
     }
 
     command {
         set -e
-        mkdir -p $(dirname ~{outputPathMergedReport})
+        mkdir -p $(dirname ${outputPathMergedReport})
         pacbio_merge \
-        --reports ~{sep=" " reports} \
-        --json-output ~{outputPathMergedReport}
+        --reports ${sep=" " reports} \
+        --json-output ${outputPathMergedReport}
     }
 
     runtime {
@@ -63,14 +63,14 @@ task ccsChunks {
         Int chunkCount
 
         String memory = "4G"
-        String dockerImage = "python:3.7-slim"
+        String dockerImage = "genedockdx/python:3.7-slim"
     }
 
     command {
         set -e
         python <<CODE
-        for i in range(1, ~{chunkCount} + 1):
-            print(i, ~{chunkCount}, sep="/")
+        for i in range(1, ${chunkCount} + 1):
+            print(i, ${chunkCount}, sep="/")
         CODE
     }
 

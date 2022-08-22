@@ -31,7 +31,7 @@ task ExtractSigPredictHRD {
 
         String memory = "3G"
         Int timeMinutes = 10
-        String dockerImage = "quay.io/biowdl/chord-mutsigextractor:2.00_1.14"
+        String dockerImage = "genedockdx/chord-mutsigextractor:2.00_1.14"
     }
 
     command {

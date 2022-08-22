@@ -38,22 +38,22 @@ task Germline {
         Int cores = 1
         Int memoryGb = 4
         Int timeMinutes = 90
-        String dockerImage = "quay.io/biocontainers/strelka:2.9.7--0"
+        String dockerImage = "genedockdx/strelka:2.9.7--0"
     }
 
     command {
         configureStrelkaGermlineWorkflow.py \
-        --bam ~{sep=" --bam " bams} \
-        --ref ~{referenceFasta} \
-        --runDir ~{runDir} \
-        ~{"--callRegions " + callRegions} \
-        ~{true="--exome" false="" exome} \
-        ~{true="--rna" false="" rna}
+        --bam ${sep=" --bam " bams} \
+        --ref ${referenceFasta} \
+        --runDir ${runDir} \
+        ${"--callRegions " + callRegions} \
+        ${true="--exome" false="" exome} \
+        ${true="--rna" false="" rna}
 
-        ~{runDir}/runWorkflow.py \
+        ${runDir}/runWorkflow.py \
         -m local \
-        -j ~{cores} \
-        -g ~{memoryGb}
+        -j ${cores} \
+        -g ${memoryGb}
     }
 
     output {
@@ -63,7 +63,7 @@ task Germline {
 
     runtime {
         cpu: cores
-        memory: "~{memoryGb}G"
+        memory: "${memoryGb}G"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -109,25 +109,25 @@ task Somatic {
         Int cores = 1
         Int memoryGb = 4
         Int timeMinutes = 90
-        String dockerImage = "quay.io/biocontainers/strelka:2.9.7--0"
+        String dockerImage = "genedockdx/strelka:2.9.7--0"
 
         File? doNotDefineThis #FIXME
     }
 
     command {
         configureStrelkaSomaticWorkflow.py \
-        --normalBam ~{normalBam} \
-        --tumorBam ~{tumorBam} \
-        --ref ~{referenceFasta} \
-        --runDir ~{runDir} \
-        ~{"--callRegions " + callRegions} \
-        ~{"--indelCandidates " + indelCandidatesVcf} \
-        ~{true="--exome" false="" exome}
+        --normalBam ${normalBam} \
+        --tumorBam ${tumorBam} \
+        --ref ${referenceFasta} \
+        --runDir ${runDir} \
+        ${"--callRegions " + callRegions} \
+        ${"--indelCandidates " + indelCandidatesVcf} \
+        ${true="--exome" false="" exome}
 
-        ~{runDir}/runWorkflow.py \
+        ${runDir}/runWorkflow.py \
         -m local \
-        -j ~{cores} \
-        -g ~{memoryGb}
+        -j ${cores} \
+        -g ${memoryGb}
     }
 
     output {
@@ -139,7 +139,7 @@ task Somatic {
 
     runtime {
         cpu: cores
-        memory: "~{memoryGb}G"
+        memory: "${memoryGb}G"
         time_minutes: timeMinutes
         docker: dockerImage
     }

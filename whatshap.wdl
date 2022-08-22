@@ -41,25 +41,25 @@ task Phase {
         String memory = "4G"
         Int timeMinutes = 120
         # Whatshap 1.0, tabix 0.2.5.
-        String dockerImage = "quay.io/biocontainers/mulled-v2-5c61fe1d8c284dd05d26238ce877aa323205bf82:89b4005d04552bdd268e8af323df83357e968d83-0"
+        String dockerImage = "genedockdx/mulled-v2-5c61fe1d8c284dd05d26238ce877aa323205bf82:89b4005d04552bdd268e8af323df83357e968d83-0"
     }
 
     command {
         set -e
         whatshap phase \
-        ~{vcf} \
-        ~{phaseInput} \
-        ~{if defined(outputVCF) then ("--output " +  '"' + outputVCF + '"') else ""} \
-        ~{if defined(reference) then ("--reference " +  '"' + reference + '"') else ""} \
-        ~{if defined(tag) then ("--tag " +  '"' + tag + '"') else ""} \
-        ~{if defined(algorithm) then ("--algorithm " +  '"' + algorithm + '"') else ""} \
-        ~{true="--indels" false="" indels} \
-        ~{if defined(sample) then ("--sample " +  '"' + sample + '"') else ""} \
-        ~{if defined(chromosome) then ("--chromosome " +  '"' + chromosome + '"') else ""} \
-        ~{if defined(threshold) then ("--threshold " +  '"' + threshold + '"') else ""} \
-        ~{if defined(ped) then ("--ped " +  '"' + ped + '"') else ""}
+        ${vcf} \
+        ${phaseInput} \
+        ${if defined(outputVCF) then ("--output " +  '"' + outputVCF + '"') else ""} \
+        ${if defined(reference) then ("--reference " +  '"' + reference + '"') else ""} \
+        ${if defined(tag) then ("--tag " +  '"' + tag + '"') else ""} \
+        ${if defined(algorithm) then ("--algorithm " +  '"' + algorithm + '"') else ""} \
+        ${true="--indels" false="" indels} \
+        ${if defined(sample) then ("--sample " +  '"' + sample + '"') else ""} \
+        ${if defined(chromosome) then ("--chromosome " +  '"' + chromosome + '"') else ""} \
+        ${if defined(threshold) then ("--threshold " +  '"' + threshold + '"') else ""} \
+        ${if defined(ped) then ("--ped " +  '"' + ped + '"') else ""}
 
-        tabix -p vcf ~{outputVCF}
+        tabix -p vcf ${outputVCF}
     }
 
     output {
@@ -112,17 +112,17 @@ task Stats {
         String memory = "4G"
         Int timeMinutes = 120
         # Whatshap 1.0, tabix 0.2.5.
-        String dockerImage = "quay.io/biocontainers/mulled-v2-5c61fe1d8c284dd05d26238ce877aa323205bf82:89b4005d04552bdd268e8af323df83357e968d83-0"
+        String dockerImage = "genedockdx/mulled-v2-5c61fe1d8c284dd05d26238ce877aa323205bf82:89b4005d04552bdd268e8af323df83357e968d83-0"
       }
 
     command {
         whatshap stats \
-        ~{vcf} \
-        ~{if defined(gtf) then ("--gtf " +  '"' + gtf + '"') else ""} \
-        ~{if defined(sample) then ("--sample " +  '"' + sample + '"') else ""} \
-        ~{if defined(tsv) then ("--tsv " +  '"' + tsv + '"') else ""} \
-        ~{if defined(blockList) then ("--block-list " +  '"' + blockList + '"') else ""} \
-        ~{if defined(chromosome) then ("--chromosome " +  '"' + chromosome + '"') else ""}
+        ${vcf} \
+        ${if defined(gtf) then ("--gtf " +  '"' + gtf + '"') else ""} \
+        ${if defined(sample) then ("--sample " +  '"' + sample + '"') else ""} \
+        ${if defined(tsv) then ("--tsv " +  '"' + tsv + '"') else ""} \
+        ${if defined(blockList) then ("--block-list " +  '"' + blockList + '"') else ""} \
+        ${if defined(chromosome) then ("--chromosome " +  '"' + chromosome + '"') else ""}
     }
 
     output {
@@ -172,20 +172,20 @@ task Haplotag {
         String memory = "4G"
         Int timeMinutes = 120
         # Whatshap 1.0, tabix 0.2.5.
-        String dockerImage = "quay.io/biocontainers/mulled-v2-5c61fe1d8c284dd05d26238ce877aa323205bf82:89b4005d04552bdd268e8af323df83357e968d83-0"
+        String dockerImage = "genedockdx/mulled-v2-5c61fe1d8c284dd05d26238ce877aa323205bf82:89b4005d04552bdd268e8af323df83357e968d83-0"
     }
 
     command {
         set -e
         whatshap haplotag \
-        ~{vcf} \
-        ~{alignments} \
-        ~{if defined(outputFile) then ("--output " +  '"' + outputFile+ '"') else ""} \
-        ~{if defined(reference) then ("--reference " +  '"' + reference + '"') else ""} \
-        ~{if defined(regions) then ("--regions " +  '"' + regions + '"') else ""} \
-        ~{if defined(sample) then ("--sample " +  '"' + sample + '"') else ""}
+        ${vcf} \
+        ${alignments} \
+        ${if defined(outputFile) then ("--output " +  '"' + outputFile+ '"') else ""} \
+        ${if defined(reference) then ("--reference " +  '"' + reference + '"') else ""} \
+        ${if defined(regions) then ("--regions " +  '"' + regions + '"') else ""} \
+        ${if defined(sample) then ("--sample " +  '"' + sample + '"') else ""}
 
-        python3 -c "import pysam; pysam.index('~{outputFile}')"
+        python3 -c "import pysam; pysam.index('${outputFile}')"
     }
 
     output {

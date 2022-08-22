@@ -29,17 +29,17 @@ task GetSJsFromGtf {
 
         String memory = "8G"
         Int timeMinutes = 30
-        String dockerImage = "biocontainers/transcriptclean:v2.0.2_cv1"
+        String dockerImage = "genedockdx/transcriptclean:v2.0.2_cv1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         get_SJs_from_gtf \
-        --f=~{gtfFile} \
-        --g=~{genomeFile} \
-        --minIntronSize=~{minIntronSize} \
-        ~{"--o=" + outputPrefix + ".tsv"}
+        --f=${gtfFile} \
+        --g=${genomeFile} \
+        --minIntronSize=${minIntronSize} \
+        ${"--o=" + outputPrefix + ".tsv"}
     }
 
     output {
@@ -74,15 +74,15 @@ task GetTranscriptCleanStats {
 
         String memory = "4G"
         Int timeMinutes = 30
-        String dockerImage = "biocontainers/transcriptclean:v2.0.2_cv1"
+        String dockerImage = "genedockdx/transcriptclean:v2.0.2_cv1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         get_TranscriptClean_stats \
-        ~{inputSam} \
-        ~{outputPrefix}
+        ${inputSam} \
+        ${outputPrefix}
     }
 
     output {
@@ -130,29 +130,29 @@ task TranscriptClean {
         Int cores = 1
         String memory = "25G"
         Int timeMinutes = 2880
-        String dockerImage = "biocontainers/transcriptclean:v2.0.2_cv1"
+        String dockerImage = "genedockdx/transcriptclean:v2.0.2_cv1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         TranscriptClean \
-        -s ~{inputSam} \
-        -g ~{referenceGenome} \
-        -t ~{cores} \
-        --maxLenIndel=~{maxLenIndel} \
-        --maxSJOffset=~{maxSJOffset} \
-        -o ~{outputPrefix} \
-        ~{true="-m true" false="-m false" correctMismatches} \
-        ~{true="-i true" false="-i false" correctIndels} \
-        ~{true="--correctSJs=true" false="--correctSJs=false" correctSJs} \
-        ~{true="--dryRun" false="" dryRun} \
-        ~{true="--primaryOnly" false="" primaryOnly} \
-        ~{true="--canonOnly" false="" canonOnly} \
-        --bufferSize=~{bufferSize} \
-        ~{true="--deleteTmp" false="" deleteTmp} \
-        ~{"-j " + spliceJunctionAnnotation} \
-        ~{"-v " + variantFile}
+        -s ${inputSam} \
+        -g ${referenceGenome} \
+        -t ${cores} \
+        --maxLenIndel=${maxLenIndel} \
+        --maxSJOffset=${maxSJOffset} \
+        -o ${outputPrefix} \
+        ${true="-m true" false="-m false" correctMismatches} \
+        ${true="-i true" false="-i false" correctIndels} \
+        ${true="--correctSJs=true" false="--correctSJs=false" correctSJs} \
+        ${true="--dryRun" false="" dryRun} \
+        ${true="--primaryOnly" false="" primaryOnly} \
+        ${true="--canonOnly" false="" canonOnly} \
+        --bufferSize=${bufferSize} \
+        ${true="--deleteTmp" false="" deleteTmp} \
+        ${"-j " + spliceJunctionAnnotation} \
+        ${"-v " + variantFile}
     }
 
     output {

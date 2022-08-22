@@ -50,34 +50,34 @@ task VarDict {
         Int threads = 1
         String memory = "18G"
         Int timeMinutes = 300
-        String dockerImage = "quay.io/biocontainers/vardict-java:1.5.8--1"
+        String dockerImage = "genedockdx/vardict-java:1.5.8--1"
     }
 
     command {
         set -e -o pipefail
-        export JAVA_OPTS="-Xmx~{javaXmx} -XX:ParallelGCThreads=1"
+        export JAVA_OPTS="-Xmx${javaXmx} -XX:ParallelGCThreads=1"
         vardict-java \
-        ~{"-th " + threads} \
-        -G ~{referenceFasta} \
-        -N ~{tumorSampleName} \
-        -b "~{tumorBam}~{"|" + normalBam}" \
-        ~{true="" false="-z" defined(normalBam)} \
-        -c ~{chromosomeColumn} \
-        -S ~{startColumn} \
-        -E ~{endColumn} \
-        -g ~{geneColumn} \
-        ~{bedFile} | \
-        ~{true="testsomatic.R" false="teststrandbias.R" defined(normalBam)} | \
-        ~{true="var2vcf_paired.pl" false="var2vcf_valid.pl" defined(normalBam)} \
-        -N "~{tumorSampleName}~{"|" + normalSampleName}" \
-        ~{true="" false="-E" defined(normalBam)} \
-        ~{true="-M" false="" outputCandidateSomaticOnly} \
-        ~{true="-A" false="" outputAllVariantsAtSamePosition} \
-        -Q ~{mappingQuality} \
-        -d ~{minimumTotalDepth} \
-        -v ~{minimumVariantDepth} \
-        -f ~{minimumAlleleFrequency} \
-        > ~{outputVcf}
+        ${"-th " + threads} \
+        -G ${referenceFasta} \
+        -N ${tumorSampleName} \
+        -b "${tumorBam}${"|" + normalBam}" \
+        ${true="" false="-z" defined(normalBam)} \
+        -c ${chromosomeColumn} \
+        -S ${startColumn} \
+        -E ${endColumn} \
+        -g ${geneColumn} \
+        ${bedFile} | \
+        ${true="testsomatic.R" false="teststrandbias.R" defined(normalBam)} | \
+        ${true="var2vcf_paired.pl" false="var2vcf_valid.pl" defined(normalBam)} \
+        -N "${tumorSampleName}${"|" + normalSampleName}" \
+        ${true="" false="-E" defined(normalBam)} \
+        ${true="-M" false="" outputCandidateSomaticOnly} \
+        ${true="-A" false="" outputAllVariantsAtSamePosition} \
+        -Q ${mappingQuality} \
+        -d ${minimumTotalDepth} \
+        -v ${minimumVariantDepth} \
+        -f ${minimumAlleleFrequency} \
+        > ${outputVcf}
     }
 
     output {

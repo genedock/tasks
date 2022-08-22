@@ -32,19 +32,19 @@ task CreateAbundanceFileFromDatabase {
 
         String memory = "4G"
         Int timeMinutes = 30
-        String dockerImage = "biocontainers/talon:v5.0_cv1"
+        String dockerImage = "genedockdx/talon:v5.0_cv1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         talon_abundance \
-        --db=~{databaseFile} \
-        -a ~{annotationVersion} \
-        -b ~{genomeBuild} \
-        --o=~{outputPrefix} \
-        ~{"--whitelist=" + whitelistFile} \
-        ~{"-d " + datasetsFile}
+        --db=${databaseFile} \
+        -a ${annotationVersion} \
+        -b ${genomeBuild} \
+        --o=${outputPrefix} \
+        ${"--whitelist=" + whitelistFile} \
+        ${"-d " + datasetsFile}
     }
 
     output {
@@ -88,20 +88,20 @@ task CreateGtfFromDatabase {
 
         String memory = "4G"
         Int timeMinutes = 30
-        String dockerImage = "biocontainers/talon:v5.0_cv1"
+        String dockerImage = "genedockdx/talon:v5.0_cv1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         talon_create_GTF \
-        --db=~{databaseFile} \
-        -b ~{genomeBuild} \
-        -a ~{annotationVersion} \
-        --o=~{outputPrefix} \
-        ~{true="--observed" false="" observedInDataset} \
-        ~{"--whitelist=" + whitelistFile} \
-        ~{"-d " + datasetFile}
+        --db=${databaseFile} \
+        -b ${genomeBuild} \
+        -a ${annotationVersion} \
+        --o=${outputPrefix} \
+        ${true="--observed" false="" observedInDataset} \
+        ${"--whitelist=" + whitelistFile} \
+        ${"-d " + datasetFile}
     }
 
     output {
@@ -146,21 +146,21 @@ task FilterTalonTranscripts {
 
         String memory = "4G"
         Int timeMinutes = 30
-        String dockerImage = "biocontainers/talon:v5.0_cv1"
+        String dockerImage = "genedockdx/talon:v5.0_cv1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         talon_filter_transcripts \
-        --db=~{databaseFile} \
-        -a ~{annotationVersion} \
-        ~{"--o=" + outputPrefix + "_whitelist.csv"} \
-        --maxFracA=~{maxFracA} \
-        --minCount=~{minCount} \
-        ~{true="--allowGenomic" false="" allowGenomic} \
-        --datasets=~{datasetsFile} \
-        --minDatasets=~{minDatasets}
+        --db=${databaseFile} \
+        -a ${annotationVersion} \
+        ${"--o=" + outputPrefix + "_whitelist.csv"} \
+        --maxFracA=${maxFracA} \
+        --minCount=${minCount} \
+        ${true="--allowGenomic" false="" allowGenomic} \
+        --datasets=${datasetsFile} \
+        --minDatasets=${minDatasets}
     }
 
     output {
@@ -202,17 +202,17 @@ task GetReadAnnotations {
 
         String memory = "4G"
         Int timeMinutes = 30
-        String dockerImage = "biocontainers/talon:v5.0_cv1"
+        String dockerImage = "genedockdx/talon:v5.0_cv1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         talon_fetch_reads \
-        --db ~{databaseFile} \
-        --build ~{genomeBuild} \
-        --o ~{outputPrefix} \
-        ~{"--datasets " + datasetFile}
+        --db ${databaseFile} \
+        --build ${genomeBuild} \
+        --o ${outputPrefix} \
+        ${"--datasets " + datasetFile}
     }
 
     output {
@@ -250,19 +250,19 @@ task GetSpliceJunctions {
 
         String memory = "4G"
         Int timeMinutes = 30
-        String dockerImage = "biocontainers/talon:v5.0_cv1"
+        String dockerImage = "genedockdx/talon:v5.0_cv1"
     }
 
     Map[String, String] SJfileType = {"db": "--db", "gtf": "--gtf"}
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         talon_get_sjs \
-        ~{SJfileType[inputFileType] + sjInformationFile} \
-        --ref ~{referenceGtf} \
-        --mode ~{runMode} \
-        --outprefix ~{outputPrefix}
+        ${SJfileType[inputFileType] + sjInformationFile} \
+        --ref ${referenceGtf} \
+        --mode ${runMode} \
+        --outprefix ${outputPrefix}
     }
 
     output {
@@ -304,21 +304,21 @@ task InitializeTalonDatabase {
 
         String memory = "10G"
         Int timeMinutes = 60
-        String dockerImage = "biocontainers/talon:v5.0_cv1"
+        String dockerImage = "genedockdx/talon:v5.0_cv1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         talon_initialize_database \
-        --f=~{gtfFile} \
-        --g=~{genomeBuild} \
-        --a=~{annotationVersion} \
-        --l=~{minimumLength} \
-        --idprefix=~{novelPrefix} \
-        --5p=~{cutOff5p} \
-        --3p=~{cutOff3p} \
-        --o=~{outputPrefix}
+        --f=${gtfFile} \
+        --g=${genomeBuild} \
+        --a=${annotationVersion} \
+        --l=${minimumLength} \
+        --idprefix=${novelPrefix} \
+        --5p=${cutOff5p} \
+        --3p=${cutOff3p} \
+        --o=${outputPrefix}
     }
 
     output {
@@ -362,20 +362,20 @@ task LabelReads {
         Int threads = 4
         String memory = "25G"
         Int timeMinutes = 2880
-        String dockerImage = "biocontainers/talon:v5.0_cv1"
+        String dockerImage = "genedockdx/talon:v5.0_cv1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         talon_label_reads \
-        --f=~{inputSam} \
-        --g=~{referenceGenome} \
-        --t=~{threads} \
-        --ar=~{fracaRangeSize} \
-        --tmpDir=~{tmpDir} \
-        ~{true="--deleteTmp" false="" deleteTmp} \
-        --o=~{outputPrefix}
+        --f=${inputSam} \
+        --g=${referenceGenome} \
+        --t=${threads} \
+        --ar=${fracaRangeSize} \
+        --tmpDir=${tmpDir} \
+        ${true="--deleteTmp" false="" deleteTmp} \
+        --o=${outputPrefix}
     }
 
     output {
@@ -415,13 +415,13 @@ task ReformatGtf {
 
         String memory = "4G"
         Int timeMinutes = 30
-        String dockerImage = "biocontainers/talon:v5.0_cv1"
+        String dockerImage = "genedockdx/talon:v5.0_cv1"
     }
 
     command {
         set -e
         talon_reformat_gtf \
-        -gtf ~{gtfFile}
+        -gtf ${gtfFile}
     }
 
     output {
@@ -456,17 +456,17 @@ task SummarizeDatasets {
 
         String memory = "4G"
         Int timeMinutes = 50
-        String dockerImage = "biocontainers/talon:v5.0_cv1"
+        String dockerImage = "genedockdx/talon:v5.0_cv1"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         talon_summarize \
-        --db ~{databaseFile} \
-        ~{true="--verbose" false="" setVerbose} \
-        --o ~{outputPrefix} \
-        ~{"--groups " + datasetGroupsCsv}
+        --db ${databaseFile} \
+        ${true="--verbose" false="" setVerbose} \
+        --o ${outputPrefix} \
+        ${"--groups " + datasetGroupsCsv}
     }
 
     output {
@@ -508,29 +508,29 @@ task Talon {
         Int threads = 4
         String memory = "25G"
         Int timeMinutes = 2880
-        String dockerImage = "biocontainers/talon:v5.0_cv1"
+        String dockerImage = "genedockdx/talon:v5.0_cv1"
     }
 
     command <<<
         set -e
-        mkdir -p "$(dirname ~{outputPrefix})"
+        mkdir -p "$(dirname ${outputPrefix})"
         mkdir -p $PWD/tmp #Standard /tmp fills up which makes the SQLite process crash.
         ln -s $PWD/tmp /tmp/sqltmp #Multiprocessing will crash if the absolute path is too long.
         export TMPDIR=/tmp/sqltmp
-        printf "" > ~{outputPrefix}/talonConfigFile.csv #File needs to be emptied when task is rerun.
-        for file in ~{sep=" " samFiles}
+        printf "" > ${outputPrefix}/talonConfigFile.csv #File needs to be emptied when task is rerun.
+        for file in ${sep=" " samFiles}
         do
-            configFileLine="$(basename ${file%.*}),~{organism},~{sequencingPlatform},${file}"
-            echo ${configFileLine} >> ~{outputPrefix}/talonConfigFile.csv
+            configFileLine="$(basename ${file%.*}),${organism},${sequencingPlatform},${file}"
+            echo ${configFileLine} >> ${outputPrefix}/talonConfigFile.csv
         done
         talon \
-        ~{"--f " + outputPrefix + "/talonConfigFile.csv"} \
-        --db ~{databaseFile} \
-        --build ~{genomeBuild} \
-        --threads ~{threads} \
-        --cov ~{minimumCoverage} \
-        --identity ~{minimumIdentity} \
-        ~{"--o " + outputPrefix + "/run"}
+        ${"--f " + outputPrefix + "/talonConfigFile.csv"} \
+        --db ${databaseFile} \
+        --build ${genomeBuild} \
+        --threads ${threads} \
+        --cov ${minimumCoverage} \
+        --identity ${minimumIdentity} \
+        ${"--o " + outputPrefix + "/run"}
     >>>
 
     output {

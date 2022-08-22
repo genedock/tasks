@@ -175,7 +175,7 @@ task CupGenerateReport {
 
         String memory = "5G"
         Int timeMinutes = 10
-        String dockerImage = "quay.io/biowdl/cuppa:1.6"
+        String dockerImage = "genedockdx/cuppa:1.6"
     }
 
     # This script writes to the directory that the input is located in.
@@ -243,7 +243,7 @@ task Cuppa {
         String javaXmx = "4G"
         String memory = "5G"
         Int timeMinutes = 10
-        String dockerImage = "quay.io/biowdl/cuppa:1.6"
+        String dockerImage = "genedockdx/cuppa:1.6"
     }
 
     command {
@@ -299,7 +299,7 @@ task CuppaChart {
 
         String memory = "4G"
         Int timeMinutes = 5
-        String dockerImage = "quay.io/biowdl/cuppa:1.6"
+        String dockerImage = "genedockdx/cuppa:1.6"
     }
 
     command {
@@ -528,7 +528,7 @@ task HealthChecker {
         String javaXmx = "2G"
         String memory = "1G"
         Int timeMinutes = 1
-        String dockerImage = "quay.io/biowdl/health-checker:3.2"
+        String dockerImage = "genedockdx/health-checker:3.2"
     }
 
     command {
@@ -780,7 +780,7 @@ task Orange {
         String memory = "17G"
         String javaXmx = "16G"
         Int timeMinutes = 1440 #FIXME
-        String dockerImage = "quay.io/biowdl/orange:v1.6"
+        String dockerImage = "genedockdx/orange:v1.6"
     }
 
     command {
@@ -902,7 +902,7 @@ task Pave {
         Int timeMinutes = 50
         String javaXmx = "8G"
         String memory = "9G"
-        String dockerImage = "quay.io/biowdl/pave:v1.0"
+        String dockerImage = "genedockdx/pave:v1.0"
     }
 
     command {
@@ -981,7 +981,7 @@ task Protect {
         String memory = "9G"
         String javaXmx = "8G"
         Int timeMinutes = 60
-        String dockerImage = "quay.io/biowdl/protect:v2.0"
+        String dockerImage = "genedockdx/protect:v2.0"
     }
 
     command {
@@ -1080,7 +1080,7 @@ task Purple {
         String memory = "9G"
         String javaXmx = "8G"
         # clone of genedockdx/hmftools-purple:3.2--hdfd78af_0 with 'ln -s /usr/local/lib/libwebp.so.7 /usr/local/lib/libwebp.so.6'
-        String dockerImage = "quay.io/biowdl/hmftools-purple:3.2"
+        String dockerImage = "genedockdx/hmftools-purple:3.2"
     }
 
     command {
@@ -1317,7 +1317,7 @@ task VirusInterpreter {
         String memory = "3G"
         String javaXmx = "2G"
         Int timeMinutes = 15
-        String dockerImage = "quay.io/biowdl/virus-interpreter:1.2"
+        String dockerImage = "genedockdx/virus-interpreter:1.2"
     }
 
     command {

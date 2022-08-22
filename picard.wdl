@@ -29,17 +29,17 @@ task BedToIntervalList {
         String javaXmx = "3G"
         String memory = "4G"
         Int timeMinutes = 5
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        picard -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${outputPath})"
+        picard -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         BedToIntervalList \
-        I=~{bedFile} \
-        O=~{outputPath} \
-        SD=~{dict}
+        I=${bedFile} \
+        O=${outputPath} \
+        SD=${dict}
     }
 
     output {
@@ -89,19 +89,19 @@ task CollectHsMetrics {
         # Additional * 2 because picard multiple metrics reads the
         # reference fasta twice.
         Int timeMinutes = 1 + ceil(size(referenceFasta, "G") * 3 * 2) + ceil(size(inputBam, "G") * 6)
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{basename})"
-        picard -Xmx~{javaXmxMb}M -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${basename})"
+        picard -Xmx${javaXmxMb}M -XX:ParallelGCThreads=1 \
         CollectHsMetrics \
-        I=~{inputBam} \
-        R=~{referenceFasta} \
-        BAIT_INTERVALS=~{baitsFile} \
-        TARGET_INTERVALS=~{targetsFile} \
-        O="~{basename}.hs_metrics.txt"
+        I=${inputBam} \
+        R=${referenceFasta} \
+        BAIT_INTERVALS=${baitsFile} \
+        TARGET_INTERVALS=${targetsFile} \
+        O="${basename}.hs_metrics.txt"
     }
 
     output {
@@ -109,7 +109,7 @@ task CollectHsMetrics {
     }
 
     runtime {
-        memory: "~{memoryMb}M"
+        memory: "${memoryMb}M"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -158,26 +158,26 @@ task CollectMultipleMetrics {
         Int memoryMb = javaXmxMb + 512
         # Additional * 2 because picard multiple metrics reads the reference fasta twice.
         Int timeMinutes = 1 + ceil(size(referenceFasta, "G") * 3 * 2) + ceil(size(inputBam, "G") * 6)
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{basename})"
-        picard -Xmx~{javaXmxMb}M -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${basename})"
+        picard -Xmx${javaXmxMb}M -XX:ParallelGCThreads=1 \
         CollectMultipleMetrics \
-        I=~{inputBam} \
-        R=~{referenceFasta} \
-        O=~{basename} \
+        I=${inputBam} \
+        R=${referenceFasta} \
+        O=${basename} \
         PROGRAM=null \
-        ~{true="PROGRAM=CollectAlignmentSummaryMetrics" false="" collectAlignmentSummaryMetrics} \
-        ~{true="PROGRAM=CollectInsertSizeMetrics" false="" collectInsertSizeMetrics} \
-        ~{true="PROGRAM=QualityScoreDistribution" false="" qualityScoreDistribution} \
-        ~{true="PROGRAM=MeanQualityByCycle" false="" meanQualityByCycle} \
-        ~{true="PROGRAM=CollectBaseDistributionByCycle" false="" collectBaseDistributionByCycle} \
-        ~{true="PROGRAM=CollectGcBiasMetrics" false="" collectGcBiasMetrics} \
-        ~{true="PROGRAM=CollectSequencingArtifactMetrics" false="" collectSequencingArtifactMetrics} \
-        ~{true="PROGRAM=CollectQualityYieldMetrics" false="" collectQualityYieldMetrics}
+        ${true="PROGRAM=CollectAlignmentSummaryMetrics" false="" collectAlignmentSummaryMetrics} \
+        ${true="PROGRAM=CollectInsertSizeMetrics" false="" collectInsertSizeMetrics} \
+        ${true="PROGRAM=QualityScoreDistribution" false="" qualityScoreDistribution} \
+        ${true="PROGRAM=MeanQualityByCycle" false="" meanQualityByCycle} \
+        ${true="PROGRAM=CollectBaseDistributionByCycle" false="" collectBaseDistributionByCycle} \
+        ${true="PROGRAM=CollectGcBiasMetrics" false="" collectGcBiasMetrics} \
+        ${true="PROGRAM=CollectSequencingArtifactMetrics" false="" collectSequencingArtifactMetrics} \
+        ${true="PROGRAM=CollectQualityYieldMetrics" false="" collectQualityYieldMetrics}
     }
 
     output {
@@ -223,7 +223,7 @@ task CollectMultipleMetrics {
     }
 
     runtime {
-        memory: "~{memoryMb}M"
+        memory: "${memoryMb}M"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -284,19 +284,19 @@ task CollectRnaSeqMetrics {
         String memory = "9G"
         # With 6 minutes per G there were several timeouts.
         Int timeMinutes = 1 + ceil(size(inputBam, "G") * 12)
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{basename})"
-        picard -Xmx~{javaXmx} \
+        mkdir -p "$(dirname ${basename})"
+        picard -Xmx${javaXmx} \
         CollectRnaSeqMetrics -XX:ParallelGCThreads=1 \
-        I=~{inputBam} \
-        O=~{basename}.RNA_Metrics \
-        CHART_OUTPUT=~{basename}.RNA_Metrics.pdf \
-        STRAND_SPECIFICITY=~{strandSpecificity} \
-        REF_FLAT=~{refRefflat}
+        I=${inputBam} \
+        O=${basename}.RNA_Metrics \
+        CHART_OUTPUT=${basename}.RNA_Metrics.pdf \
+        STRAND_SPECIFICITY=${strandSpecificity} \
+        REF_FLAT=${refRefflat}
     }
 
     output {
@@ -342,21 +342,21 @@ task CollectTargetedPcrMetrics {
         String javaXmx = "3G"
         String memory = "4G"
         Int timeMinutes = 1 + ceil(size(inputBam, "G") * 6)
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{basename})"
-        picard -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${basename})"
+        picard -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         CollectTargetedPcrMetrics \
-        I=~{inputBam} \
-        R=~{referenceFasta} \
-        AMPLICON_INTERVALS=~{ampliconIntervals} \
-        TARGET_INTERVALS=~{sep=" TARGET_INTERVALS=" targetIntervals} \
-        O=~{basename}.targetPcrMetrics \
-        PER_BASE_COVERAGE=~{basename}.targetPcrPerBaseCoverage \
-        PER_TARGET_COVERAGE=~{basename}.targetPcrPerTargetCoverage
+        I=${inputBam} \
+        R=${referenceFasta} \
+        AMPLICON_INTERVALS=${ampliconIntervals} \
+        TARGET_INTERVALS=${sep=" TARGET_INTERVALS=" targetIntervals} \
+        O=${basename}.targetPcrMetrics \
+        PER_BASE_COVERAGE=${basename}.targetPcrPerBaseCoverage \
+        PER_TARGET_COVERAGE=${basename}.targetPcrPerTargetCoverage
     }
 
     output {
@@ -404,17 +404,17 @@ task CollectVariantCallingMetrics {
         String javaXmx =  "8G"
         String memory = "9G"
         Int timeMinutes = 1440
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{basename})"
-        picard -Xmx~{javaXmx} \
+        mkdir -p "$(dirname ${basename})"
+        picard -Xmx${javaXmx} \
         CollectVariantCallingMetrics -XX:ParallelGCThreads=1 \
-        DBSNP=~{dbsnp} \
-        INPUT=~{inputVCF} \
-        OUTPUT=~{basename}
+        DBSNP=${dbsnp} \
+        INPUT=${inputVCF} \
+        OUTPUT=${basename}
     }
 
     output {
@@ -462,21 +462,21 @@ task CollectWgsMetrics {
         String memory = "5G"
         String javaXmx = "4G"
         Int timeMinutes = 1 + ceil(size(inputBam, "G") * 6)
-        String dockerImage = "quay.io/biocontainers/picard:2.23.2--0"
+        String dockerImage = "genedockdx/picard:2.23.2--0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
 
-        picard -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        picard -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         CollectWgsMetrics \
-        REFERENCE_SEQUENCE=~{referenceFasta} \
-        INPUT=~{inputBam} \
-        OUTPUT=~{outputPath} \
-        ~{"MINIMUM_MAPPING_QUALITY=" + minimumMappingQuality} \
-        ~{"MINIMUM_BASE_QUALITY=" + minimumBaseQuality} \
-        ~{"COVERAGE_CAP=" + coverageCap}
+        REFERENCE_SEQUENCE=${referenceFasta} \
+        INPUT=${inputBam} \
+        OUTPUT=${outputPath} \
+        ${"MINIMUM_MAPPING_QUALITY=" + minimumMappingQuality} \
+        ${"MINIMUM_BASE_QUALITY=" + minimumBaseQuality} \
+        ${"COVERAGE_CAP=" + coverageCap}
     }
 
     output {
@@ -517,17 +517,17 @@ task CreateSequenceDictionary {
 
         String javaXmx = "2G"
         String memory = "3G"
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "~{outputDir}"
-        picard -Xmx~{javaXmx} \
+        mkdir -p "${outputDir}"
+        picard -Xmx${javaXmx} \
         -XX:ParallelGCThreads=1 \
         CreateSequenceDictionary \
-        REFERENCE=~{inputFile} \
-        OUTPUT="~{outputDir}/$(basename ~{inputFile}).dict"
+        REFERENCE=${inputFile} \
+        OUTPUT="${outputDir}/$(basename ${inputFile}).dict"
     }
 
     output {
@@ -569,21 +569,21 @@ task GatherBamFiles {
         Int memoryMb = javaXmxMb + 512
         # One minute per input gigabyte.
         Int timeMinutes = 1 + ceil(size(inputBams, "G") * 1)
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputBamPath})"
-        picard -Xmx~{javaXmxMb}M -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${outputBamPath})"
+        picard -Xmx${javaXmxMb}M -XX:ParallelGCThreads=1 \
         GatherBamFiles \
-        INPUT=~{sep=' INPUT=' inputBams} \
-        OUTPUT=~{outputBamPath} \
-        COMPRESSION_LEVEL=~{compressionLevel} \
-        USE_JDK_INFLATER=~{true="true" false="false" useJdkInflater} \
-        USE_JDK_DEFLATER=~{true="true" false="false" useJdkDeflater} \
+        INPUT=${sep=' INPUT=' inputBams} \
+        OUTPUT=${outputBamPath} \
+        COMPRESSION_LEVEL=${compressionLevel} \
+        USE_JDK_INFLATER=${true="true" false="false" useJdkInflater} \
+        USE_JDK_DEFLATER=${true="true" false="false" useJdkDeflater} \
         CREATE_INDEX=true \
-        CREATE_MD5_FILE=~{true="true" false="false" createMd5File}
+        CREATE_MD5_FILE=${true="true" false="false" createMd5File}
     }
 
     output {
@@ -593,7 +593,7 @@ task GatherBamFiles {
     }
 
     runtime {
-        memory: "~{memoryMb}M"
+        memory: "${memoryMb}M"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -632,20 +632,20 @@ task GatherVcfs {
         String javaXmx = "4G"
         String memory = "5G"
         Int timeMinutes = 1 + ceil(size(inputVcfs, "G") * 2)
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputVcfPath})"
-        picard -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${outputVcfPath})"
+        picard -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         GatherVcfs \
-        COMPRESSION_LEVEL=~{compressionLevel} \
-        USE_JDK_INFLATER=~{true="true" false="false" useJdkInflater} \
-        USE_JDK_DEFLATER=~{true="true" false="false" useJdkDeflater} \
+        COMPRESSION_LEVEL=${compressionLevel} \
+        USE_JDK_INFLATER=${true="true" false="false" useJdkInflater} \
+        USE_JDK_DEFLATER=${true="true" false="false" useJdkDeflater} \
         CREATE_INDEX=true \
-        INPUT=~{sep=' INPUT=' inputVcfs} \
-        OUTPUT=~{outputVcfPath}
+        INPUT=${sep=' INPUT=' inputVcfs} \
+        OUTPUT=${outputVcfPath}
     }
 
     output {
@@ -701,7 +701,7 @@ task MarkDuplicates {
         String memoryMb = javaXmxMb + 512
 
         Int timeMinutes = 1 + ceil(size(inputBams, "G") * 8)
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     # Task is assuming query-sorted input so that the Secondary and Supplementary reads get
@@ -710,22 +710,22 @@ task MarkDuplicates {
     # it's good enough for MarkDuplicates with ASSUME_SORT_ORDER="queryname".
     command {
         set -e
-        mkdir -p "$(dirname ~{outputBamPath})"
-        picard -Xmx~{javaXmxMb}M -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${outputBamPath})"
+        picard -Xmx${javaXmxMb}M -XX:ParallelGCThreads=1 \
         MarkDuplicates \
-        INPUT=~{sep=' INPUT=' inputBams} \
-        OUTPUT=~{outputBamPath} \
-        METRICS_FILE=~{metricsPath} \
-        COMPRESSION_LEVEL=~{compressionLevel} \
-        USE_JDK_INFLATER=~{true="true" false="false" useJdkInflater} \
-        USE_JDK_DEFLATER=~{true="true" false="false" useJdkDeflater} \
+        INPUT=${sep=' INPUT=' inputBams} \
+        OUTPUT=${outputBamPath} \
+        METRICS_FILE=${metricsPath} \
+        COMPRESSION_LEVEL=${compressionLevel} \
+        USE_JDK_INFLATER=${true="true" false="false" useJdkInflater} \
+        USE_JDK_DEFLATER=${true="true" false="false" useJdkDeflater} \
         VALIDATION_STRINGENCY=SILENT \
-        ~{"READ_NAME_REGEX=" + read_name_regex} \
+        ${"READ_NAME_REGEX=" + read_name_regex} \
         OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
         CLEAR_DT="false" \
         CREATE_INDEX=true \
         ADD_PG_TAG_TO_READS=false \
-        CREATE_MD5_FILE=~{true="true" false="false" createMd5File} \
+        CREATE_MD5_FILE=${true="true" false="false" createMd5File} \
     }
 
     output {
@@ -736,7 +736,7 @@ task MarkDuplicates {
     }
 
     runtime {
-        memory: "~{memoryMb}M"
+        memory: "${memoryMb}M"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -784,21 +784,21 @@ task MergeVCFs {
         String javaXmx = "4G"
         String memory = "5G"
         Int timeMinutes = 1 + ceil(size(inputVCFs, "G")) * 2
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     # Using MergeVcfs instead of GatherVcfs so we can create indices.
     # See https://github.com/broadinstitute/picard/issues/789 for relevant GatherVcfs ticket.
     command {
         set -e
-        mkdir -p "$(dirname ~{outputVcfPath})"
-        picard -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${outputVcfPath})"
+        picard -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         MergeVcfs \
-        INPUT=~{sep=' INPUT=' inputVCFs} \
-        OUTPUT=~{outputVcfPath} \
-        COMPRESSION_LEVEL=~{compressionLevel} \
-        USE_JDK_INFLATER=~{true="true" false="false" useJdkInflater} \
-        USE_JDK_DEFLATER=~{true="true" false="false" useJdkDeflater}
+        INPUT=${sep=' INPUT=' inputVCFs} \
+        OUTPUT=${outputVcfPath} \
+        COMPRESSION_LEVEL=${compressionLevel} \
+        USE_JDK_INFLATER=${true="true" false="false" useJdkInflater} \
+        USE_JDK_DEFLATER=${true="true" false="false" useJdkDeflater}
     }
 
     output {
@@ -840,7 +840,7 @@ task SamToFastq {
         String javaXmx = "16G" # High memory default to avoid crashes.
         String memory = "17G"
         Int timeMinutes = 30
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
 
         File? noneFile
     }
@@ -851,12 +851,12 @@ task SamToFastq {
 
     command {
         set -e
-        picard -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        picard -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         SamToFastq \
-        I=~{inputBam} \
-        ~{"FASTQ=" + outputRead1} \
-        ~{if paired then "SECOND_END_FASTQ=" + outputRead2 else ""} \
-        ~{if paired then "UNPAIRED_FASTQ=" + outputUnpaired else ""}
+        I=${inputBam} \
+        ${"FASTQ=" + outputRead1} \
+        ${if paired then "SECOND_END_FASTQ=" + outputRead2 else ""} \
+        ${if paired then "UNPAIRED_FASTQ=" + outputUnpaired else ""}
     }
 
     output {
@@ -901,19 +901,19 @@ task ScatterIntervalList {
 
         String javaXmx = "3G"
         String memory = "4G"
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
         mkdir scatter_list
-        picard -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        picard -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         IntervalListTools \
-        SCATTER_COUNT=~{scatter_count} \
+        SCATTER_COUNT=${scatter_count} \
         SUBDIVISION_MODE=BALANCING_WITHOUT_INTERVAL_SUBDIVISION_WITH_OVERFLOW \
         UNIQUE=true \
         SORT=true \
-        INPUT=~{interval_list} \
+        INPUT=${interval_list} \
         OUTPUT=scatter_list
     }
 
@@ -944,23 +944,23 @@ task SortSam {
         # GATK Best practices uses 75000 here: https://github.com/gatk-workflows/broad-prod-wgs-germline-snps-indels/blob/d2934ed656ade44801f9cfe1c0e78d4f80684b7b/PairedEndSingleSampleWf-fc-hg38.wdl#L778
         Int XmxGb = ceil(maxRecordsInRam / 125001.0)
         Int timeMinutes = 1 + ceil(size(inputBam, "G") * 3)
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        picard -Xmx~{XmxGb}G -XX:ParallelGCThreads=1 SortSam \
-        INPUT=~{inputBam} \
-        OUTPUT=~{outputPath} \
-        MAX_RECORDS_IN_RAM=~{maxRecordsInRam} \
-        SORT_ORDER=~{true="queryname" false="coordinate" sortByName} \
+        mkdir -p "$(dirname ${outputPath})"
+        picard -Xmx${XmxGb}G -XX:ParallelGCThreads=1 SortSam \
+        INPUT=${inputBam} \
+        OUTPUT=${outputPath} \
+        MAX_RECORDS_IN_RAM=${maxRecordsInRam} \
+        SORT_ORDER=${true="queryname" false="coordinate" sortByName} \
         CREATE_INDEX=true \
-        COMPRESSION_LEVEL=~{compressionLevel} \
-        USE_JDK_INFLATER=~{true="true" false="false" useJdkInflater} \
-        USE_JDK_DEFLATER=~{true="true" false="false" useJdkDeflater} \
+        COMPRESSION_LEVEL=${compressionLevel} \
+        USE_JDK_INFLATER=${true="true" false="false" useJdkInflater} \
+        USE_JDK_DEFLATER=${true="true" false="false" useJdkDeflater} \
         VALIDATION_STRINGENCY=SILENT \
-        CREATE_MD5_FILE=~{true="true" false="false" createMd5File}
+        CREATE_MD5_FILE=${true="true" false="false" createMd5File}
 
     }
 
@@ -971,7 +971,7 @@ task SortSam {
 
     runtime {
         cpu: 1
-        memory: "~{1 + XmxGb}G"
+        memory: "${1 + XmxGb}G"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -1006,18 +1006,18 @@ task SortVcf {
         String javaXmx = "8G"
         String memory = "9G"
         Int timeMinutes = 1 + ceil(size(vcfFiles, "G") * 5)
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputVcfPath})"
-        picard -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${outputVcfPath})"
+        picard -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         SortVcf \
-        I=~{sep=" I=" vcfFiles} \
-        ~{"SEQUENCE_DICTIONARY=" + dict} \
-        O=~{outputVcfPath}
+        I=${sep=" I=" vcfFiles} \
+        ${"SEQUENCE_DICTIONARY=" + dict} \
+        O=${outputVcfPath}
     }
 
     output {
@@ -1056,17 +1056,17 @@ task RenameSample {
         String javaXmx = "8G"
         String memory = "9G"
         Int timeMinutes = 1 + ceil(size(inputVcf, "G") * 2)
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        picard -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${outputPath})"
+        picard -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         RenameSampleInVcf \
-        I=~{inputVcf} \
-        O=~{outputPath} \
-        NEW_SAMPLE_NAME=~{newSampleName}
+        I=${inputVcf} \
+        O=${outputPath} \
+        NEW_SAMPLE_NAME=${newSampleName}
     }
 
     output {
@@ -1111,27 +1111,27 @@ task UmiAwareMarkDuplicatesWithMateCigar {
         String javaXmx = "8G"
         String memory = "9G"
         Int timeMinutes = 360
-        String dockerImage = "quay.io/biocontainers/picard:2.26.10--hdfd78af_0"
+        String dockerImage = "genedockdx/picard:2.26.10--hdfd78af_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})" ~{tempdir}
-        picard -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${outputPath})" ${tempdir}
+        picard -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         UmiAwareMarkDuplicatesWithMateCigar \
-        INPUT=~{sep=' INPUT=' inputBams} \
-        O=~{outputPath} \
-        M=~{outputPathMetrics} \
-        UMI_TAG_NAME=~{umiTagName} \
-        UMI_METRICS_FILE=~{outputPathUmiMetrics} \
-        TMP_DIR=~{tempdir} \
-        REMOVE_DUPLICATES=~{removeDuplicates} \
-        MAX_RECORDS_IN_RAM=~{maxRecordsInRam} \
+        INPUT=${sep=' INPUT=' inputBams} \
+        O=${outputPath} \
+        M=${outputPathMetrics} \
+        UMI_TAG_NAME=${umiTagName} \
+        UMI_METRICS_FILE=${outputPathUmiMetrics} \
+        TMP_DIR=${tempdir} \
+        REMOVE_DUPLICATES=${removeDuplicates} \
+        MAX_RECORDS_IN_RAM=${maxRecordsInRam} \
         CREATE_INDEX=true \
-        COMPRESSION_LEVEL=~{compressionLevel} \
-        USE_JDK_INFLATER=~{true="true" false="false" useJdkInflater} \
-        USE_JDK_DEFLATER=~{true="true" false="false" useJdkDeflater} \
-        ~{"ASSUME_SORT_ORDER=" + assumeSortOrder}
+        COMPRESSION_LEVEL=${compressionLevel} \
+        USE_JDK_INFLATER=${true="true" false="false" useJdkInflater} \
+        USE_JDK_DEFLATER=${true="true" false="false" useJdkDeflater} \
+        ${"ASSUME_SORT_ORDER=" + assumeSortOrder}
     }
 
     output {

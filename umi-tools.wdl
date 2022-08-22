@@ -32,18 +32,18 @@ task Extract {
 
         String memory = "20G"
         Int timeMinutes = 1 + ceil(size([read1, read2], "G") * 2)
-        String dockerImage = "quay.io/biocontainers/mulled-v2-509311a44630c01d9cb7d2ac5727725f51ea43af:3067b520386698317fd507c413baf7f901666fd4-0"
+        String dockerImage = "genedockdx/mulled-v2-509311a44630c01d9cb7d2ac5727725f51ea43af:3067b520386698317fd507c413baf7f901666fd4-0"
     }
 
     command {
         umi_tools extract \
-        --stdin ~{read1} \
-        ~{"--read2-in " + read2} \
-        --bc-pattern ~{bcPattern} \
-        ~{"bc-pattern2 " + bcPattern2} \
-        ~{true="--3prime" false="" threePrime} \
-        --stdout ~{read1Output} \
-        ~{if defined(read2) then "--read2-out " + read2Output else ""}
+        --stdin ${read1} \
+        ${"--read2-in " + read2} \
+        --bc-pattern ${bcPattern} \
+        ${"bc-pattern2 " + bcPattern2} \
+        ${true="--3prime" false="" threePrime} \
+        --stdout ${read1Output} \
+        ${if defined(read2) then "--read2-out " + read2Output else ""}
     }
 
     output {
@@ -89,30 +89,30 @@ task Dedup {
 
         String memory = "25G"
         Int timeMinutes = 30 + ceil(size(inputBam, "G") * 30)
-        String dockerImage = "quay.io/biocontainers/mulled-v2-509311a44630c01d9cb7d2ac5727725f51ea43af:3067b520386698317fd507c413baf7f901666fd4-0"
+        String dockerImage = "genedockdx/mulled-v2-509311a44630c01d9cb7d2ac5727725f51ea43af:3067b520386698317fd507c413baf7f901666fd4-0"
     }
 
     String outputBamIndex = sub(outputBamPath, "\.bam$", ".bai")
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputBamPath})" "~{tmpDir}"
+        mkdir -p "$(dirname ${outputBamPath})" "${tmpDir}"
         umi_tools dedup \
-        --stdin=~{inputBam} \
-        --stdout=~{outputBamPath} \
-        ~{"--output-stats " + statsPrefix} \
-        ~{"--umi-separator=" + umiSeparator} \
-        ~{true="--paired" false="" paired} \
-        --temp-dir=~{tmpDir}
-        samtools index ~{outputBamPath} ~{outputBamIndex}
+        --stdin=${inputBam} \
+        --stdout=${outputBamPath} \
+        ${"--output-stats " + statsPrefix} \
+        ${"--umi-separator=" + umiSeparator} \
+        ${true="--paired" false="" paired} \
+        --temp-dir=${tmpDir}
+        samtools index ${outputBamPath} ${outputBamIndex}
     }
 
     output {
         File deduppedBam = outputBamPath
         File deduppedBamIndex = outputBamIndex
-        File? editDistance = "~{statsPrefix}_edit_distance.tsv"
-        File? umiStats = "~{statsPrefix}_per_umi.tsv"
-        File? positionStats =  "~{statsPrefix}_per_umi_per_position.tsv"
+        File? editDistance = "${statsPrefix}_edit_distance.tsv"
+        File? umiStats = "${statsPrefix}_per_umi.tsv"
+        File? positionStats =  "${statsPrefix}_per_umi_per_position.tsv"
     }
 
     runtime {
