@@ -39,26 +39,26 @@ task SnpEff {
         String memory = "9G"
         String javaXmx = "8G"
         Int timeMinutes = 60
-        String dockerImage = "quay.io/biocontainers/snpeff:5.0--0"
+        String dockerImage = "genedockdx/snpeff:5.0--0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        unzip ~{datadirZip}
-        snpEff -Xmx~{javaXmx} -XX:ParallelGCThreads=1 \
+        mkdir -p "$(dirname ${outputPath})"
+        unzip ${datadirZip}
+        snpEff -Xmx${javaXmx} -XX:ParallelGCThreads=1 \
         -v \
-        ~{genomeVersion} \
+        ${genomeVersion} \
         -noDownload \
         -dataDir $PWD/data \
-        ~{vcf} \
-        ~{true="-hgvs" false="-noHgvs" hgvs} \
-        ~{true="-lof" false="-noLof" lof} \
-        ~{true="-no-downstream" false="" noDownstream} \
-        ~{true="-no-intergenic" false="" noIntergenic} \
-        ~{true="-noShiftHgvs" false="" noShiftHgvs} \
-        ~{"-upDownStreamLen " + upDownStreamLen} \
-        > ~{outputPath}
+        ${vcf} \
+        ${true="-hgvs" false="-noHgvs" hgvs} \
+        ${true="-lof" false="-noLof" lof} \
+        ${true="-no-downstream" false="" noDownstream} \
+        ${true="-no-intergenic" false="" noIntergenic} \
+        ${true="-noShiftHgvs" false="" noShiftHgvs} \
+        ${"-upDownStreamLen " + upDownStreamLen} \
+        > ${outputPath}
         rm -r $PWD/data
     }
 

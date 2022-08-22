@@ -50,33 +50,33 @@ task ParallelPaired {
         String memory = "2G"
         Int threads = 1
         Int timeMinutes = 60
-        String dockerImage = "lethalfang/somaticseq:3.1.0"
+        String dockerImage = "genedockdx/somaticseq:3.1.0"
     }
 
     command {
         /opt/somaticseq/somaticseq_parallel.py \
-        ~{"--classifier-snv " + classifierSNV} \
-        ~{"--classifier-indel " + classifierIndel} \
-        --output-directory ~{outputDir} \
-        --genome-reference ~{referenceFasta} \
-        ~{"--inclusion-region " + inclusionRegion} \
-        ~{"--exclusion-region " + exclusionRegion} \
-        --threads ~{threads} \
+        ${"--classifier-snv " + classifierSNV} \
+        ${"--classifier-indel " + classifierIndel} \
+        --output-directory ${outputDir} \
+        --genome-reference ${referenceFasta} \
+        ${"--inclusion-region " + inclusionRegion} \
+        ${"--exclusion-region " + exclusionRegion} \
+        --threads ${threads} \
         paired \
-        --tumor-bam-file ~{tumorBam} \
-        --normal-bam-file ~{normalBam} \
-        ~{"--mutect2-vcf " + mutect2VCF} \
-        ~{"--varscan-snv " + varscanSNV} \
-        ~{"--varscan-indel " + varscanIndel} \
-        ~{"--jsm-vcf " + jsmVCF} \
-        ~{"--somaticsniper-vcf " + somaticsniperVCF} \
-        ~{"--vardict-vcf " + vardictVCF} \
-        ~{"--muse-vcf " + museVCF} \
-        ~{"--lofreq-snv " + lofreqSNV} \
-        ~{"--lofreq-indel " + lofreqIndel} \
-        ~{"--scalpel-vcf " + scalpelVCF} \
-        ~{"--strelka-snv " + strelkaSNV} \
-        ~{"--strelka-indel " + strelkaIndel}
+        --tumor-bam-file ${tumorBam} \
+        --normal-bam-file ${normalBam} \
+        ${"--mutect2-vcf " + mutect2VCF} \
+        ${"--varscan-snv " + varscanSNV} \
+        ${"--varscan-indel " + varscanIndel} \
+        ${"--jsm-vcf " + jsmVCF} \
+        ${"--somaticsniper-vcf " + somaticsniperVCF} \
+        ${"--vardict-vcf " + vardictVCF} \
+        ${"--muse-vcf " + museVCF} \
+        ${"--lofreq-snv " + lofreqSNV} \
+        ${"--lofreq-indel " + lofreqIndel} \
+        ${"--scalpel-vcf " + scalpelVCF} \
+        ${"--strelka-snv " + strelkaSNV} \
+        ${"--strelka-indel " + strelkaIndel}
     }
 
     output {
@@ -165,34 +165,34 @@ task ParallelPairedTrain {
         String memory = "2G"
         Int threads = 1
         Int timeMinutes = 240
-        String dockerImage = "lethalfang/somaticseq:3.1.0"
+        String dockerImage = "genedockdx/somaticseq:3.1.0"
     }
 
     command {
         /opt/somaticseq/somaticseq_parallel.py \
         --somaticseq-train \
-        --truth-snv ~{truthSNV} \
-        --truth-indel ~{truthIndel} \
-        --output-directory ~{outputDir} \
-        --genome-reference ~{referenceFasta} \
-        ~{"--inclusion-region " + inclusionRegion} \
-        ~{"--exclusion-region " + exclusionRegion} \
-        --threads ~{threads} \
+        --truth-snv ${truthSNV} \
+        --truth-indel ${truthIndel} \
+        --output-directory ${outputDir} \
+        --genome-reference ${referenceFasta} \
+        ${"--inclusion-region " + inclusionRegion} \
+        ${"--exclusion-region " + exclusionRegion} \
+        --threads ${threads} \
         paired \
-        --tumor-bam-file ~{tumorBam} \
-        --normal-bam-file ~{normalBam} \
-        ~{"--mutect2-vcf " + mutect2VCF} \
-        ~{"--varscan-snv " + varscanSNV} \
-        ~{"--varscan-indel " + varscanIndel} \
-        ~{"--jsm-vcf " + jsmVCF} \
-        ~{"--somaticsniper-vcf " + somaticsniperVCF} \
-        ~{"--vardict-vcf " + vardictVCF} \
-        ~{"--muse-vcf " + museVCF} \
-        ~{"--lofreq-snv " + lofreqSNV} \
-        ~{"--lofreq-indel " + lofreqIndel} \
-        ~{"--scalpel-vcf " + scalpelVCF} \
-        ~{"--strelka-snv " + strelkaSNV} \
-        ~{"--strelka-indel " + strelkaIndel}
+        --tumor-bam-file ${tumorBam} \
+        --normal-bam-file ${normalBam} \
+        ${"--mutect2-vcf " + mutect2VCF} \
+        ${"--varscan-snv " + varscanSNV} \
+        ${"--varscan-indel " + varscanIndel} \
+        ${"--jsm-vcf " + jsmVCF} \
+        ${"--somaticsniper-vcf " + somaticsniperVCF} \
+        ${"--vardict-vcf " + vardictVCF} \
+        ${"--muse-vcf " + museVCF} \
+        ${"--lofreq-snv " + lofreqSNV} \
+        ${"--lofreq-indel " + lofreqIndel} \
+        ${"--scalpel-vcf " + scalpelVCF} \
+        ${"--strelka-snv " + strelkaSNV} \
+        ${"--strelka-indel " + strelkaIndel}
     }
 
     output {
@@ -273,26 +273,26 @@ task ParallelSingle {
         String memory = "2G"
         Int threads = 1
         Int timeMinutes = 60
-        String dockerImage = "lethalfang/somaticseq:3.1.0"
+        String dockerImage = "genedockdx/somaticseq:3.1.0"
     }
 
     command {
         /opt/somaticseq/somaticseq_parallel.py \
-        ~{"--classifier-snv " + classifierSNV} \
-        ~{"--classifier-indel " + classifierIndel} \
-        --output-directory ~{outputDir} \
-        --genome-reference ~{referenceFasta} \
-        ~{"--inclusion-region " + inclusionRegion} \
-        ~{"--exclusion-region " + exclusionRegion} \
-        --threads ~{threads} \
+        ${"--classifier-snv " + classifierSNV} \
+        ${"--classifier-indel " + classifierIndel} \
+        --output-directory ${outputDir} \
+        --genome-reference ${referenceFasta} \
+        ${"--inclusion-region " + inclusionRegion} \
+        ${"--exclusion-region " + exclusionRegion} \
+        --threads ${threads} \
         single \
-        --bam-file ~{bam} \
-        ~{"--mutect2-vcf " + mutect2VCF} \
-        ~{"--varscan-vcf " + varscanVCF} \
-        ~{"--vardict-vcf " + vardictVCF} \
-        ~{"--lofreq-vcf " + lofreqVCF} \
-        ~{"--scalpel-vcf " + scalpelVCF} \
-        ~{"--strelka-vcf " + strelkaVCF}
+        --bam-file ${bam} \
+        ${"--mutect2-vcf " + mutect2VCF} \
+        ${"--varscan-vcf " + varscanVCF} \
+        ${"--vardict-vcf " + vardictVCF} \
+        ${"--lofreq-vcf " + lofreqVCF} \
+        ${"--scalpel-vcf " + scalpelVCF} \
+        ${"--strelka-vcf " + strelkaVCF}
     }
 
     output {
@@ -365,27 +365,27 @@ task ParallelSingleTrain {
         String memory = "2G"
         Int threads = 1
         Int timeMinutes = 240
-        String dockerImage = "lethalfang/somaticseq:3.1.0"
+        String dockerImage = "genedockdx/somaticseq:3.1.0"
     }
 
     command {
         /opt/somaticseq/somaticseq_parallel.py \
         --somaticseq-train \
-        --truth-snv ~{truthSNV} \
-        --truth-indel ~{truthIndel} \
-        --output-directory ~{outputDir} \
-        --genome-reference ~{referenceFasta} \
-        ~{"--inclusion-region " + inclusionRegion} \
-        ~{"--exclusion-region " + exclusionRegion} \
-        --threads ~{threads} \
+        --truth-snv ${truthSNV} \
+        --truth-indel ${truthIndel} \
+        --output-directory ${outputDir} \
+        --genome-reference ${referenceFasta} \
+        ${"--inclusion-region " + inclusionRegion} \
+        ${"--exclusion-region " + exclusionRegion} \
+        --threads ${threads} \
         single \
-        --bam-file ~{bam} \
-        ~{"--mutect2-vcf " + mutect2VCF} \
-        ~{"--varscan-vcf " + varscanVCF} \
-        ~{"--vardict-vcf " + vardictVCF} \
-        ~{"--lofreq-vcf " + lofreqVCF} \
-        ~{"--scalpel-vcf " + scalpelVCF} \
-        ~{"--strelka-vcf " + strelkaVCF}
+        --bam-file ${bam} \
+        ${"--mutect2-vcf " + mutect2VCF} \
+        ${"--varscan-vcf " + varscanVCF} \
+        ${"--vardict-vcf " + vardictVCF} \
+        ${"--lofreq-vcf " + lofreqVCF} \
+        ${"--scalpel-vcf " + scalpelVCF} \
+        ${"--strelka-vcf " + strelkaVCF}
     }
 
     output {
@@ -443,16 +443,16 @@ task ModifyStrelka {
 
         String memory = "2G"
         Int timeMinutes = 20
-        String dockerImage = "lethalfang/somaticseq:3.1.0"
+        String dockerImage = "genedockdx/somaticseq:3.1.0"
     }
 
     command {
         set -e
         /opt/somaticseq/vcfModifier/modify_Strelka.py \
-        -infile ~{strelkaVCF} \
+        -infile ${strelkaVCF} \
         -outfile "modified_strelka.vcf"
         first_FORMAT_line_num=$(grep -n -m 1 '##FORMAT' "modified_strelka.vcf" | cut -d : -f 1)
-        sed "$first_FORMAT_line_num"'i##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">' "modified_strelka.vcf" > ~{outputVCFName}
+        sed "$first_FORMAT_line_num"'i##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">' "modified_strelka.vcf" > ${outputVCFName}
     }
 
     output {

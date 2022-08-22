@@ -28,16 +28,16 @@ task BgzipAndIndex {
 
         String memory = "2G"
         Int timeMinutes = 1 + ceil(size(inputFile, "G"))
-        String dockerImage = "quay.io/biocontainers/tabix:0.2.6--ha92aebf_0"
+        String dockerImage = "genedockdx/tabix:0.2.6--ha92aebf_0"
     }
 
     String outputGz = outputDir + "/" + basename(inputFile) + ".gz"
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputGz})"
-        bgzip -c ~{inputFile} > ~{outputGz}
-        tabix ~{outputGz} -p ~{type}
+        mkdir -p "$(dirname ${outputGz})"
+        bgzip -c ${inputFile} > ${outputGz}
+        tabix ${outputGz} -p ${type}
     }
 
     output {
@@ -72,15 +72,15 @@ task Faidx {
         String outputDir
 
         String memory = "2G"
-        String dockerImage = "quay.io/biocontainers/samtools:1.11--h6270b1f_0"
+        String dockerImage = "genedockdx/samtools:1.11--h6270b1f_0"
     }
 
     command {
         set -e
-        mkdir -p "~{outputDir}"
-        ln -s ~{inputFile} "~{outputDir}/$(basename ~{inputFile})"
+        mkdir -p "${outputDir}"
+        ln -s ${inputFile} "${outputDir}/$(basename ${inputFile})"
         samtools faidx \
-        "~{outputDir}/$(basename ~{inputFile})"
+        "${outputDir}/$(basename ${inputFile})"
     }
 
     output {
@@ -121,24 +121,24 @@ task Fastq {
         Int threads = 1
         String memory = "1G"
         Int timeMinutes = 1 + ceil(size(inputBam) * 2)
-        String dockerImage = "quay.io/biocontainers/samtools:1.11--h6270b1f_0"
+        String dockerImage = "genedockdx/samtools:1.11--h6270b1f_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputRead1})"
+        mkdir -p "$(dirname ${outputRead1})"
         samtools fastq \
-        ~{true="-1" false="-s" defined(outputRead2)} ~{outputRead1} \
-        ~{"-2 " + outputRead2} \
-        ~{"-0 " + outputRead0} \
-        ~{"-f " + includeFilter} \
-        ~{"-F " + excludeFilter} \
-        ~{"-G " + excludeSpecificFilter} \
-        ~{true="-N" false="-n" appendReadNumber} \
-        ~{true="-O" false="" outputQuality} \
-        ~{"-c " + compressionLevel} \
-        ~{"--threads " + threads} \
-        ~{inputBam}
+        ${true="-1" false="-s" defined(outputRead2)} ${outputRead1} \
+        ${"-2 " + outputRead2} \
+        ${"-0 " + outputRead0} \
+        ${"-f " + includeFilter} \
+        ${"-F " + excludeFilter} \
+        ${"-G " + excludeSpecificFilter} \
+        ${true="-N" false="-n" appendReadNumber} \
+        ${true="-O" false="" outputQuality} \
+        ${"-c " + compressionLevel} \
+        ${"--threads " + threads} \
+        ${inputBam}
     }
 
     output {
@@ -185,18 +185,18 @@ task FilterShortReadsBam {
 
         String memory = "1G"
         Int timeMinutes = 1 + ceil(size(bamFile, "G") * 8)
-        String dockerImage = "quay.io/biocontainers/samtools:1.11--h6270b1f_0"
+        String dockerImage = "genedockdx/samtools:1.11--h6270b1f_0"
     }
 
     String outputPathBamIndex = sub(outputPathBam, "\.bam$", ".bai")
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPathBam})"
-        samtools view -h ~{bamFile} | \
+        mkdir -p "$(dirname ${outputPathBam})"
+        samtools view -h ${bamFile} | \
         awk 'length($10) > 30 || $1 ~/^@/' | \
-        samtools view -bS -> ~{outputPathBam}
-        samtools index ~{outputPathBam} ~{outputPathBamIndex}
+        samtools view -bS -> ${outputPathBam}
+        samtools index ${outputPathBam} ${outputPathBamIndex}
     }
 
     output {
@@ -231,13 +231,13 @@ task Flagstat {
 
         String memory = "256M"  # Only 40.5 MiB used for 150G bam file.
         Int timeMinutes = 1 + ceil(size(inputBam, "G"))
-        String dockerImage = "quay.io/biocontainers/samtools:1.11--h6270b1f_0"
+        String dockerImage = "genedockdx/samtools:1.11--h6270b1f_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
-        samtools flagstat ~{inputBam} > ~{outputPath}
+        mkdir -p "$(dirname ${outputPath})"
+        samtools flagstat ${inputBam} > ${outputPath}
     }
 
     output {
@@ -271,7 +271,7 @@ task Index {
 
         String memory = "2G"
         Int timeMinutes = 1 + ceil(size(bamFile, "G") * 4)
-        String dockerImage = "quay.io/biocontainers/samtools:1.11--h6270b1f_0"
+        String dockerImage = "genedockdx/samtools:1.11--h6270b1f_0"
     }
 
     # Select_first is needed, otherwise womtool validate fails.
@@ -282,12 +282,12 @@ task Index {
         bash -c '
         set -e
         # Make sure outputBamPath does not exist.
-        if [ ! -f ~{outputPath} ]
+        if [ ! -f ${outputPath} ]
         then
-            mkdir -p "$(dirname ~{outputPath})"
-            ln ~{bamFile} ~{outputPath}
+            mkdir -p "$(dirname ${outputPath})"
+            ln ${bamFile} ${outputPath}
         fi
-        samtools index ~{outputPath} ~{bamIndexPath}
+        samtools index ${outputPath} ${bamIndexPath}
         '
     }
 
@@ -322,13 +322,13 @@ task Markdup {
         String outputBamPath
 
         Int timeMinutes = 1 + ceil(size(inputBam, "G") * 2)
-        String dockerImage = "quay.io/biocontainers/samtools:1.11--h6270b1f_0"
+        String dockerImage = "genedockdx/samtools:1.11--h6270b1f_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputBamPath})"
-        samtools markdup ~{inputBam} ~{outputBamPath}
+        mkdir -p "$(dirname ${outputBamPath})"
+        samtools markdup ${inputBam} ${outputBamPath}
     }
 
     output {
@@ -361,7 +361,7 @@ task Merge {
         Int threads = 1
         String memory = "4G"
         Int timeMinutes = 1 + ceil(size(bamFiles, "G") * 2)
-        String dockerImage = "quay.io/biocontainers/samtools:1.11--h6270b1f_0"
+        String dockerImage = "genedockdx/samtools:1.11--h6270b1f_0"
     }
 
     String indexPath = sub(outputBamPath, "\.bam$",".bai")
@@ -369,12 +369,12 @@ task Merge {
     # Samtools uses additional threads for merge.
     command {
         set -e
-        mkdir -p "$(dirname ~{outputBamPath})"
+        mkdir -p "$(dirname ${outputBamPath})"
         samtools merge \
-        --threads ~{threads - 1} \
-        ~{true="-f" false="" force} \
-        ~{outputBamPath} ~{sep=' ' bamFiles}
-        samtools index ~{outputBamPath} ~{indexPath}
+        --threads ${threads - 1} \
+        ${true="-f" false="" force} \
+        ${outputBamPath} ${sep=' ' bamFiles}
+        samtools index ${outputBamPath} ${indexPath}
     }
 
     output {
@@ -416,7 +416,7 @@ task Sort {
         Int threads = 1
         Int memoryGb = 1 + threads * memoryPerThreadGb
         Int timeMinutes = 1 + ceil(size(inputBam, "G") * 3)
-        String dockerImage = "quay.io/biocontainers/samtools:1.11--h6270b1f_0"
+        String dockerImage = "genedockdx/samtools:1.11--h6270b1f_0"
     }
 
     # Select first needed as outputPath is optional input (bug in cromwell).
@@ -424,17 +424,17 @@ task Sort {
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         samtools sort \
-        -l ~{compressionLevel} \
-        ~{true="-n" false="" sortByName} \
-        ~{"--threads " + threads} \
-        -m ~{memoryPerThreadGb}G \
-        -o ~{outputPath} \
-        ~{inputBam}
+        -l ${compressionLevel} \
+        ${true="-n" false="" sortByName} \
+        ${"--threads " + threads} \
+        -m ${memoryPerThreadGb}G \
+        -o ${outputPath} \
+        ${inputBam}
         samtools index \
-        -@ ~{threads} \
-        ~{outputPath} ~{bamIndexPath}
+        -@ ${threads} \
+        ${outputPath} ${bamIndexPath}
     }
 
     output {
@@ -444,7 +444,7 @@ task Sort {
 
     runtime {
         cpu: threads
-        memory: "~{memoryGb}G"
+        memory: "${memoryGb}G"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -474,19 +474,19 @@ task Tabix {
         String type = "vcf"
 
         Int timeMinutes = 1 + ceil(size(inputFile, "G") * 2)
-        String dockerImage = "quay.io/biocontainers/tabix:0.2.6--ha92aebf_0"
+        String dockerImage = "genedockdx/tabix:0.2.6--ha92aebf_0"
     }
 
     # FIXME: It is better to do the indexing on VCF creation.
     # Not in a separate task. With file localization this gets hairy fast.
     command {
         set -e
-        mkdir -p "$(dirname ~{outputFilePath})"
-        if [ ! -f ~{outputFilePath} ]
+        mkdir -p "$(dirname ${outputFilePath})"
+        if [ ! -f ${outputFilePath} ]
         then
-            ln ~{inputFile} ~{outputFilePath}
+            ln ${inputFile} ${outputFilePath}
         fi
-        tabix ~{outputFilePath} -p ~{type}
+        tabix ${outputFilePath} -p ${type}
     }
 
     output {
@@ -528,7 +528,7 @@ task View {
         Int threads = 1
         String memory = "1G"
         Int timeMinutes = 1 + ceil(size(inFile, "G") * 5)
-        String dockerImage = "quay.io/biocontainers/samtools:1.11--h6270b1f_0"
+        String dockerImage = "genedockdx/samtools:1.11--h6270b1f_0"
     }
 
     String outputIndexPath = basename(outputFileName) + ".bai"
@@ -536,18 +536,18 @@ task View {
     # Always output to bam and output header.
     command {
         set -e
-        mkdir -p "$(dirname ~{outputFileName})"
+        mkdir -p "$(dirname ${outputFileName})"
         samtools view -b \
-        ~{"-T " + referenceFasta} \
-        ~{"-o " + outputFileName} \
-        ~{true="-u " false="" uncompressedBamOutput} \
-        ~{"-f " + includeFilter} \
-        ~{"-F " + excludeFilter} \
-        ~{"-G " + excludeSpecificFilter} \
-        ~{"-q " + MAPQthreshold} \
-        ~{"--threads " + (threads - 1)} \
-        ~{inFile}
-        samtools index ~{outputFileName} ~{outputIndexPath}
+        ${"-T " + referenceFasta} \
+        ${"-o " + outputFileName} \
+        ${true="-u " false="" uncompressedBamOutput} \
+        ${"-f " + includeFilter} \
+        ${"-F " + excludeFilter} \
+        ${"-G " + excludeSpecificFilter} \
+        ${"-q " + MAPQthreshold} \
+        ${"--threads " + (threads - 1)} \
+        ${inFile}
+        samtools index ${outputFileName} ${outputIndexPath}
     }
 
     output {

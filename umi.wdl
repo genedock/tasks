@@ -32,7 +32,7 @@ task BamReadNameToUmiTag {
 
         String memory = "2G"
         Int timeMinutes = 1 + ceil(size([inputBam], "G") * 10)
-        String dockerImage = "quay.io/biocontainers/pysam:0.17.0--py39h051187c_0"
+        String dockerImage = "genedockdx/pysam:0.17.0--py39h051187c_0"
     }
     
     String bamIndexPath = sub(select_first([outputPath]), "\.bam$", ".bai")
@@ -72,8 +72,8 @@ task BamReadNameToUmiTag {
                 out_bam.write(segment)
 
         if __name__ == "__main__":
-            annotate_umis("~{inputBam}", "~{outputPath}", "~{umiTag}")
-            pysam.index("~{outputPath}", "~{bamIndexPath}", b=True)
+            annotate_umis("${inputBam}", "${outputPath}", "${umiTag}")
+            pysam.index("${outputPath}", "${bamIndexPath}", b=True)
         CODE
     >>>
 

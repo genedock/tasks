@@ -30,25 +30,25 @@ task Peach {
         File panelJson
 
         String memory = "2G"
-        String dockerImage = "quay.io/biowdl/peach:v1.5"
+        String dockerImage = "genedockdx/peach:v1.5"
         Int timeMinutes = 5
     }
 
     command {
         set -e
-        mkdir -p ~{outputDir}
+        mkdir -p ${outputDir}
         peach \
-        --vcf ~{germlineVcf} \
-        --sample_t_id ~{tumorName} \
-        --sample_r_id ~{normalName} \
+        --vcf ${germlineVcf} \
+        --sample_t_id ${tumorName} \
+        --sample_r_id ${normalName} \
         --tool_version 1.5 \
-        --outputdir ~{outputDir} \
-        --panel ~{panelJson}
+        --outputdir ${outputDir} \
+        --panel ${panelJson}
     }
 
     output {
-        File callsTsv = "~{outputDir}/~{tumorName}.peach.calls.tsv"
-        File genotypeTsv = "~{outputDir}/~{tumorName}.peach.genotype.tsv"
+        File callsTsv = "${outputDir}/${tumorName}.peach.calls.tsv"
+        File genotypeTsv = "${outputDir}/${tumorName}.peach.genotype.tsv"
         Array[File] outputs = [callsTsv, genotypeTsv]
     }
 

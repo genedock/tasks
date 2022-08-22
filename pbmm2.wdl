@@ -31,18 +31,18 @@ task Mapping {
         Int cores = 4
         String memory = "30G"
         Int timeMinutes = 1 + ceil(size(queryFile, "G") * 2000 / cores)
-        String dockerImage = "quay.io/biocontainers/pbmm2:1.3.0--h56fc30b_1"
+        String dockerImage = "genedockdx/pbmm2:1.3.0--h56fc30b_1"
     }
 
     command {
         pbmm2 align \
-        --preset ~{presetOption} \
-        ~{true="--sort" false="" sort} \
-        -j ~{cores} \
-        ~{referenceMMI} \
-        ~{queryFile} \
-        --sample ~{sample} \
-        ~{sample}.align.bam
+        --preset ${presetOption} \
+        ${true="--sort" false="" sort} \
+        -j ${cores} \
+        ${referenceMMI} \
+        ${queryFile} \
+        --sample ${sample} \
+        ${sample}.align.bam
     }
 
     output {

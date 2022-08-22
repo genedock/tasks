@@ -31,37 +31,37 @@ task GenomeGenerate {
         Int threads = 4
         String memory = "32G"
         Int timeMinutes = ceil(size(referenceFasta, "G") * 240 / threads)
-        String dockerImage = "quay.io/biocontainers/star:2.7.3a--0"
+        String dockerImage = "genedockdx/star:2.7.3a--0"
     }
 
     command {
         set -e
-        mkdir -p ~{genomeDir}
+        mkdir -p ${genomeDir}
         STAR \
         --runMode genomeGenerate \
-        --runThreadN ~{threads} \
-        --genomeDir ~{genomeDir} \
-        --genomeFastaFiles ~{referenceFasta} \
-        ~{"--sjdbGTFfile " + referenceGtf} \
-        ~{"--sjdbOverhang " + sjdbOverhang}
+        --runThreadN ${threads} \
+        --genomeDir ${genomeDir} \
+        --genomeFastaFiles ${referenceFasta} \
+        ${"--sjdbGTFfile " + referenceGtf} \
+        ${"--sjdbOverhang " + sjdbOverhang}
     }
 
     output {
-        File chrLength = "~{genomeDir}/chrLength.txt"
-        File chrNameLength = "~{genomeDir}/chrNameLength.txt"
-        File chrName = "~{genomeDir}/chrName.txt"
-        File chrStart = "~{genomeDir}/chrStart.txt"
-        File genome = "~{genomeDir}/Genome"
-        File genomeParameters = "~{genomeDir}/genomeParameters.txt"
-        File sa = "~{genomeDir}/SA"
-        File saIndex = "~{genomeDir}/SAindex"
-        File? exonGeTrInfo = "~{genomeDir}/exonGeTrInfo.tab"
-        File? exonInfo = "~{genomeDir}/exonInfo.tab"
-        File? geneInfo = "~{genomeDir}/geneInfo.tab"
-        File? sjdbInfo = "~{genomeDir}/sjdbInfo.txt"
-        File? sjdbListFromGtfOut = "~{genomeDir}/sjdbList.fromGTF.out.tab"
-        File? sjdbListOut = "~{genomeDir}/sjdbList.out.tab"
-        File? transcriptInfo = "~{genomeDir}/transcriptInfo.tab"
+        File chrLength = "${genomeDir}/chrLength.txt"
+        File chrNameLength = "${genomeDir}/chrNameLength.txt"
+        File chrName = "${genomeDir}/chrName.txt"
+        File chrStart = "${genomeDir}/chrStart.txt"
+        File genome = "${genomeDir}/Genome"
+        File genomeParameters = "${genomeDir}/genomeParameters.txt"
+        File sa = "${genomeDir}/SA"
+        File saIndex = "${genomeDir}/SAindex"
+        File? exonGeTrInfo = "${genomeDir}/exonGeTrInfo.tab"
+        File? exonInfo = "${genomeDir}/exonInfo.tab"
+        File? geneInfo = "${genomeDir}/geneInfo.tab"
+        File? sjdbInfo = "${genomeDir}/sjdbInfo.txt"
+        File? sjdbListFromGtfOut = "${genomeDir}/sjdbList.fromGTF.out.tab"
+        File? sjdbListOut = "${genomeDir}/sjdbList.out.tab"
+        File? transcriptInfo = "${genomeDir}/transcriptInfo.tab"
         Array[File] starIndex = select_all([chrLength, chrNameLength, chrName,
                                             chrStart, genome, genomeParameters,
                                             sa, saIndex, exonGeTrInfo, exonInfo,
@@ -131,7 +131,7 @@ task Star {
         String? memory
         # 1 minute initialization + time reading in index (1 minute per G) + time aligning data.
         Int timeMinutes = 1 + ceil(size(indexFiles, "G")) + ceil(size(flatten([inputR1, inputR2]), "G") * 300 / runThreadN)
-        String dockerImage = "quay.io/biocontainers/star:2.7.3a--0"
+        String dockerImage = "genedockdx/star:2.7.3a--0"
     }
 
     # Use a margin of 30% index size. Real memory usage is ~30 GiB for a 27 GiB index. 
@@ -145,24 +145,24 @@ task Star {
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outFileNamePrefix})"
+        mkdir -p "$(dirname ${outFileNamePrefix})"
         STAR \
-        --readFilesIn ~{sep=',' inputR1} ~{sep="," inputR2} \
-        --outFileNamePrefix ~{outFileNamePrefix} \
-        --genomeDir ~{sub(indexFiles[0], basename(indexFiles[0]), "")} \
-        --outSAMtype ~{outSAMtype} \
-        --outBAMcompression ~{outBAMcompression} \
-        --readFilesCommand ~{readFilesCommand} \
-        ~{"--outFilterScoreMin " + outFilterScoreMin} \
-        ~{"--outFilterScoreMinOverLread " + outFilterScoreMinOverLread} \
-        ~{"--outFilterMatchNmin " + outFilterMatchNmin} \
-        ~{"--outFilterMatchNminOverLread " + outFilterMatchNminOverLread} \
-        ~{"--outSAMunmapped " + outSAMunmapped} \
-        ~{"--runThreadN " + runThreadN} \
-        ~{"--outStd " + outStd} \
-        ~{"--twopassMode " + twopassMode} \
-        ~{"--limitBAMsortRAM " + limitBAMsortRAM} \
-        ~{true="--outSAMattrRGline " false="" defined(outSAMattrRGline)} ~{sep=" , " outSAMattrRGline}
+        --readFilesIn ${sep=',' inputR1} ${sep="," inputR2} \
+        --outFileNamePrefix ${outFileNamePrefix} \
+        --genomeDir ${sub(indexFiles[0], basename(indexFiles[0]), "")} \
+        --outSAMtype ${outSAMtype} \
+        --outBAMcompression ${outBAMcompression} \
+        --readFilesCommand ${readFilesCommand} \
+        ${"--outFilterScoreMin " + outFilterScoreMin} \
+        ${"--outFilterScoreMinOverLread " + outFilterScoreMinOverLread} \
+        ${"--outFilterMatchNmin " + outFilterMatchNmin} \
+        ${"--outFilterMatchNminOverLread " + outFilterMatchNminOverLread} \
+        ${"--outSAMunmapped " + outSAMunmapped} \
+        ${"--runThreadN " + runThreadN} \
+        ${"--outStd " + outStd} \
+        ${"--twopassMode " + twopassMode} \
+        ${"--limitBAMsortRAM " + limitBAMsortRAM} \
+        ${true="--outSAMattrRGline " false="" defined(outSAMattrRGline)} ${sep=" , " outSAMattrRGline}
     }
 
     output {
@@ -172,7 +172,7 @@ task Star {
 
     runtime {
         cpu: runThreadN
-        memory: select_first([memory, "~{memoryGb}G"])
+        memory: select_first([memory, "${memoryGb}G"])
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -215,7 +215,7 @@ task MakeStarRGline {
     }
 
     command {
-        printf '"ID:~{readgroup}" "LB:~{library}" "PL:~{platform}" "SM:~{sample}"'
+        printf '"ID:${readgroup}" "LB:${library}" "PL:${platform}" "SM:${sample}"'
     }
 
     output {

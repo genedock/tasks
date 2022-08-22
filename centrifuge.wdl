@@ -305,7 +305,7 @@ task KTimportTaxonomy {
 
         String memory = "4G"
         Int timeMinutes = 1
-        String dockerImage = "biocontainers/krona:v2.7.1_cv1"
+        String dockerImage = "genedockdx/krona:v2.7.1_cv1"
     }
 
     command {

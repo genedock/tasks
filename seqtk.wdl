@@ -34,15 +34,15 @@ task Sample {
 
     command {
         set -e -o pipefail
-        mkdir -p "$(dirname ~{outFilePath})"
-        ~{preCommand}
+        mkdir -p "$(dirname ${outFilePath})"
+        ${preCommand}
         seqtk sample \
-        ~{"-s " + seed} \
-        ~{true="-2 " false="" twoPassMode} \
-        ~{sequenceFile} \
-        ~{fractionOrNumber} \
-        ~{true="| gzip" false="" zip} \
-        >  ~{outFilePath}
+        ${"-s " + seed} \
+        ${true="-2 " false="" twoPassMode} \
+        ${sequenceFile} \
+        ${fractionOrNumber} \
+        ${true="| gzip" false="" zip} \
+        >  ${outFilePath}
     }
 
     output {

@@ -29,14 +29,15 @@ task Flagstat {
         Int threads = 2
         String memory = "8G"
         Int timeMinutes = 320
-        String dockerImage = "quay.io/biocontainers/sambamba:0.7.1--h148d290_2"
+        String dockerImage = "genedockdx/sambamba:0.7.1--h148d290_2"
+
     }
 
     command {
         sambamba flagstat \
-        -t ~{threads} \
-        ~{inputBam} \
-        > ~{outputPath}
+        -t ${threads} \
+        ${inputBam} \
+        > ${outputPath}
     }
 
     output {
@@ -85,25 +86,25 @@ task Markdup {
         Int memoryMb = 8192 + sortBufferSize + 2 * ioBufferSize
         # Time minute calculation does not work well for higher number of threads.
         Int timeMinutes = 1 + ceil(size(inputBams, "G") * 25) / threads
-        String dockerImage = "quay.io/biocontainers/sambamba:0.7.1--h148d290_2"
+        String dockerImage = "genedockdx/sambamba:0.7.1--h148d290_2"
     }
 
     String bamIndexPath = sub(outputPath, "\.bam$", ".bai")
 
     command {
         set -e 
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         sambamba markdup \
-        --nthreads ~{threads} \
-        -l ~{compressionLevel} \
-        ~{true="-r" false="" removeDuplicates} \
-        ~{"--hash-table-size " + hashTableSize} \
-        ~{"--overflow-list-size " + overFlowListSize} \
-        ~{"--sort-buffer-size " + sortBufferSize} \
-        ~{"--io-buffer-size " + ioBufferSize} \
-        ~{sep=' ' inputBams} ~{outputPath}
+        --nthreads ${threads} \
+        -l ${compressionLevel} \
+        ${true="-r" false="" removeDuplicates} \
+        ${"--hash-table-size " + hashTableSize} \
+        ${"--overflow-list-size " + overFlowListSize} \
+        ${"--sort-buffer-size " + sortBufferSize} \
+        ${"--io-buffer-size " + ioBufferSize} \
+        ${sep=' ' inputBams} ${outputPath}
         # sambamba creates an index for us.
-        mv ~{outputPath}.bai ~{bamIndexPath}
+        mv ${outputPath}.bai ${bamIndexPath}
     }
 
     output {
@@ -113,7 +114,7 @@ task Markdup {
 
     runtime {
         cpu: threads
-        memory: "~{memoryMb}M"
+        memory: "${memoryMb}M"
         time_minutes: timeMinutes
         docker: dockerImage
     }
@@ -150,7 +151,7 @@ task Sort {
         Int threads = 1
         Int memoryGb = 1 + threads * memoryPerThreadGb
         Int timeMinutes = 1 + ceil(size(inputBam, "G") * 3)
-        String dockerImage = "quay.io/biocontainers/sambamba:0.7.1--h148d290_2"
+        String dockerImage = "genedockdx/sambamba:0.7.1--h148d290_2"
     }
 
     # Select first needed as outputPath is optional input (bug in cromwell).
@@ -158,16 +159,16 @@ task Sort {
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputPath})"
+        mkdir -p "$(dirname ${outputPath})"
         sambamba sort \
-        -l ~{compressionLevel} \
-        ~{true="-n" false="" sortByName} \
-        ~{"--nthreads " + threads} \
-        -m ~{memoryPerThreadGb}G \
-        -o ~{outputPath} \
-        ~{inputBam}
+        -l ${compressionLevel} \
+        ${true="-n" false="" sortByName} \
+        ${"--nthreads " + threads} \
+        -m ${memoryPerThreadGb}G \
+        -o ${outputPath} \
+        ${inputBam}
         # sambamba creates an index for us.
-        mv ~{outputPath}.bai ~{bamIndexPath}
+        mv ${outputPath}.bai ${bamIndexPath}
     }
 
     output {
@@ -177,7 +178,7 @@ task Sort {
 
     runtime {
         cpu: threads
-        memory: "~{memoryGb}G"
+        memory: "${memoryGb}G"
         docker: dockerImage
         time_minutes: timeMinutes
     }

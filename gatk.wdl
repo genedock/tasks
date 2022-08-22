@@ -511,7 +511,7 @@ task CombineVariants {
         String javaXmx = "12G"
         String memory = "13G"
         Int timeMinutes = 180
-        String dockerImage = "broadinstitute/gatk3:3.8-1"
+        String dockerImage = "genedockdx/gatk3:3.8-1"
     }
 
     command <<<
@@ -582,7 +582,7 @@ task CreateReadCountPanelOfNormals {
         String memory = "8G"
         Int timeMinutes = 5
         # The biocontainer causes a spark related error for some reason.
-        String dockerImage = "broadinstitute/gatk:4.1.8.0"
+        String dockerImage = "genedockdx/gatk:4.1.8.0"
     }
 
     command {
@@ -1327,7 +1327,7 @@ task PlotDenoisedCopyRatios {
         String javaXmx = "3G"
         String memory = "4G"
         Int timeMinutes = 2
-        String dockerImage = "broadinstitute/gatk:4.1.8.0"
+        String dockerImage = "genedockdx/gatk:4.1.8.0"
     }
 
     command {
@@ -1395,7 +1395,7 @@ task PlotModeledSegments {
         String javaXmx = "3G"
         String memory = "4G"
         Int timeMinutes = 2
-        String dockerImage = "broadinstitute/gatk:4.1.8.0"
+        String dockerImage = "genedockdx/gatk:4.1.8.0"
     }
 
     command {

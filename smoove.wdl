@@ -31,19 +31,19 @@ task Call {
 
         String memory = "15G"
         Int timeMinutes = 1440
-        String dockerImage = "quay.io/biocontainers/smoove:0.2.5--0"
+        String dockerImage = "genedockdx/smoove:0.2.5--0"
     }
 
     command {
         set -e
-        mkdir -p ~{outputDir}
+        mkdir -p ${outputDir}
         smoove call \
-        --outdir ~{outputDir} \
-        --name ~{sample} \
-        --fasta ~{referenceFasta} \
+        --outdir ${outputDir} \
+        --name ${sample} \
+        --fasta ${referenceFasta} \
         --removepr \
         --genotype \
-        ~{bamFile}
+        ${bamFile}
     }
 
     output {

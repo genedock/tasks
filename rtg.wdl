@@ -29,15 +29,15 @@ task Format {
         String rtgMem = "8G"
         String memory = "9G"
         Int timeMinutes = 1 + ceil(size(inputFiles) * 2)
-        String dockerImage = "quay.io/biocontainers/rtg-tools:3.10.1--0"
+        String dockerImage = "genedockdx/rtg-tools:3.10.1--0"
     }
 
     command {
         set -e
-        mkdir -p $(dirname ~{outputPath})
-        rtg RTG_MEM=~{rtgMem} format -f ~{format} \
-        -o ~{outputPath} \
-        ~{sep=' ' inputFiles}
+        mkdir -p $(dirname ${outputPath})
+        rtg RTG_MEM=${rtgMem} format -f ${format} \
+        -o ${outputPath} \
+        ${sep=' ' inputFiles}
     }
 
     output {
@@ -87,26 +87,26 @@ task VcfEval {
         Int threads = 1  # Tool default is number of cores in the system 😱.
         String memory = "9G"
         Int timeMinutes = 1 + ceil(size([baseline, calls], "G") * 5)
-        String dockerImage = "quay.io/biocontainers/rtg-tools:3.10.1--0"
+        String dockerImage = "genedockdx/rtg-tools:3.10.1--0"
     }
 
     command <<<
         set -e
-        mkdir -p "$(dirname ~{outputDir})"
-        rtg RTG_MEM=~{rtgMem} vcfeval \
-        --baseline ~{baseline} \
-        --calls ~{calls} \
-        ~{"--evaluation-regions " + evaluationRegions} \
-        ~{"--bed-regions " + bedRegions} \
-        --output ~{outputDir} \
-        --template ~{template} \
-        ~{true="--all-records" false="" allRecords} \
-        ~{true="--decompose" false="" decompose} \
-        ~{true="--ref-overlap" false="" refOverlap} \
-        ~{"--sample " + sample } \
-        ~{true="--squash-ploidy" false="" squashPloidy} \
-        ~{"--output-mode " + outputMode} \
-        --threads ~{threads}
+        mkdir -p "$(dirname ${outputDir})"
+        rtg RTG_MEM=${rtgMem} vcfeval \
+        --baseline ${baseline} \
+        --calls ${calls} \
+        ${"--evaluation-regions " + evaluationRegions} \
+        ${"--bed-regions " + bedRegions} \
+        --output ${outputDir} \
+        --template ${template} \
+        ${true="--all-records" false="" allRecords} \
+        ${true="--decompose" false="" decompose} \
+        ${true="--ref-overlap" false="" refOverlap} \
+        ${"--sample " + sample } \
+        ${true="--squash-ploidy" false="" squashPloidy} \
+        ${"--output-mode " + outputMode} \
+        --threads ${threads}
     >>>
 
     output {

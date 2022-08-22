@@ -36,22 +36,22 @@ task Stringtie {
         Int threads = 1
         String memory = "2G"
         Int timeMinutes = 1 + ceil(size(bam, "G") * 60 / threads)
-        String dockerImage = "quay.io/biocontainers/stringtie:1.3.6--h92e31bf_0"
+        String dockerImage = "genedockdx/stringtie:1.3.6--h92e31bf_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{assembledTranscriptsFile})"
+        mkdir -p "$(dirname ${assembledTranscriptsFile})"
         stringtie \
-        ~{"-p " + threads} \
-        ~{"-G " + referenceGtf} \
-        ~{true="-e" false="" skipNovelTranscripts} \
-        ~{true="--rf" false="" firstStranded} \
-        ~{true="--fr" false="" secondStranded} \
-        ~{"-c " + minimumCoverage} \
-        -o ~{assembledTranscriptsFile} \
-        ~{"-A " + geneAbundanceFile} \
-        ~{bam}
+        ${"-p " + threads} \
+        ${"-G " + referenceGtf} \
+        ${true="-e" false="" skipNovelTranscripts} \
+        ${true="--rf" false="" firstStranded} \
+        ${true="--fr" false="" secondStranded} \
+        ${"-c " + minimumCoverage} \
+        -o ${assembledTranscriptsFile} \
+        ${"-A " + geneAbundanceFile} \
+        ${bam}
     }
 
     output {
@@ -104,23 +104,23 @@ task Merge {
 
         String memory = "10G"
         Int timeMinutes = 1 + ceil(size(gtfFiles, "G") * 20)
-        String dockerImage = "quay.io/biocontainers/stringtie:2.1.4--h7e0af3c_0"
+        String dockerImage = "genedockdx/stringtie:2.1.4--h7e0af3c_0"
     }
 
     command {
         set -e
-        mkdir -p "$(dirname ~{outputGtfPath})"
+        mkdir -p "$(dirname ${outputGtfPath})"
         stringtie --merge \
-        -o ~{outputGtfPath} \
-        ~{"-G " + guideGtf} \
-        ~{"-m " + minimumLength } \
-        ~{"-c " + minimumCoverage} \
-        ~{"-F " + minimumFPKM} \
-        ~{"-T " + minimumTPM} \
-        ~{"-f " + minimumIsoformFraction} \
-        ~{true="-i" false="" keepMergedTranscriptsWithRetainedIntrons} \
-        ~{"-l " + label} \
-        ~{sep=" " gtfFiles}
+        -o ${outputGtfPath} \
+        ${"-G " + guideGtf} \
+        ${"-m " + minimumLength } \
+        ${"-c " + minimumCoverage} \
+        ${"-F " + minimumFPKM} \
+        ${"-T " + minimumTPM} \
+        ${"-f " + minimumIsoformFraction} \
+        ${true="-i" false="" keepMergedTranscriptsWithRetainedIntrons} \
+        ${"-l " + label} \
+        ${sep=" " gtfFiles}
     }
 
     output {

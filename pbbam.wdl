@@ -28,7 +28,7 @@ task Index {
 
         String memory = "2G"
         Int timeMinutes = 1 + ceil(size(bamFile, "G") * 4)
-        String dockerImage = "quay.io/biocontainers/pbbam:1.6.0--h5b7e6e0_0"
+        String dockerImage = "genedockdx/pbbam:1.6.0--h5b7e6e0_0"
     }
 
     # Select_first is needed, otherwise womtool validate fails.
@@ -38,12 +38,12 @@ task Index {
     command {
         set -e
         # Make sure outputBamPath does not exist.
-        if [ ! -f ~{outputPath} ]
+        if [ ! -f ${outputPath} ]
         then
-            mkdir -p "$(dirname ~{outputPath})"
-            ln ~{bamFile} ~{outputPath}
+            mkdir -p "$(dirname ${outputPath})"
+            ln ${bamFile} ${outputPath}
         fi
-        pbindex ~{outputPath} ~{bamIndexPath}
+        pbindex ${outputPath} ${bamIndexPath}
     }
 
     output {
