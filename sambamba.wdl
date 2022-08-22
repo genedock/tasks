@@ -28,8 +28,9 @@ task Flagstat {
 
         Int threads = 2
         String memory = "8G"
-        Int timeMinutes = 120
+        Int timeMinutes = 320
         String dockerImage = "genedockdx/sambamba:0.7.1--h148d290_2"
+
     }
 
     command {
